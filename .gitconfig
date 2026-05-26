@@ -1,0 +1,2 @@
+[alias]
+	dog = log --graph --all --decorate --format=format:'%C(auto)%h%d %C(bold yellow)[%ad]%C(reset) %s %C(bold blue)<%an>%C(reset)' --date=short
