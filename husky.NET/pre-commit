@@ -1,0 +1,9 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+if [ ! -f "Assembly-CSharp.csproj" ]; then
+  echo "Assembly-CSharp.csproj not found — open Unity to generate project files. Skipping format check."
+  exit 0
+fi
+
+dotnet husky run
