@@ -7,8 +7,6 @@
       "args": [
         "format",
         "Assembly-CSharp.csproj",
-        "--severity",
-        "info",
         "--include",
         "${staged}"
       ],
