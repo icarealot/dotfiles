@@ -16,10 +16,10 @@
 }
 
 /* Window control buttons (min, resize and close) */
-.titlebar-buttonbox-container {
+/* .titlebar-buttonbox-container {
   display: none !important;
   margin-right: 12px !important;
-}
+} */
 
 /* Page back and foward buttons */
 /* #back-button,
@@ -43,20 +43,14 @@
 }
 
 /* URL bar icons */
-#identity-permission-box,
-#star-button-box,
-#identity-icon-box,
-#picture-in-picture-button,
-#tracking-protection-icon-container,
-#reader-mode-button,
-#translations-button {
+#page-action-buttons {
   display: none !important
 }
 
 /* "This time search with:..." */
-#urlbar .search-one-offs {
+/* #urlbar .search-one-offs {
   display: none !important
-}
+} */
 
 /* Space before and after tabs */
 .titlebar-spacer {
