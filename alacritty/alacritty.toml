@@ -1,22 +1,23 @@
+# Powershell
 #[terminal.shell]
 #program = "pwsh.exe"
 #args = ["-NoLogo"]
 
 [general]
-working_directory = "C:/Users/nkiet"
+working_directory = ""
 live_config_reload = true
 
 [window]
 dynamic_padding = false
 startup_mode = "Maximized"
-decorations = "None"
+# decorations = "None"
 
 [window.padding]
 x = 10
 y = 10
 
 [font]
-size = 12
+size = 13
 
 [font.bold]
 family = "JetBrainsMono Nerd Font"
