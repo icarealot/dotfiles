@@ -53,7 +53,7 @@ csharp_style_var_elsewhere = false:warning
 # Prefer target-typed new expressions
 csharp_style_implicit_object_creation_when_type_is_apparent = true:warning
 
-# Braces on new lines (Allman style), always required
+# Braces on new lines (Allman style)
 csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true
 csharp_new_line_before_catch = true
