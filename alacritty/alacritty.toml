@@ -1,0 +1,41 @@
+#[terminal.shell]
+#program = "pwsh.exe"
+#args = ["-NoLogo"]
+
+[general]
+working_directory = "C:/Users/nkiet"
+live_config_reload = true
+
+[window]
+dynamic_padding = false
+startup_mode = "Maximized"
+decorations = "None"
+
+[window.padding]
+x = 10
+y = 10
+
+[font]
+size = 12
+
+[font.bold]
+family = "JetBrainsMono Nerd Font"
+style = "Heavy"
+
+[font.bold_italic]
+family = "JetBrainsMono Nerd Font"
+style = "Heavy Italic"
+
+[font.italic]
+family = "JetBrainsMono Nerd Font"
+style = "Medium Italic"
+
+[font.normal]
+family = "JetBrainsMono Nerd Font"
+style = "Medium"
+
+[keyboard]
+bindings = [
+  # Ctrl + Backspace to delete an entire word
+  { key = "Back", mods = "Control", chars = "\u0017" }
+]
