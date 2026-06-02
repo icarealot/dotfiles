@@ -25,9 +25,9 @@ winget install DEVCOM.JetBrainsMonoNerdFont
 ```
 // Mac
 mkdir -p ~/.config/alacritty
-cp alacritty.toml ~/.config/alacritty/alacritty.toml
+cp mac.toml ~/.config/alacritty/alacritty.toml
 
 // Windows
 New-Item -ItemType Directory -Force -Path "$env:APPDATA\alacritty"
-Copy-Item ".\alacritty.toml" "$env:APPDATA\alacritty\alacritty.toml"
+Copy-Item ".\windows.toml" "$env:APPDATA\alacritty\alacritty.toml"
 ```
