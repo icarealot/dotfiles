@@ -1,13 +1,33 @@
-## Applying the Config
+## Install
 
-**macOS:**
+### 1. Install Alacritty
 
-```sh
-cp alacritty.toml ~/.config/alacritty/alacritty.toml
+```
+// Mac
+brew install --cask alacritty
+
+// Windows
+winget install Alacritty.Alacritty
 ```
 
-**Windows (PowerShell):**
+### 2. Install JetBrainsMono Nerd Font
 
-```powershell
+```
+// Mac
+brew install --cask font-jetbrains-mono-nerd-font
+
+// Windows
+winget install DEVCOM.JetBrainsMonoNerdFont
+```
+
+### 3. Apply Config
+
+```
+// Mac
+mkdir -p ~/.config/alacritty
+cp alacritty.toml ~/.config/alacritty/alacritty.toml
+
+// Windows
+New-Item -ItemType Directory -Force -Path "$env:APPDATA\alacritty"
 Copy-Item ".\alacritty.toml" "$env:APPDATA\alacritty\alacritty.toml"
 ```
