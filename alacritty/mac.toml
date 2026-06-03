@@ -4,6 +4,7 @@ live_config_reload = true
 [window]
 dynamic_padding = false
 startup_mode = "Maximized"
+decorations = "None"
 option_as_alt = "Both"
 
 [window.padding]
