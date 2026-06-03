@@ -20,14 +20,17 @@ brew install --cask font-jetbrains-mono-nerd-font
 winget install DEVCOM.JetBrainsMonoNerdFont
 ```
 
-### 3. Apply Config
+### 3. Symlink Config
 
-```
-// Mac
+```bash
+# Mac
 mkdir -p ~/.config/alacritty
-cp mac.toml ~/.config/alacritty/alacritty.toml
+ln -sf "$(pwd)/mac.toml" ~/.config/alacritty/alacritty.toml
+```
 
-// Windows
+```powershell
+# Windows (run PowerShell as Admin, cd to the repo root first)
+cd "$HOME\OneDrive\Desktop\areas\dotfiles"
 New-Item -ItemType Directory -Force -Path "$env:APPDATA\alacritty"
-Copy-Item ".\windows.toml" "$env:APPDATA\alacritty\alacritty.toml"
+New-Item -ItemType SymbolicLink -Path "$env:APPDATA\alacritty\alacritty.toml" -Target "$PWD\alacritty\windows.toml" -Force
 ```
