@@ -23,9 +23,9 @@ winget install DEVCOM.JetBrainsMonoNerdFont
 ### 3. Symlink Config
 
 ```bash
-# Mac
+# Mac (cd to repo root first)
 mkdir -p ~/.config/alacritty
-ln -sf "$(pwd)/mac.toml" ~/.config/alacritty/alacritty.toml
+ln -sf "$(pwd)/alacritty/mac.toml" ~/.config/alacritty/alacritty.toml
 ```
 
 ```powershell
