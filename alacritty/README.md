@@ -34,3 +34,16 @@ cd "$HOME\OneDrive\Desktop\areas\dotfiles"
 New-Item -ItemType Directory -Force -Path "$env:APPDATA\alacritty"
 New-Item -ItemType SymbolicLink -Path "$env:APPDATA\alacritty\alacritty.toml" -Target "$PWD\alacritty\windows.toml" -Force
 ```
+
+## Troubleshooting
+
+### Screen corruption on Windows (tmux + neovim)
+
+**Root cause:** Alacritty falls back to the old `Windows API for pseudoconsole` instead of the newer `conpty.dll`. The version of `conpty.dll` shipped with Windows is outdated.
+
+**Fix:** Grab `conpty.dll` + `OpenConsole.exe` from WezTerm and drop them next to `alacritty.exe`.
+
+1. Install [WezTerm](https://wezterm.org/)
+3. Copy `conpty.dll` and `OpenConsole.exe` from WezTerm's install dir to Alacritty's install dir
+4. Restart Alacritty
+5. Delete WeztTerm if you don't need it anymore
