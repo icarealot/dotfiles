@@ -1,6 +1,6 @@
 ## Summary
 
-Alacritty is a fast, GPU-accelerated terminal emulator. This config sets up Alacritty with JetBrainsMono Nerd Font and platform-specific TOML configs for Mac and Windows.
+[Alacritty](https://github.com/alacritty/alacritty) is a fast, GPU-accelerated terminal emulator. This config sets up Alacritty with JetBrainsMono Nerd Font and platform-specific TOML configs for Mac and Windows.
 
 ## Prerequisites
 

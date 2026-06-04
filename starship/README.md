@@ -1,6 +1,6 @@
 ## Summary
 
-Starship is a minimal, fast, customizable prompt for any shell. This config sets up Starship with JetBrainsMono Nerd Font on Mac and Windows.
+[Starship](https://github.com/starship/starship) is a minimal, fast, customizable prompt for any shell. This config sets up Starship with JetBrainsMono Nerd Font on Mac and Windows.
 
 ## Prerequisites
 
