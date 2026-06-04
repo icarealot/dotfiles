@@ -1,3 +1,12 @@
+## Summary
+
+Alacritty is a fast, GPU-accelerated terminal emulator. This config sets up Alacritty with JetBrainsMono Nerd Font and platform-specific TOML configs for Mac and Windows.
+
+## Prerequisites
+
+- **Mac:** [Homebrew](https://brew.sh/)
+- **Windows:** [winget](https://github.com/microsoft/winget-cli), [PowerShell 7](https://github.com/PowerShell/PowerShell)
+
 ## Install
 
 ### 1. Install Alacritty
@@ -29,8 +38,7 @@ ln -sf "$(pwd)/alacritty/mac.toml" ~/.config/alacritty/alacritty.toml
 ```
 
 ```powershell
-# Windows (run PowerShell as Admin, cd to the repo root first)
-cd "$HOME\OneDrive\Desktop\areas\dotfiles"
+# Windows (run as Admin, cd to the repo root first)
 New-Item -ItemType Directory -Force -Path "$env:APPDATA\alacritty"
 New-Item -ItemType SymbolicLink -Path "$env:APPDATA\alacritty\alacritty.toml" -Target "$PWD\alacritty\windows.toml" -Force
 ```
