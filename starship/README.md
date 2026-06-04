@@ -1,26 +1,15 @@
+## Summary
+
+Starship is a minimal, fast, customizable prompt for any shell. This config sets up Starship with JetBrainsMono Nerd Font on Mac and Windows.
+
+## Prerequisites
+
+- **Mac:** [Homebrew](https://brew.sh/)
+- **Windows:** [winget](https://github.com/microsoft/winget-cli)
+
 ## Install
 
-### 1. Install Package Managers
-
-```
-// Mac
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-// Windows
-winget upgrade --accept-source-agreements --accept-package-agreements
-```
-
-### 2. Install JetBrainsMono Nerd Font
-
-```
-// Mac
-brew install --cask font-jetbrains-mono-nerd-font
-
-// Windows
-winget install DEVCOM.JetBrainsMonoNerdFont
-```
-
-### 3. Install Starship
+### 1. Install Starship
 
 ```
 // Mac
@@ -30,7 +19,7 @@ brew install starship
 winget install --id Starship.Starship
 ```
 
-### 4. Symlink Config
+### 2. Symlink Config
 
 ```bash
 # Mac (cd to repo root first)
@@ -38,12 +27,11 @@ ln -sf "$(pwd)/starship/starship.toml" ~/.config/starship.toml
 ```
 
 ```powershell
-# Windows (run PowerShell 7 as Admin, cd to repo root first)
-cd "$HOME\OneDrive\Desktop\areas\dotfiles"
+# Windows (run as Admin, cd to repo root first)
 New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.config\starship.toml" -Target "$PWD\starship\starship.toml" -Force
 ```
 
-### 5. Shell Init
+### 3. Shell Init
 
 ```bash
 # Mac
@@ -51,6 +39,6 @@ printf '\neval "$(starship init zsh)"\n' >> ~/.zshrc
 ```
 
 ```powershell
-# Windows PowerShell 7
+# Windows
 Add-Content -Path $PROFILE -Value 'Invoke-Expression (&starship init powershell)'
 ```
