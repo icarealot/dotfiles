@@ -34,22 +34,20 @@ winget install --id Starship.Starship
 
 ```bash
 # Mac (cd to repo root first)
-mkdir -p ~/.config/starship
-ln -sf "$(pwd)/starship/starship.toml" ~/.config/starship/config.toml
+ln -sf "$(pwd)/starship/starship.toml" ~/.config/starship.toml
 ```
 
 ```powershell
 # Windows (run PowerShell 7 as Admin, cd to repo root first)
 cd "$HOME\OneDrive\Desktop\areas\dotfiles"
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.config\starship"
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.config\starship\config.toml" -Target "$PWD\starship\starship.toml" -Force
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.config\starship.toml" -Target "$PWD\starship\starship.toml" -Force
 ```
 
 ### 5. Shell Init
 
 ```bash
 # Mac
-echo 'eval "$(starship init zsh)"' >> ~/.zshrc
+printf '\neval "$(starship init zsh)"\n' >> ~/.zshrc
 ```
 
 ```powershell
