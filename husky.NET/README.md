@@ -7,6 +7,8 @@
 - [Unity](https://unity.com/)
 - [Git](https://git-scm.com/)
 - [.NET SDK](https://dotnet.microsoft.com/)
+- **Mac:** [Zsh](https://www.zsh.org/), [Homebrew](https://brew.sh/)
+- **Windows:** [PowerShell 7](https://github.com/PowerShell/PowerShell), [winget](https://github.com/microsoft/winget-cli)
 
 ## Install
 

@@ -4,7 +4,8 @@
 
 ## Prerequisites
 
-- **Mac:** [Homebrew](https://brew.sh/)
+- **Mac:** [Zsh](https://www.zsh.org/), [Homebrew](https://brew.sh/)
+- **Windows:** [PowerShell 7](https://github.com/PowerShell/PowerShell), [winget](https://github.com/microsoft/winget-cli)
 
 ## Install
 
