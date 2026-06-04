@@ -14,6 +14,11 @@ y = 10
 program = "pwsh.exe"
 args = ["-NoLogo"]
 
+[keyboard]
+bindings = [
+  { key = "Back", mods = "Control", chars = "\u0017" }     # Ctrl + Backspace to delete an entire word
+]
+
 [font]
 size = 11
 
@@ -32,12 +37,6 @@ style = "Medium Italic"
 [font.normal]
 family = "JetBrainsMono Nerd Font"
 style = "Medium"
-
-[keyboard]
-bindings = [
-  # Ctrl + Backspace to delete an entire word
-  { key = "Back", mods = "Control", chars = "\u0017" }
-]
 
 # Colors (Dracula)
 

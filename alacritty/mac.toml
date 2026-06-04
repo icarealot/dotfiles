@@ -5,11 +5,17 @@ live_config_reload = true
 dynamic_padding = false
 startup_mode = "Maximized"
 decorations = "None"
-option_as_alt = "Both"
 
 [window.padding]
 x = 10
 y = 10
+
+[keyboard]
+bindings = [
+  { key = "Back", mods = "Command", chars = "\u0015" },     # command + delete to delete an entire line
+  { key = "Left", mods = "Alt", chars = "\u001Bb" },        # option + left to move cursor one word left
+  { key = "Right", mods = "Alt", chars = "\u001Bf" }        # option + right to move cursor one word right
+]
 
 [font]
 size = 14
