@@ -1,0 +1,4 @@
+pane_frames false
+theme "dracula"
+mouse_mode false
+default_shell "pwsh"

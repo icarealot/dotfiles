@@ -1,6 +1,6 @@
 ## Summary
 
-[Zellij](https://github.com/zellij-org/zellij) is a terminal workspace/multiplexer. This config sets up Zellij with vim-style keybindings, the Dracula theme, disabled mouse mode, and no pane frames for a clean look.
+[Zellij](https://github.com/zellij-org/zellij) is a terminal workspace/multiplexer. Configs disabled mouse mode, and no pane frames for a clean look.
 
 ## Prerequisites
 
@@ -11,9 +11,12 @@
 
 ### 1. Install Zellij
 
-```
-// Mac
+```bash
+# Mac
 brew install zellij
+
+# Windows
+winget install Zellij.Zellij
 ```
 
 ### 2. Symlink Config
@@ -22,4 +25,8 @@ brew install zellij
 # Mac (cd to repo root first)
 mkdir -p ~/.config/zellij
 ln -sf "$(pwd)/zellij/mac.kdl" ~/.config/zellij/config.kdl
+
+# Windows (run in PowerShell 7 as admin, cd to repo root first)
+New-Item -Type Directory -Force $env:APPDATA\zellij
+New-Item -Type SymbolicLink -Force $env:APPDATA\zellij\config.kdl "$(Get-Location)\zellij\windows.kdl"
 ```
