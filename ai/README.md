@@ -4,64 +4,45 @@
 
 ## Prerequisites
 
+- [Git Bash](https://git-scm.com/)
 - [Pi coding agent](https://github.com/earendil-works/pi-coding-agent)
 
 ## Install
 
+All commands are run from the dotfiles repo root.
+
 ### 1. Create Extensions Symlinks
 
-```powershell
-# Windows (run as Admin, cd to repo root first)
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.pi\agent\extensions\custom-footer.ts" -Target "$PWD\ai\pi\custom-footer.ts" -Force
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.pi\agent\extensions\notify.ts" -Target "$PWD\ai\pi\notify.ts" -Force
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.pi\agent\extensions\usage.ts" -Target "$PWD\ai\pi\usage.ts" -Force
-```
-
 ```bash
-# Mac/Linux (cd to repo root first)
-ln -sf "$(pwd)/ai/pi/custom-footer.ts" ~/.pi/agent/extensions/
-ln -sf "$(pwd)/ai/pi/notify.ts" ~/.pi/agent/extensions/
-ln -sf "$(pwd)/ai/pi/usage.ts" ~/.pi/agent/extensions/
+mkdir -p ~/.pi/agent/extensions
+ln -sfn "$PWD/ai/pi/custom-footer.ts" ~/.pi/agent/extensions/custom-footer.ts
+ln -sfn "$PWD/ai/pi/notify.ts"        ~/.pi/agent/extensions/notify.ts
+ln -sfn "$PWD/ai/pi/usage.ts"         ~/.pi/agent/extensions/usage.ts
 ```
 
 ### 2. Create Global Instructions Symlink
 
-```powershell
-# Windows (run as Admin, cd to repo root first)
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.pi\agent\AGENTS.md" -Target "$PWD\ai\instructions\global.md" -Force
-```
-
 ```bash
-# Mac/Linux (cd to repo root first)
-ln -sf "$(pwd)/ai/instructions/global.md" ~/.pi/agent/AGENTS.md
+mkdir -p ~/.pi/agent
+ln -sfn "$PWD/ai/instructions/global.md" ~/.pi/agent/AGENTS.md
 ```
 
 ### 3. Create Skills Symlinks
 
-Skills in `skills/` are symlinked to the skills folder:
-
-```powershell
-# Windows (run as Admin, cd to repo root first)
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.pi\agent\skills\create-commit" -Target "$PWD\ai\skills\create-commit" -Force
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.pi\agent\skills\discuss" -Target "$PWD\ai\skills\discuss" -Force
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.pi\agent\skills\to-prd" -Target "$PWD\ai\skills\to-prd" -Force
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.pi\agent\skills\to-issues" -Target "$PWD\ai\skills\to-issues" -Force
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.pi\agent\skills\implement" -Target "$PWD\ai\skills\implement" -Force
-```
-
 ```bash
-# Mac/Linux (cd to repo root first)
-ln -sf "$(pwd)/ai/skills/create-commit" ~/.pi/agent/skills/
-ln -sf "$(pwd)/ai/skills/discuss" ~/.pi/agent/skills/
-ln -sf "$(pwd)/ai/skills/to-prd" ~/.pi/agent/skills/
-ln -sf "$(pwd)/ai/skills/to-issues" ~/.pi/agent/skills/
-ln -sf "$(pwd)/ai/skills/implement" ~/.pi/agent/skills/
+mkdir -p ~/.pi/agent/skills
+ln -sfn "$PWD/ai/skills/create-commit"          ~/.pi/agent/skills/create-commit
+ln -sfn "$PWD/ai/skills/create-unity-build-note" ~/.pi/agent/skills/create-unity-build-note
+ln -sfn "$PWD/ai/skills/discuss"                ~/.pi/agent/skills/discuss
+ln -sfn "$PWD/ai/skills/implement"              ~/.pi/agent/skills/implement
+ln -sfn "$PWD/ai/skills/to-issues"              ~/.pi/agent/skills/to-issues
+ln -sfn "$PWD/ai/skills/to-prd"                 ~/.pi/agent/skills/to-prd
 ```
 
 ## Troubleshooting
 
-### Administrator privileges required
+### Symlink fails with "permission denied" (Windows)
 
-**Root cause:** Windows requires admin privileges to create symlinks by default.
+**Root cause:** Windows requires elevated privileges to create symlinks by default.
 
-**Fix:** Enable Developer Mode in Windows Settings → Update & Security → For developers. This allows creating symlinks without elevation.
+**Fix:** Enable Developer Mode in **Settings → Privacy & security → For developers → Developer Mode**. This allows creating symlinks without running Git Bash as Administrator.
