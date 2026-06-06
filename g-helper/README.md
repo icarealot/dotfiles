@@ -4,8 +4,7 @@
 
 ## Prerequisites
 
-- [Windows PowerShell 7](https://github.com/PowerShell/PowerShell)
-- [winget](https://github.com/microsoft/winget-cli)
+- [Git Bash](https://git-scm.com/)
 - [Microsoft .NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) (auto-prompted if missing)
 - [ASUS System Control Interface](https://dlcdnets.asus.com/pub/ASUS/nb/Image/CustomComponent/ASUSSystemControlInterfaceV3/ASUSSystemControlInterfaceV3.exe) (usually already installed on ASUS laptops)
 
@@ -21,17 +20,16 @@ Remove these if present:
 
 ### 2. Install G-Helper
 
-```powershell
-winget install --id=seerge.g-helper -e
-```
+Download the latest installer from the [G-Helper](https://github.com/seerge/g-helper/).
+
 ### 3. Symlink Config
 
 Make sure G-Helper is **not running**:
 
-```powershell
-# Run as Admin, cd to the repo root first
-New-Item -ItemType Directory -Force -Path "$env:APPDATA\GHelper"
-New-Item -ItemType SymbolicLink -Path "$env:APPDATA\GHelper\config.json" -Target "$PWD\g-helper\config.json" -Force
+```bash
+# Run as Admin (or enable Developer Mode), cd to the repo root first
+mkdir -p "$APPDATA/GHelper"
+ln -sfn "$PWD/g-helper/config.json" "$APPDATA/GHelper/config.json"
 ```
 
 ### 4. Stop Unnecessary ASUS Services
