@@ -5,10 +5,8 @@
 ## Prerequisites
 
 - [Unity](https://unity.com/)
-- [Git](https://git-scm.com/)
+- [Git Bash](https://git-scm.com/)
 - [.NET SDK](https://dotnet.microsoft.com/)
-- **Mac:** [Zsh](https://www.zsh.org/), [Homebrew](https://brew.sh/)
-- **Windows:** [PowerShell 7](https://github.com/PowerShell/PowerShell), [winget](https://github.com/microsoft/winget-cli)
 
 ## Install
 
@@ -23,26 +21,27 @@ dotnet tool install husky
 > Replace `<unity-project>` with the path to your Unity project repo.
 
 ```bash
-# Mac (cd to repo root first)
+# (cd to repo root first)
 ln -sf "$(pwd)/husky.NET/.editorconfig" <unity-project>/.editorconfig
 ln -sf "$(pwd)/husky.NET/pre-commit" <unity-project>/.husky/pre-commit
 ln -sf "$(pwd)/husky.NET/task-runner.json" <unity-project>/.husky/task-runner.json
 ```
 
-```powershell
-# Windows (run PowerShell as Admin, cd to repo root first)
-New-Item -ItemType SymbolicLink -Path "<unity-project>\.editorconfig" -Target "$PWD\husky.NET\.editorconfig" -Force
-New-Item -ItemType SymbolicLink -Path "<unity-project>\.husky\pre-commit" -Target "$PWD\husky.NET\pre-commit" -Force
-New-Item -ItemType SymbolicLink -Path "<unity-project>\.husky\task-runner.json" -Target "$PWD\husky.NET\task-runner.json" -Force
-```
-
 ### 3. Install Git Hooks
+
+> Run from the Unity project repo (not the dotfiles repo).
 
 ```
 dotnet husky install
 ```
 
 ## Troubleshooting
+
+### Symlink fails with "permission denied" (Windows)
+
+**Root cause:** Windows requires elevated privileges to create symlinks by default.
+
+**Fix:** Enable Developer Mode in **Settings → Privacy & security → For developers → Developer Mode**. This allows creating symlinks without running Git Bash as Administrator.
 
 ### Assembly-CSharp.csproj not found
 
