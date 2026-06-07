@@ -18,10 +18,11 @@ dotnet tool install husky
 
 ### 2. Symlink Config Files
 
-> Replace `<unity-project>` with the path to your Unity project repo.
+- On Windows - run as Admin (or enable Developer Mode).
+- cd to repo root.
+- Replace `<unity-project>` with the path to your Unity project repo.
 
 ```bash
-# (cd to repo root first)
 ln -sf "$(pwd)/husky.NET/.editorconfig" <unity-project>/.editorconfig
 ln -sf "$(pwd)/husky.NET/pre-commit" <unity-project>/.husky/pre-commit
 ln -sf "$(pwd)/husky.NET/task-runner.json" <unity-project>/.husky/task-runner.json
@@ -36,12 +37,6 @@ dotnet husky install
 ```
 
 ## Troubleshooting
-
-### Symlink fails with "permission denied" (Windows)
-
-**Root cause:** Windows requires elevated privileges to create symlinks by default.
-
-**Fix:** Enable Developer Mode in **Settings → Privacy & security → For developers → Developer Mode**. This allows creating symlinks without running Git Bash as Administrator.
 
 ### Assembly-CSharp.csproj not found
 

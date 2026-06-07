@@ -24,10 +24,11 @@ Download the latest installer from the [G-Helper](https://github.com/seerge/g-he
 
 ### 3. Symlink Config
 
-Make sure G-Helper is **not running**:
+- Make sure G-Helper is **not running**.
+- Run as Admin (or enable Developer Mode).
+- cd to repo root.
 
 ```bash
-# Run as Admin (or enable Developer Mode), cd to the repo root first
 mkdir -p "$APPDATA/GHelper"
 ln -sfn "$PWD/g-helper/config.json" "$APPDATA/GHelper/config.json"
 ```
