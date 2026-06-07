@@ -25,12 +25,11 @@ Download the latest installer from the [G-Helper](https://github.com/seerge/g-he
 ### 3. Symlink Config
 
 - Make sure G-Helper is **not running**.
-- Run as Admin (or enable Developer Mode).
 - cd to repo root.
 
 ```bash
-mkdir -p "$APPDATA/GHelper"
-ln -sfn "$PWD/g-helper/config.json" "$APPDATA/GHelper/config.json"
+# Requires running as Admin or enabling Developer Mode
+cmd /c "mklink %APPDATA%\GHelper\config.json %CD%\g-helper\config.json"
 ```
 
 ### 4. Stop Unnecessary ASUS Services

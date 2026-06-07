@@ -14,12 +14,19 @@ Config for [Claude Code](https://github.com/anthropics/claude-code).
 
 ## Install
 
-- On Windows - run as Admin (or enable Developer Mode).
-- cd to repo root.
+cd to repo root.
 
 ```bash
+# Mac
 ln -sfn "$PWD/ai/claude/settings.json"          ~/.claude/settings.json
 ln -sfn "$PWD/ai/claude/statusline-command.sh"   ~/.claude/statusline-command.sh
+```
+
+```bash
+# Windows - requires running as Admin or enabling Developer Mode
+mkdir -p %USERPROFILE%\.claude
+cmd /c "mklink %USERPROFILE%\.claude\settings.json %CD%\ai\claude\settings.json"
+cmd /c "mklink %USERPROFILE%\.claude\statusline-command.sh %CD%\ai\claude\statusline-command.sh"
 ```
 
 Then update the path in `settings.json` to match your home folder:

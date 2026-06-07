@@ -9,14 +9,20 @@ Reusable AI agent instructions.
 
 ## Install
 
-- On Windows - run as Admin (or enable Developer Mode).
-- cd to repo root.
+cd to repo root.
 
 <details>
 <summary>Claude Code</summary>
 
 ```bash
+# Mac
 ln -sfn "$PWD/ai/instructions/global.md" ~/.claude/CLAUDE.md
+```
+
+```bash
+# Windows - requires running as Admin or enabling Developer Mode
+mkdir -p %USERPROFILE%\.claude
+cmd /c "mklink %USERPROFILE%\.claude\CLAUDE.md %CD%\ai\instructions\global.md"
 ```
 
 </details>
@@ -25,8 +31,15 @@ ln -sfn "$PWD/ai/instructions/global.md" ~/.claude/CLAUDE.md
 <summary>pi</summary>
 
 ```bash
+# Mac
 mkdir -p ~/.pi/agent
 ln -sfn "$PWD/ai/instructions/global.md" ~/.pi/agent/AGENTS.md
+```
+
+```bash
+# Windows - requires running as Admin or enabling Developer Mode
+mkdir -p %USERPROFILE%\.pi\agent
+cmd /c "mklink %USERPROFILE%\.pi\agent\AGENTS.md %CD%\ai\instructions\global.md"
 ```
 
 </details>

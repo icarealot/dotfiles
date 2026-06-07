@@ -18,14 +18,21 @@ dotnet tool install husky
 
 ### 2. Symlink Config Files
 
-- On Windows - run as Admin (or enable Developer Mode).
 - cd to repo root.
 - Replace `<unity-project>` with the path to your Unity project repo.
 
 ```bash
+# Mac
 ln -sf "$(pwd)/husky.NET/.editorconfig" <unity-project>/.editorconfig
 ln -sf "$(pwd)/husky.NET/pre-commit" <unity-project>/.husky/pre-commit
 ln -sf "$(pwd)/husky.NET/task-runner.json" <unity-project>/.husky/task-runner.json
+```
+
+```bash
+# Windows - requires running as Admin or enabling Developer Mode
+cmd /c "mklink <unity-project>\.editorconfig    %CD%\husky.NET\.editorconfig"
+cmd /c "mklink <unity-project>\.husky\pre-commit %CD%\husky.NET\pre-commit"
+cmd /c "mklink <unity-project>\.husky\task-runner.json %CD%\husky.NET\task-runner.json"
 ```
 
 ### 3. Install Git Hooks

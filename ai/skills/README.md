@@ -13,13 +13,13 @@ Reusable AI agent skills.
 
 ## Install
 
-- On Windows - run as Admin (or enable Developer Mode).
-- cd to repo root.
+cd to repo root.
 
 <details>
 <summary><b>Claude Code</b></summary>
 
 ```bash
+#Mac
 mkdir -p ~/.claude/skills
 ln -sfn "$PWD/ai/skills/create-commit"           ~/.claude/skills/create-commit
 ln -sfn "$PWD/ai/skills/create-unity-build-note" ~/.claude/skills/create-unity-build-note
@@ -29,12 +29,24 @@ ln -sfn "$PWD/ai/skills/to-issues"               ~/.claude/skills/to-issues
 ln -sfn "$PWD/ai/skills/to-prd"                  ~/.claude/skills/to-prd
 ```
 
+```bash
+# Windows - requires running as Admin or enabling Developer Mode
+mkdir -p %USERPROFILE%\.claude\skills
+cmd /c "mklink /D %USERPROFILE%\.claude\skills\create-commit            %CD%\ai\skills\create-commit"
+cmd /c "mklink /D %USERPROFILE%\.claude\skills\create-unity-build-note  %CD%\ai\skills\create-unity-build-note"
+cmd /c "mklink /D %USERPROFILE%\.claude\skills\discuss                  %CD%\ai\skills\discuss"
+cmd /c "mklink /D %USERPROFILE%\.claude\skills\implement                %CD%\ai\skills\implement"
+cmd /c "mklink /D %USERPROFILE%\.claude\skills\to-issues                %CD%\ai\skills\to-issues"
+cmd /c "mklink /D %USERPROFILE%\.claude\skills\to-prd                   %CD%\ai\skills\to-prd"
+```
+
 </details>
 
 <details>
 <summary><b>pi</b></summary>
 
 ```bash
+# Mac
 mkdir -p ~/.pi/agent/skills
 ln -sfn "$PWD/ai/skills/create-commit"           ~/.pi/agent/skills/create-commit
 ln -sfn "$PWD/ai/skills/create-unity-build-note" ~/.pi/agent/skills/create-unity-build-note
@@ -42,6 +54,17 @@ ln -sfn "$PWD/ai/skills/discuss"                 ~/.pi/agent/skills/discuss
 ln -sfn "$PWD/ai/skills/implement"               ~/.pi/agent/skills/implement
 ln -sfn "$PWD/ai/skills/to-issues"               ~/.pi/agent/skills/to-issues
 ln -sfn "$PWD/ai/skills/to-prd"                  ~/.pi/agent/skills/to-prd
+```
+
+```bash
+# Windows - requires running as Admin or enabling Developer Mode
+mkdir -p %USERPROFILE%\.pi\agent\skills
+cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\create-commit            %CD%\ai\skills\create-commit"
+cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\create-unity-build-note  %CD%\ai\skills\create-unity-build-note"
+cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\discuss                  %CD%\ai\skills\discuss"
+cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\implement                %CD%\ai\skills\implement"
+cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\to-issues                %CD%\ai\skills\to-issues"
+cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\to-prd                   %CD%\ai\skills\to-prd"
 ```
 
 </details>

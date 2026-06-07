@@ -15,12 +15,20 @@ Extensions for the [Pi coding agent](https://github.com/earendil-works/pi-coding
 
 ## Install
 
-- On Windows - run as Admin (or enable Developer Mode).
-- cd to repo root.
+cd to repo root.
 
 ```bash
+# Mac
 mkdir -p ~/.pi/agent/extensions
 ln -sfn "$PWD/ai/pi/custom-footer.ts" ~/.pi/agent/extensions/custom-footer.ts
 ln -sfn "$PWD/ai/pi/notify.ts"        ~/.pi/agent/extensions/notify.ts
 ln -sfn "$PWD/ai/pi/usage.ts"         ~/.pi/agent/extensions/usage.ts
+```
+
+```bash
+# Windows - requires running as Admin or enabling Developer Mode
+mkdir -p %USERPROFILE%\.pi\agent\extensions
+cmd /c "mklink %USERPROFILE%\.pi\agent\extensions\custom-footer.ts %CD%\ai\pi\custom-footer.ts"
+cmd /c "mklink %USERPROFILE%\.pi\agent\extensions\notify.ts %CD%\ai\pi\notify.ts"
+cmd /c "mklink %USERPROFILE%\.pi\agent\extensions\usage.ts %CD%\ai\pi\usage.ts"
 ```
