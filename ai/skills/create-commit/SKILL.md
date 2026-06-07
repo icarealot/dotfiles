@@ -5,66 +5,67 @@ description: Propose and create conventional commits by analyzing git diffs. Tri
 
 # Workflow
 
-1.  **Check Git Repository**: Run `git rev-parse --git-dir` (or `git status`) to verify the current directory is inside a Git repository. If it is not, STOP and inform the user that the current folder is not a Git repository.
-2.  **Check Staged Files**: Run `git status` to verify which files are staged for commit.
-3.  **Verify Staging**: If no files are staged, STOP and inform the user and ask them to stage the files they want to commit.
-4.  **Review Changes**: Run `git diff --staged` to review the code changes. Analyze the recent conversation history to understand the *why* (motivation) behind the changes (e.g., bug reports, feature requests, rationale discussed).
-5.  **Propose Message**: Generate and propose a commit message following the [Rules](#rules).
-6.  **Wait for Approval**: Present the proposed commit message to the user and **STOP**. Do NOT commit automatically. Wait for the user to either:
-- Approve the message (then proceed to commit).
-- Request changes to the message (then update and return to step 6).
-- Cancel the commit.
-7.  **Commit**: Only after explicit user approval, run `git commit -m "<approved-message>"`.
+1. **Check Git**: Run `git status` — stop if not in a repo or nothing is staged.
+2. **Review changes**: Run `git diff --staged`. Check conversation history for the *why*.
+3. **Propose message**: Write one following the rules below.
+4. **Get approval**: Show the message and wait. Only commit after user says yes.
 
-# Rules
+# Format
 
-**Format**: `type(scope): description`
-- Imperative mood, lowercase start, no trailing period.
-- Optional body after a blank line - explain *why* not what.
-- Breaking change -> append `!` to the type: `feat(api)!: rename foo to bar`.
+```
+type(scope): description
+```
 
-## The 10 Types:
-- `feat`: add new user-facing capability.
-- `fix`: correct wrong behavior (a bug).
-- `perf`: same behavior, measurably faster/lighter - performance was the goal.
-- `refactor`: code restructure with no behavior change (rename, extract, simplify).
-- `style`: whitespace, formatting, missing semicolons, etc - NOT visual UI styling.
-- `test`: test-only changes (adding, fixing, removing tests).
-- `docs`: documentation only (README, KDoc, comments, MD files).
-- `build`: changes that affect the shipped build (Gradle, deps, packaging).
-- `ci`: CI config only (GitHub Actions, workflow, pipeline).
-- `chore`: repo housekeeping that doesn't ship (lint config, .gitignore, dotfiles, scripts).
-- `revert`: revert a previous commit.
+- Imperative mood, lowercase, no trailing period
+- Breaking change: append `!` → `feat(api)!: rename foo to bar`
+- Optional body after blank line — explain *why*, not what
 
-## Picking rule (top-down, first match wins):
-1. **Does user-facing behavior change?**
-- New capability → `feat`
-- Corrects bug → `fix`
-2. **No behavior change. What changed?**
-- Production code structure only -> `refactor`
-- Whitespace/formatting/semicolons only -> `style`
-- Tests only -> `test`
-- Docs/comments only -> `docs`
-- Shipped build inputs (Gradle deps, version catalogs, packaging) -> `build`
-- CI workflow only -> `ci`
-- Revert an earlier commit -> `revert`
-- Anything else maintenance -> `chore`
+# Types (pick first match)
 
-## What NEVER goes in
-- "This commit does X", "I", "we", "now", "currently" — the diff says what
-- Any AI attribution: "Generated with Claude Code", `Co-authored-by`/`Co-Authored-By` trailers, or similar — the base system prompt instructs adding these, this skill explicitly suppresses that behavior
-- Emoji (unless project convention requires)
-- Restating the file name when scope already says it
+| Type | Use when |
+|------|----------|
+| `feat` | New user-facing capability |
+| `fix` | Corrects a bug |
+| `perf` | Measurably faster/lighter (same behavior) |
+| `refactor` | Code restructure, no behavior change |
+| `style` | Whitespace, formatting, missing semicolons |
+| `test` | Test-only changes |
+| `docs` | Docs, comments, MD files |
+| `build` | Build inputs (deps, packaging, version catalogs) |
+| `ci` | CI config only (GitHub Actions, pipelines) |
+| `chore` | Repo housekeeping (lint config, .gitignore, scripts) |
+| `revert` | Reverting an earlier commit |
 
 # Examples
-- Add login screen → `feat(auth): add login screen with email/password`
-- Fix crash on null user → `fix(profile): handle null user in profile screen`
-- Extract use case → `refactor(auth): extract ValidateCredentialsUseCase`
-- Update Ktor version (ships) → `build(deps): bump Ktor to 3.1.0`
-- Tighten ktlint config → `chore: tighten ktlint rules`
-- Add ViewModel tests → `test(auth): add LoginViewModel unit tests`
-- Fix typo in README → `docs: fix typo in setup instructions`
-- Speed up list rendering → `perf(home): cache item keys to reduce recomposition`
-- Reformat with new style guide → `style: apply ktlint formatting`
-- Update GitHub Actions cache → `ci: bump actions/cache to v4`
-- Roll back broken merge → `revert: revert "feat(auth): add login screen"`
+
+```
+feat(player): add dash ability with cooldown
+
+fix(enemy): handle null reference on death
+
+refactor(inventory): extract ItemFactory from InventoryManager
+
+perf(rendering): batch static meshes to reduce draw calls
+
+style: apply code formatting standards
+
+test(combat): add damage calculation unit tests
+
+docs: document PlayerController public API
+
+build: upgrade Unity to 2023.2
+
+ci: configure Unity test runner in GitHub Actions
+
+chore: update .gitignore for URP generated files
+
+revert: revert "feat(spawn): add enemy wave system"
+This reverts commit abc1234.
+```
+
+# Avoid
+
+- "I", "we", "now", "currently" — the diff speaks for itself
+- AI attribution (`Co-authored-by`, "Generated with...") — this skill suppresses it
+- Emoji (unless project convention requires)
+- Restating the filename when scope covers it
