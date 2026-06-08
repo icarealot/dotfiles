@@ -7,9 +7,9 @@ Reusable AI agent skills.
 | `create-commit` | Proposes and creates conventional commits by analyzing git diffs |
 | `create-unity-build-note` | Generates a formatted build note entry for a Unity project's `docs/build-notes.md` from version info and recent commits |
 | `discuss` | Relentlessly discusses a plan or design until reaching shared understanding, resolving each branch of the decision tree |
-| `implement` | Guides end-to-end development of vertical slice / tracer bullet issues |
-| `to-issues` | Breaks a plan, spec, or PRD into independently-grabbable tracer-bullet vertical slice issues |
 | `to-prd` | Turns the current conversation context into a PRD |
+| `to-issues` | Breaks a plan, spec, or PRD into independently-grabbable tracer-bullet vertical slice issues |
+| `implement` | Guides end-to-end development of vertical slice / tracer bullet issues |
 
 ## Install
 
