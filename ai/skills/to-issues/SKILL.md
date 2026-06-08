@@ -15,7 +15,7 @@ Work from whatever is already in the conversation context.
 
 ### 2. Explore the codebase (optional)
 
-If you have not already explored the codebase, do so to understand the current state of the code.
+If the plan targets an existing codebase, explore it to understand what's already there and what needs to change. If it's a greenfield project with no existing code, skip this.
 
 ### 3. Draft vertical slices
 
@@ -37,6 +37,7 @@ Present the proposed breakdown as a numbered list. For each slice, show:
 - **Type**: HITL / AFK
 - **Blocked by**: which other slices (if any) must complete first
 - **User stories covered**: which user stories this addresses (if the source material has them)
+- **How to test**: the key manual verification steps for this slice
 
 Ask the user:
 
@@ -49,7 +50,7 @@ Iterate until the user approves the breakdown.
 
 ### 5. Create the issues
 
-For each approved slice, write an issue and save it to `./agents/prd/<folder-contain-prd>/issues/ISSUE_<N>.md`. Use the issue body template below.
+For each approved slice, write an issue and save it to `.agents/prd/<folder-contain-prd>/issues/ISSUE_<N>.md` — the same `.agents/` directory that `to-prd` used for the PRD. Use the issue body template below.
 
 **Issue number format:** use sequential integers starting from 1 without zero-padding — `ISSUE_1`, `ISSUE_2`, `ISSUE_3`, etc. (not `ISSUE_001`, `ISSUE_01`).
 
@@ -60,6 +61,11 @@ Create issues in dependency order (blockers first) so you can reference real iss
 ## Parent PRD
 
 Link to the prd
+
+## User stories covered
+
+- Story 1
+- Story 2
 
 ## What to build
 
