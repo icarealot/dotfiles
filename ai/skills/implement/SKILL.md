@@ -22,9 +22,7 @@ description: Implement vertical slice issues, guiding end-to-end development of 
 3. **Implement the vertical slice**
    - Build end-to-end functionality across all layers (schema → API → UI) per the tracer bullet approach
    - Follow acceptance criteria exactly; avoid scope creep
-4. **Check off all acceptance criteria**
-   - Mark each acceptance criterion as complete
-5. **Verification**
+4. **Verification**
    - Inform the user to manually test the issue using the steps provided in the issue's `Manual Testing` section
 
 ## Mismatch handling
