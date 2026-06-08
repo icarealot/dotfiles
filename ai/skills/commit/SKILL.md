@@ -1,5 +1,5 @@
 ---
-name: create-commit
+name: commit
 description: Propose and create conventional commits by analyzing git diffs. Trigger whenever the user mentions "commit", "git commit", "create a commit message", or wants to save changes to the repository.
 ---
 
