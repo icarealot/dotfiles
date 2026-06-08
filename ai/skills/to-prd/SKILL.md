@@ -1,29 +1,35 @@
 ---
 name: to-prd
-description: Turn the current conversation context into a PRD. Use when user wants to create a PRD from the current context.
+description: Turn the current conversation into a PRD. Use when the user wants to formalize a feature discussion — even if they say "spec", "document this", or "capture requirements" instead of "PRD".
 ---
 
-This skill takes the current conversation context and codebase understanding and produces a PRD. Do NOT interview the user — just synthesize what you already know.
+This skill synthesizes the current conversation into a PRD. Do NOT interview the user — extract everything you need from what's already been discussed. A PRD captures *what* the product should do and *why*; implementation detail belongs in the Implementation Decisions section, not scattered throughout.
 
 ## Process
 
-1. Explore the repo to understand the current state of the codebase, if you haven't already.
+### Step 1: Gather context
 
-2. Sketch out the major modules you will need to build or modify to complete the implementation. Actively look for opportunities to extract deep modules that can be verified through manual testing.
+If the feature involves an existing codebase, explore it to understand what's already there and what needs to change. If it's a greenfield project with no existing code, skip this.
 
-A deep module (as opposed to a shallow module) is one which encapsulates a lot of functionality in a simple, testable interface which rarely changes.
+### Step 2: Confirm scope
 
-Check with the user that these modules match their expectations. Check with the user which modules they want manual tests created for.
+Synthesize what you know into a brief outline:
+- The core problem being solved (1-2 sentences)
+- The proposed solution (1-2 sentences)
+- The key user stories (5-8, representative — not exhaustive yet)
+- Initial thoughts on what's out of scope
 
-Wait for the confirmation from the user before proceeding to the next step. Never proceed without confirmation from the user.
+Present this to the user and ask: "Does this capture what you're after? Anything missing or off?" Then wait for confirmation before writing the full PRD.
 
-3. Write the PRD using the template below and save it to .agents/prd/<concise-description-of-prd>/<PRD>.md
+### Step 3: Write the PRD
+
+Write the PRD using the template below and save it to `.agents/prd/<concise-description-of-prd>/<PRD>.md`.
 
 <prd-template>
 
 ## Problem Statement
 
-The problem that the user is facing, from the user's perspective.
+The problem the user is facing, from the user's perspective.
 
 ## Solution
 
@@ -31,45 +37,41 @@ The solution to the problem, from the user's perspective.
 
 ## User Stories
 
-A LONG, numbered list of user stories. Each user story should be in the format of:
+A long, numbered list of user stories covering all aspects of the feature. Format:
 
-1. As an <actor>, I want a <feature>, so that <benefit>
+1. As a <actor>, I want <feature>, so that <benefit>
 
-<user-story-example>
-1. As a mobile bank customer, I want to see balance on my accounts, so that I can make better informed decisions about my spending
-</user-story-example>
+Example:
+1. As a player, I want my character's health bar to visibly decrease when I take damage, so that I can make tactical decisions during combat.
 
-This list of user stories should be extremely extensive and cover all aspects of the feature.
+Be exhaustive — cover main flows, edge cases, error states, and admin/operator needs.
 
 ## Implementation Decisions
 
-A list of implementation decisions that were made. This can include:
+Decisions that constrain how this will be built. Include:
 
-- The modules that will be built/modified
-- The interfaces of those modules that will be modified
-- Technical clarifications from the developer
-- Architectural decisions
+- The modules or components that will be built or modified
+- Interface changes
+- Architectural decisions and tradeoffs
 - Schema changes
 - API contracts
-- Specific interactions
+- Specific interaction patterns
 
-NEVER include specific file paths or code snippets. They may end up being outdated very quickly.
+NEVER include specific file paths or code snippets — they go stale quickly.
 
 ## Testing Decisions
 
-A list of testing decisions that were made. Include:
-
-- A description of what makes a good manual test (focus on user workflows, edge cases, and real-world scenarios)
-- Which modules or features will have manual tests created
-- Test scenarios that cover critical user paths and edge cases
-- Any reference to existing manual test procedures or checklists in the project
+- What makes a good manual test for this feature (focus on user workflows, edge cases, and real-world scenarios)
+- Which modules or features warrant dedicated manual tests
+- Critical test scenarios and edge cases to cover
+- Any existing test procedures in the project that apply
 
 ## Out of Scope
 
-A description of the things that are out of scope for this PRD.
+What this PRD explicitly does not cover.
 
 ## Further Notes
 
-Any further notes about the feature.
+Any additional context, open questions, or future considerations.
 
 </prd-template>
