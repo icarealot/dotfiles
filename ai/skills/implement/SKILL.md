@@ -15,7 +15,6 @@ description: Implement vertical slice issues, guiding end-to-end development of 
 1. **Pre-implementation check**
    - Confirm all blocking issues are implemented and merged
    - Read the issue's `What to build`, `Acceptance criteria`, and `Manual Testing` sections
-   - Check if all acceptance criteria are already marked as complete. If yes, inform the user that the issue is already fully implemented and no further work is needed, then skip remaining workflow steps.
 2. **Codebase exploration**
    - Explore relevant modules/schema/API/UI layers mentioned in the issue
    - Check for existing code that can be reused
