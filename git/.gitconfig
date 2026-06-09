@@ -1,5 +1,5 @@
 [alias]
-	lg = "log --graph --all --decorate --format=format:'%C(#569cd6)%h%C(reset) %C(auto)%d%C(reset) %s %C(dim)%an%C(reset)'"
+	lg = "log --graph --all --decorate --format=format:'%C(#569cd6)%h%C(reset) %C(auto)%d%C(reset) %s %C(dim)%as %an%C(reset)'"
 	s = status
 	a = add
 	c = commit -m
