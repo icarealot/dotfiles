@@ -1,2 +1,14 @@
 [alias]
-	dog = log --graph --all --decorate --format=format:'%C(auto)%h%d %C(bold yellow)[%ad]%C(reset) %s %C(bold blue)<%an>%C(reset)' --date=short
+	lg = "log --graph --all --decorate --format=format:'%C(#569cd6)%h%C(reset) %C(auto)%d%C(reset) %s %C(dim)%an%C(reset)'"
+	s = status
+	a = add
+	c = commit -m
+	f = fetch
+	pl = pull
+	ps = push
+	plr = pull --rebase
+	psl = push --force-with-lease
+	u = reset --soft HEAD~1
+	sw = switch
+	swc = switch -c
+	t = tag
