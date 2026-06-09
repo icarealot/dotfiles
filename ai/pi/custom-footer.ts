@@ -1,13 +1,3 @@
-/**
- * Footer Pipes Extension
- *
- * Replaces the built-in footer with "|" separators between elements for better readability.
- * Auto-enabled on every session start.
- *
- * Install: already placed in ~/.pi/agent/extensions/footer-pipes/index.ts
- * Run `/reload` in pi to activate.
- */
-
 import type { AssistantMessage } from "@mariozechner/pi-ai";
 import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
 import { truncateToWidth, visibleWidth } from "@mariozechner/pi-tui";
@@ -48,26 +38,28 @@ function applyCustomFooter(ctx: ExtensionContext) {
 
         // Context usage + total cost
         const contextUsage = ctx.getContextUsage();
-        const percent = contextUsage?.percent ?? null;
+        const usedTokens = contextUsage?.used ?? 0;
 
         // Format context window size (e.g., 200k, 1M)
         const fmtContext = (n: number) =>
-            n >= 1000000
-                ? `${(n / 1000000).toFixed(n >= 10000000 ? 0 : 1).replace(/\.0$/, '')}M`
-                : n >= 1000
-                    ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, '')}K`
-                    : `${n}`;
+          n >= 1000000
+            ? `${(n / 1000000).toFixed(n >= 10000000 ? 0 : 1).replace(/\.0$/, '')}M`
+            : n >= 1000
+              ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, '')}K`
+              : `${n}`;
 
         const contextWindow = ctx.model?.contextWindow ?? contextUsage?.total ?? 0;
-        const percentDisplay = percent !== null ? `${percent.toFixed(1)}%` : '0%';
-        statsParts.push(`${percentDisplay}/${fmtContext(contextWindow)}`);
+        const contextDisplay = contextWindow > 0
+          ? `${fmtContext(usedTokens)}/${fmtContext(contextWindow)}`
+          : 'N/A';
+        statsParts.push(contextDisplay);
         statsParts.push(`$${totalCost.toFixed(2)}`);
 
         // Model name with thinking level: "big-pickle(medium)" or "big-pickle"
         const modelName = ctx.model?.id || "no-model";
         const displayModel = currentThinkingLevel && currentThinkingLevel !== "off"
-            ? `${modelName} (${currentThinkingLevel})`
-            : modelName;
+          ? `${modelName} (${currentThinkingLevel})`
+          : modelName;
 
         // --- Build line: model (left)  stats (right) ---
         const statsLine = statsParts.join(" | ");
@@ -91,8 +83,8 @@ function applyCustomFooter(ctx: ExtensionContext) {
         const extensionStatuses = footerData.getExtensionStatuses();
         if (extensionStatuses.size > 0) {
           const sorted = Array.from(extensionStatuses.entries())
-              .sort(([a], [b]) => a.localeCompare(b))
-              .map(([, text]) => text.replace(/[\r\n\t]/g, " ").replace(/ +/g, " ").trim());
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([, text]) => text.replace(/[\r\n\t]/g, " ").replace(/ +/g, " ").trim());
           const statusLine = sorted.join(" | ");
           lines.push(truncateToWidth(theme.fg("dim", statusLine), width, "..."));
         }

@@ -28,7 +28,7 @@ fmt_context() {
 now=$(date +%s)
 model=$(echo "$input" | jq -r '.model.display_name // "no-model"')
 total_ctx=$(echo "$input" | jq -r '.context_window.context_window_size // 0')
-pct_int=$(echo "$input" | jq -r '.context_window.used_percentage // 0')
+used_tokens=$(echo "$input" | jq -r '.context_window.total_input_tokens // 0')
 five_hour_raw=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
 seven_day_raw=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
 five_reset_ts=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
@@ -71,11 +71,12 @@ seven_day=$([ -n "$seven_day_raw" ] && printf "%.0f%%%s" "$seven_day_raw" "$seve
 
 # Format context window
 ctx_fmt=$(fmt_context "$total_ctx")
+used_fmt=$(fmt_context "$used_tokens")
 
-# Output: model | percent%/context size | 5h: X% | 7d: X%
+# Output: model | used/total | 5h: X% | 7d: X%
 usage_part="${five_hour} | ${seven_day}"
-if [ "$pct_int" -eq 0 ]; then
-  printf "%s | N/A/%s | %s\n" "$model" "$ctx_fmt" "$usage_part"
+if [ "$used_tokens" -eq 0 ]; then
+  printf "%s | N/A | %s\n" "$model" "$usage_part"
 else
-  printf "%s | %d%%/%s | %s\n" "$model" "$pct_int" "$ctx_fmt" "$usage_part"
+  printf "%s | %s/%s | %s\n" "$model" "$used_fmt" "$ctx_fmt" "$usage_part"
 fi
