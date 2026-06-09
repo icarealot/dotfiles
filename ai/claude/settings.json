@@ -1,13 +1,4 @@
 {
-  "env": {
-    "ENABLE_CLAUDEAI_MCP_SERVERS": "false"
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "sh /Users/[your-folder]/.claude/statusline-command.sh"
-  },
-  "advisorModel": "opus",
-  "skipDangerousModePermissionPrompt": true,
   "hooks": {
     "Stop": [
       {
@@ -19,5 +10,11 @@
         ]
       }
     ]
-  }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "sh /Users/[your-folder]/.claude/statusline-command.sh"
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark-daltonized"
 }

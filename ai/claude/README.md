@@ -4,8 +4,8 @@ Config for [Claude Code](https://github.com/anthropics/claude-code).
 
 | File | Description |
 |---|---|
-| `settings.json` | Global settings: custom status line, advisor model, dangerous-mode prompt skip, and a Stop hook that sends a native notification when waiting for input |
-| `statusline-command.sh` | Status line script that outputs pipe-separated stats: model name, context % / window size, 5h rate limit %, 7d rate limit % (with reset countdowns) |
+| `settings.json` | Global settings: custom status line, theme, dangerous-mode prompt skip, and a Stop hook that sends a native notification when waiting for input |
+| `statusline-command.sh` | Status line script that outputs pipe-separated stats: model name, used tokens / window size, 5h rate limit %, 7d rate limit % (with reset countdowns) |
 
 ## Prerequisites
 
