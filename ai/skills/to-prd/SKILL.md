@@ -16,7 +16,6 @@ If the feature involves an existing codebase, explore it to understand what's al
 Synthesize what you know into a brief outline:
 - The core problem being solved (1-2 sentences)
 - The proposed solution (1-2 sentences)
-- The key user stories (5-8, representative — not exhaustive yet)
 - Initial thoughts on what's out of scope
 
 Present this to the user and ask: "Does this capture what you're after? Anything missing or off?" Then wait for confirmation before writing the full PRD.
@@ -34,17 +33,6 @@ The problem the user is facing, from the user's perspective.
 ## Solution
 
 The solution to the problem, from the user's perspective.
-
-## User Stories
-
-A long, numbered list of user stories covering all aspects of the feature. Format:
-
-1. As a <actor>, I want <feature>, so that <benefit>
-
-Example:
-1. As a player, I want my character's health bar to visibly decrease when I take damage, so that I can make tactical decisions during combat.
-
-Be exhaustive — cover main flows, edge cases, error states, and admin/operator needs.
 
 ## Implementation Decisions
 

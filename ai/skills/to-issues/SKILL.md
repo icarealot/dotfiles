@@ -36,7 +36,6 @@ Present the proposed breakdown as a numbered list. For each slice, show:
 - **Title**: short descriptive name
 - **Type**: HITL / AFK
 - **Blocked by**: which other slices (if any) must complete first
-- **User stories covered**: which user stories this addresses (if the source material has them)
 - **How to test**: the key manual verification steps for this slice
 
 Ask the user:
@@ -61,11 +60,6 @@ Create issues in dependency order (blockers first) so you can reference real iss
 ## Parent PRD
 
 Link to the prd
-
-## User stories covered
-
-- Story 1
-- Story 2
 
 ## What to build
 
