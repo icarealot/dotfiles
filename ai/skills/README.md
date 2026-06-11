@@ -10,6 +10,7 @@ Reusable AI agent skills.
 | `to-prd` | Turns the current conversation context into a PRD |
 | `to-issues` | Breaks a plan, spec, or PRD into independently-grabbable tracer-bullet vertical slice issues |
 | `implement` | Guides end-to-end development of vertical slice / tracer bullet issues |
+| `review` | Reviews implementation against its issue and PRD; flags spec gaps and simplification opportunities |
 
 ## Install
 
@@ -27,6 +28,7 @@ ln -sfn "$PWD/ai/skills/discuss"                 ~/.claude/skills/discuss
 ln -sfn "$PWD/ai/skills/implement"               ~/.claude/skills/implement
 ln -sfn "$PWD/ai/skills/to-issues"               ~/.claude/skills/to-issues
 ln -sfn "$PWD/ai/skills/to-prd"                  ~/.claude/skills/to-prd
+ln -sfn "$PWD/ai/skills/review"                  ~/.claude/skills/review
 ```
 
 ```bash
@@ -38,6 +40,7 @@ cmd /c "mklink /D %USERPROFILE%\.claude\skills\discuss                  %CD%\ai\
 cmd /c "mklink /D %USERPROFILE%\.claude\skills\implement                %CD%\ai\skills\implement"
 cmd /c "mklink /D %USERPROFILE%\.claude\skills\to-issues                %CD%\ai\skills\to-issues"
 cmd /c "mklink /D %USERPROFILE%\.claude\skills\to-prd                   %CD%\ai\skills\to-prd"
+cmd /c "mklink /D %USERPROFILE%\.claude\skills\review                   %CD%\ai\skills\review"
 ```
 
 </details>
@@ -54,6 +57,7 @@ ln -sfn "$PWD/ai/skills/discuss"                 ~/.pi/agent/skills/discuss
 ln -sfn "$PWD/ai/skills/implement"               ~/.pi/agent/skills/implement
 ln -sfn "$PWD/ai/skills/to-issues"               ~/.pi/agent/skills/to-issues
 ln -sfn "$PWD/ai/skills/to-prd"                  ~/.pi/agent/skills/to-prd
+ln -sfn "$PWD/ai/skills/review"                  ~/.pi/agent/skills/review
 ```
 
 ```bash
@@ -65,6 +69,7 @@ cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\discuss                  %CD%\a
 cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\implement                %CD%\ai\skills\implement"
 cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\to-issues                %CD%\ai\skills\to-issues"
 cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\to-prd                   %CD%\ai\skills\to-prd"
+cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\review                   %CD%\ai\skills\review"
 ```
 
 </details>
