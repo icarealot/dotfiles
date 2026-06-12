@@ -5,6 +5,13 @@ import { truncateToWidth, visibleWidth } from "@mariozechner/pi-tui";
 // Track thinking level manually since ctx.getThinkingLevel() may not be available
 let currentThinkingLevel = "off";
 
+// Module-level render trigger for session updates
+let requestRender: (() => void) | null = null;
+
+function triggerRender() {
+  requestRender?.();
+}
+
 export default function (pi: ExtensionAPI) {
   // Auto-enable on session start
   pi.on("session_start", async (_event, ctx) => {
@@ -16,17 +23,37 @@ export default function (pi: ExtensionAPI) {
   pi.on("thinking_level_select", async (event) => {
     currentThinkingLevel = event.level;
   });
+
+  // Trigger footer re-render on session changes
+  pi.on("agent_end", async () => {
+    triggerRender();
+  });
+
+  pi.on("message_end", async (event) => {
+    // Only for assistant messages (new tokens added)
+    if (event.message.role === "assistant") {
+      triggerRender();
+    }
+  });
 }
 
 function applyCustomFooter(ctx: ExtensionContext) {
-  ctx.ui.setFooter((_tui, theme, footerData) => {
+  ctx.ui.setFooter((tui, theme, footerData) => {
+    // Register render trigger
+    requestRender = () => tui.requestRender();
+
     return {
-      invalidate() { },
-      dispose() { },
+      invalidate() {
+        // Trigger re-render on next frame
+        tui.requestRender();
+      },
+      dispose() {
+        requestRender = null;
+      },
       render(width: number): string[] {
-        // --- Compute total cost ---
+        // --- Compute total cost from ALL entries (handles compaction correctly) ---
         let totalCost = 0;
-        for (const entry of ctx.sessionManager.getBranch()) {
+        for (const entry of ctx.sessionManager.getEntries()) {
           if (entry.type === "message" && entry.message.role === "assistant") {
             const m = entry.message as AssistantMessage;
             totalCost += m.usage.cost.total;
@@ -36,23 +63,29 @@ function applyCustomFooter(ctx: ExtensionContext) {
         // Build stats parts
         const statsParts: string[] = [];
 
-        // Context usage + total cost
+        // Context usage
         const contextUsage = ctx.getContextUsage();
-        const usedTokens = contextUsage?.used ?? 0;
+        const contextWindow = contextUsage?.contextWindow ?? ctx.model?.contextWindow ?? 0;
+        const contextPercent = contextUsage?.percent;
 
-        // Format context window size (e.g., 200k, 1M)
-        const fmtContext = (n: number) =>
-          n >= 1000000
-            ? `${(n / 1000000).toFixed(n >= 10000000 ? 0 : 1).replace(/\.0$/, '')}M`
-            : n >= 1000
-              ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, '')}K`
-              : `${n}`;
+        // Format token counts for compact display
+        const fmtTokens = (n: number) =>
+          n < 1000
+            ? `${n}`
+            : n < 10000
+              ? `${(n / 1000).toFixed(1)}k`
+              : n < 1000000
+                ? `${Math.round(n / 1000)}k`
+                : `${(n / 1000000).toFixed(n >= 10000000 ? 0 : 1)}M`;
 
-        const contextWindow = ctx.model?.contextWindow ?? contextUsage?.total ?? 0;
-        const contextDisplay = contextWindow > 0
-          ? `${fmtContext(usedTokens)}/${fmtContext(contextWindow)}`
-          : 'N/A';
+        // Show context usage (tokens/limit)
+        const contextTokens = contextUsage?.tokens ?? null;
+        const contextDisplay = contextTokens !== null
+          ? `${fmtTokens(contextTokens)}/${fmtTokens(contextWindow)}`
+          : `?/${fmtTokens(contextWindow)}`;
         statsParts.push(contextDisplay);
+
+        // Show cost (always show, even $0.000 at start)
         statsParts.push(`$${totalCost.toFixed(2)}`);
 
         // Model name with thinking level: "big-pickle(medium)" or "big-pickle"
