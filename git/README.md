@@ -2,7 +2,7 @@
 
 | File | Description |
 |------|-------------|
-| `.gitconfig` | Git config with a `dog` alias — compact, decorated log graph showing hash, branch/tag names, date, subject, and author across all branches. |
+| `.gitconfig` | Git aliases for everyday operations. |
 | `.gitignore-unity` | `.gitignore` template for Unity projects covering generated files, build artifacts, IDE configs, and OS artifacts. |
 
 ## Prerequisites
