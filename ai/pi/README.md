@@ -6,7 +6,6 @@ Extensions for the [Pi coding agent](https://github.com/earendil-works/pi-coding
 |---|---|
 | `custom-footer.ts` | Replaces the built-in footer with pipe-separated stats: context % / window size, session cost, model name, and thinking level |
 | `notify.ts` | Sends a native Windows toast notification when the agent finishes and is waiting for input |
-| `usage.ts` | Adds a `/usage` command that shows an interactive dashboard of token/cost stats grouped by provider, filterable by Today / This Week / Last Week / All Time |
 
 ## Prerequisites
 
@@ -22,7 +21,6 @@ cd to repo root.
 mkdir -p ~/.pi/agent/extensions
 ln -sfn "$PWD/ai/pi/custom-footer.ts" ~/.pi/agent/extensions/custom-footer.ts
 ln -sfn "$PWD/ai/pi/notify.ts"        ~/.pi/agent/extensions/notify.ts
-ln -sfn "$PWD/ai/pi/usage.ts"         ~/.pi/agent/extensions/usage.ts
 ```
 
 ```bash
@@ -30,5 +28,4 @@ ln -sfn "$PWD/ai/pi/usage.ts"         ~/.pi/agent/extensions/usage.ts
 mkdir -p %USERPROFILE%\.pi\agent\extensions
 cmd /c "mklink %USERPROFILE%\.pi\agent\extensions\custom-footer.ts %CD%\ai\pi\custom-footer.ts"
 cmd /c "mklink %USERPROFILE%\.pi\agent\extensions\notify.ts %CD%\ai\pi\notify.ts"
-cmd /c "mklink %USERPROFILE%\.pi\agent\extensions\usage.ts %CD%\ai\pi\usage.ts"
 ```
