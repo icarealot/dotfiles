@@ -11,6 +11,7 @@ Reusable AI agent skills.
 | `to-issues` | Breaks a plan, spec, or PRD into independently-grabbable tracer-bullet vertical slice issues |
 | `implement` | Guides end-to-end development of vertical slice / tracer bullet issues |
 | `review` | Reviews implementation against its issue and PRD; flags spec gaps and simplification opportunities |
+| `context7` | Fetches up-to-date library docs for AI agents via the `ctx7` CLI |
 
 ## Install
 
@@ -73,3 +74,10 @@ cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\review                   %CD%\a
 ```
 
 </details>
+
+### Third-Party Skills
+
+```bash
+npm install -g ctx7
+ctx7 setup
+```
