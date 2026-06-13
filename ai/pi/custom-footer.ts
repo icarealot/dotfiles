@@ -5,6 +5,9 @@ import { truncateToWidth, visibleWidth } from "@mariozechner/pi-tui";
 // Track thinking level manually since ctx.getThinkingLevel() may not be available
 let currentThinkingLevel = "off";
 
+// Track permission mode from permissions extension
+let currentPermissionMode: string | null = null;
+
 // Module-level render trigger for session updates
 let requestRender: (() => void) | null = null;
 
@@ -16,12 +19,19 @@ export default function (pi: ExtensionAPI) {
   // Auto-enable on session start
   pi.on("session_start", async (_event, ctx) => {
     currentThinkingLevel = pi.getThinkingLevel?.() ?? "off";
+    currentPermissionMode = null; // Reset, only show if permission extension sets it
     applyCustomFooter(ctx);
   });
 
   // Track thinking level changes
   pi.on("thinking_level_select", async (event) => {
     currentThinkingLevel = event.level;
+  });
+
+  // Track permission mode changes
+  pi.events.on("mode:change", (mode) => {
+    currentPermissionMode = mode as string;
+    triggerRender();
   });
 
   // Trigger footer re-render on session changes
@@ -66,7 +76,6 @@ function applyCustomFooter(ctx: ExtensionContext) {
         // Context usage
         const contextUsage = ctx.getContextUsage();
         const contextWindow = contextUsage?.contextWindow ?? ctx.model?.contextWindow ?? 0;
-        const contextPercent = contextUsage?.percent;
 
         // Format token counts for compact display
         const fmtTokens = (n: number) =>
@@ -90,18 +99,21 @@ function applyCustomFooter(ctx: ExtensionContext) {
 
         // Model name with thinking level: "big-pickle(medium)" or "big-pickle"
         const modelName = ctx.model?.id || "no-model";
-        const displayModel = currentThinkingLevel && currentThinkingLevel !== "off"
-          ? `${modelName} (${currentThinkingLevel})`
-          : modelName;
+        let displayModel = modelName;
+        if (currentThinkingLevel && currentThinkingLevel !== "off") {
+          displayModel += ` (${currentThinkingLevel})`;
+        }
+        // Mode suffix (default terminal color, right after model)
+        const modeSuffix = currentPermissionMode ? ` | ${currentPermissionMode}` : "";
 
         // --- Build line: model (left)  stats (right) ---
         const statsLine = statsParts.join(" | ");
         const statsWidth = visibleWidth(statsLine);
-        const modelWidth = visibleWidth(displayModel);
+        const modelWidth = visibleWidth(displayModel) + visibleWidth(modeSuffix);
 
         let line: string;
         if (statsWidth + modelWidth <= width) {
-          line = theme.fg("accent", displayModel) + " | " + statsLine;
+          line = theme.fg("accent", displayModel) + modeSuffix + " | " + statsLine;
         } else {
           line = statsLine;
         }
@@ -110,7 +122,7 @@ function applyCustomFooter(ctx: ExtensionContext) {
         const lines: string[] = [];
 
         // Line 1: stats + model (right-aligned)
-        lines.push(theme.fg("dim", line));
+        lines.push(statsWidth + modelWidth <= width ? line : theme.fg("dim", line));
 
         // Line 2: extension statuses with | separator
         const extensionStatuses = footerData.getExtensionStatuses();
