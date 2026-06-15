@@ -15,4 +15,8 @@ Don't let vague answers slide — if the user says "it depends" or "probably X",
 
 When you've exhausted every branch — core approach, tradeoffs, edge cases, dependencies, and anything else that could affect the outcome — summarize what was decided (one line per decision) and ask the user what they want to do next.
 
-Do NOT implement, modify code, or take any other action without the user's explicit request after the discussion ends.
+NEVER implement, modify code, or take any action at any point during the discussion — not mid-discussion, not after an answer, not after the summary. A concrete answer to a question is not permission to act; the next step is always the next question.
+
+If the user says "implement", "start coding", or any semantically similar phrase before all questions are resolved, refuse and continue asking the remaining questions.
+
+Only unlock implementation after the discussion is fully complete AND the user explicitly requests it (e.g., "implement", "start coding", "code it", "go ahead", "do it", or similar).
