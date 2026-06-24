@@ -7,9 +7,9 @@ description: Generates a formatted build note entry and prepends it to a platfor
 
 ## Workflow
 
-**1. Ask platform** — prompt: `"Which platform? (Android / iOS)"`
+**1. Ask platform** — prompt: `"Which platform? (Android / iOS / All)"`
 
-Derive the target file from the answer: `docs/build-notes-android.md` or `docs/build-notes-ios.md`.
+Derive the target file from the answer: `docs/build-notes-android.md` or `docs/build-notes-ios.md`. For "All", see the **All mode** section below.
 
 **2. Determine commit range**
 
@@ -52,6 +52,19 @@ Feed raw commits with this instruction:
 Show the full entry. On approval, prepend to the platform file with a blank line before existing content. If not approved, ask what to change, adjust, and re-preview.
 
 **Never write to the build notes file without explicit user approval.**
+
+## All mode
+
+When the user selects "All", run steps 2–6 independently for Android and iOS with these differences:
+
+**Commit range (step 2):** Derive `range_start` separately from each platform's file. If one platform has no new commits, print `"No new commits for <Platform> since last build note."` and skip it — continue with the remaining platform. If both are empty, exit.
+
+**Project settings (step 3):** `VERSION` (`bundleVersion`) is a single shared value — read it once. `BUILD_NUMBER` and `DEFINES` are still read per-platform.
+
+**Preview (step 6):** Show both entries together in one message. Then:
+- The user can approve each platform independently or request edits to a specific platform.
+- On a per-platform edit request, revise only that platform's entry and re-preview only that platform.
+- Write each platform's entry (prepend with a blank line before existing content, same as single-platform) immediately upon its approval — do not wait for the other platform.
 
 ## Entry format example
 
