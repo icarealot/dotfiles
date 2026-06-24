@@ -47,8 +47,6 @@ type(scope): description
 3. If no tracking remote, default to `origin`
 4. If `origin` does not exist and there are multiple remotes, list them and ask the user to pick one
 
-Always show the exact command before running it — e.g. `git push -u origin main` for a first push, or `git push origin main` if tracking is already set.
-
 Never push tags — branch commits only.
 
 ## Happy path
