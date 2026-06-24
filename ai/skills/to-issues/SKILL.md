@@ -49,7 +49,7 @@ Iterate until the user approves the breakdown.
 
 ### 5. Create the issues
 
-For each approved slice, write an issue and save it to `docs/prd/<folder-contain-prd>/issues/ISSUE_<N>.md` — the same `docs/` directory that `to-prd` used for the PRD. Use the issue body template below.
+For each approved slice, write an issue and save it to `docs/<folder-contain-prd>/issues/ISSUE_<N>.md` — the same `docs/` directory that `to-prd` used for the PRD. Use the issue body template below.
 
 **Issue number format:** use sequential integers starting from 1 without zero-padding — `ISSUE_1`, `ISSUE_2`, `ISSUE_3`, etc. (not `ISSUE_001`, `ISSUE_01`).
 

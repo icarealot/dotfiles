@@ -22,7 +22,7 @@ Present this to the user and ask: "Does this capture what you're after? Anything
 
 ### Step 3: Write the PRD
 
-Write the PRD using the template below and save it to `docs/prd/<concise-description-of-prd>/<PRD>.md`.
+Write the PRD using the template below and save it to `docs/<concise-description-of-prd>/<PRD>.md`.
 
 <prd-template>
 
