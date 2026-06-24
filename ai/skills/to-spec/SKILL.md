@@ -1,9 +1,9 @@
 ---
-name: to-prd
-description: Turn the current conversation into a PRD. Use when the user wants to formalize a feature discussion — even if they say "spec", "document this", or "capture requirements" instead of "PRD".
+name: to-spec
+description: Turn the current conversation into a spec. Use when the user wants to formalize a feature discussion — even if they say "PRD", "document this", or "capture requirements" instead of "spec".
 ---
 
-This skill synthesizes the current conversation into a PRD. Do NOT interview the user — extract everything you need from what's already been discussed. A PRD captures *what* the product should do and *why*; implementation detail belongs in the Implementation Decisions section, not scattered throughout.
+This skill synthesizes the current conversation into a spec. Do NOT interview the user — extract everything you need from what's already been discussed. A spec captures *what* the product should do and *why*; implementation detail belongs in the Implementation Decisions section, not scattered throughout.
 
 ## Process
 
@@ -18,13 +18,13 @@ Synthesize what you know into a brief outline:
 - The proposed solution (1-2 sentences)
 - Initial thoughts on what's out of scope
 
-Present this to the user and ask: "Does this capture what you're after? Anything missing or off?" Then wait for confirmation before writing the full PRD.
+Present this to the user and ask: "Does this capture what you're after? Anything missing or off?" Then wait for confirmation before writing the full spec.
 
-### Step 3: Write the PRD
+### Step 3: Write the spec
 
-Write the PRD using the template below and save it to `docs/<concise-description-of-prd>/<PRD>.md`.
+Write the spec using the template below and save it to `docs/<feature-name>/SPEC.md`.
 
-<prd-template>
+<spec-template>
 
 ## Problem Statement
 
@@ -56,10 +56,10 @@ NEVER include specific file paths or code snippets — they go stale quickly.
 
 ## Out of Scope
 
-What this PRD explicitly does not cover.
+What this spec explicitly does not cover.
 
 ## Further Notes
 
 Any additional context, open questions, or future considerations.
 
-</prd-template>
+</spec-template>

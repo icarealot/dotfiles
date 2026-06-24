@@ -7,8 +7,8 @@ Reusable AI agent skills.
 | `commit` | Proposes and creates conventional commits by analyzing git diffs |
 | `create-unity-build-note` | Generates a formatted build note entry for a Unity project's `docs/build-notes.md` from version info and recent commits |
 | `discuss` | Relentlessly discusses a plan or design until reaching shared understanding, resolving each branch of the decision tree |
-| `to-prd` | Turns the current conversation context into a PRD |
-| `to-issues` | Breaks a plan, spec, or PRD into independently-grabbable tracer-bullet vertical slice issues |
+| `to-spec` | Turns the current conversation context into a spec |
+| `to-tasks` | Breaks a plan, spec, or PRD into independently-grabbable tracer-bullet vertical slice tasks |
 | `implement` | Guides end-to-end development of vertical slice / tracer bullet issues |
 | `review` | Reviews implementation against its issue and PRD; flags spec gaps and simplification opportunities |
 | `context7` | Fetches up-to-date library docs for AI agents via the `ctx7` CLI |
@@ -27,8 +27,8 @@ ln -sfn "$PWD/ai/skills/commit"           ~/.claude/skills/commit
 ln -sfn "$PWD/ai/skills/create-unity-build-note" ~/.claude/skills/create-unity-build-note
 ln -sfn "$PWD/ai/skills/discuss"                 ~/.claude/skills/discuss
 ln -sfn "$PWD/ai/skills/implement"               ~/.claude/skills/implement
-ln -sfn "$PWD/ai/skills/to-issues"               ~/.claude/skills/to-issues
-ln -sfn "$PWD/ai/skills/to-prd"                  ~/.claude/skills/to-prd
+ln -sfn "$PWD/ai/skills/to-tasks"               ~/.claude/skills/to-tasks
+ln -sfn "$PWD/ai/skills/to-spec"                  ~/.claude/skills/to-spec
 ln -sfn "$PWD/ai/skills/review"                  ~/.claude/skills/review
 ```
 
@@ -39,8 +39,8 @@ cmd /c "mklink /D %USERPROFILE%\.claude\skills\commit            %CD%\ai\skills\
 cmd /c "mklink /D %USERPROFILE%\.claude\skills\create-unity-build-note  %CD%\ai\skills\create-unity-build-note"
 cmd /c "mklink /D %USERPROFILE%\.claude\skills\discuss                  %CD%\ai\skills\discuss"
 cmd /c "mklink /D %USERPROFILE%\.claude\skills\implement                %CD%\ai\skills\implement"
-cmd /c "mklink /D %USERPROFILE%\.claude\skills\to-issues                %CD%\ai\skills\to-issues"
-cmd /c "mklink /D %USERPROFILE%\.claude\skills\to-prd                   %CD%\ai\skills\to-prd"
+cmd /c "mklink /D %USERPROFILE%\.claude\skills\to-tasks                %CD%\ai\skills\to-tasks"
+cmd /c "mklink /D %USERPROFILE%\.claude\skills\to-spec                   %CD%\ai\skills\to-spec"
 cmd /c "mklink /D %USERPROFILE%\.claude\skills\review                   %CD%\ai\skills\review"
 ```
 
@@ -56,8 +56,8 @@ ln -sfn "$PWD/ai/skills/commit"           ~/.pi/agent/skills/commit
 ln -sfn "$PWD/ai/skills/create-unity-build-note" ~/.pi/agent/skills/create-unity-build-note
 ln -sfn "$PWD/ai/skills/discuss"                 ~/.pi/agent/skills/discuss
 ln -sfn "$PWD/ai/skills/implement"               ~/.pi/agent/skills/implement
-ln -sfn "$PWD/ai/skills/to-issues"               ~/.pi/agent/skills/to-issues
-ln -sfn "$PWD/ai/skills/to-prd"                  ~/.pi/agent/skills/to-prd
+ln -sfn "$PWD/ai/skills/to-tasks"               ~/.pi/agent/skills/to-tasks
+ln -sfn "$PWD/ai/skills/to-spec"                  ~/.pi/agent/skills/to-spec
 ln -sfn "$PWD/ai/skills/review"                  ~/.pi/agent/skills/review
 ```
 
@@ -68,8 +68,8 @@ cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\commit            %CD%\ai\skill
 cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\create-unity-build-note  %CD%\ai\skills\create-unity-build-note"
 cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\discuss                  %CD%\ai\skills\discuss"
 cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\implement                %CD%\ai\skills\implement"
-cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\to-issues                %CD%\ai\skills\to-issues"
-cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\to-prd                   %CD%\ai\skills\to-prd"
+cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\to-tasks                %CD%\ai\skills\to-tasks"
+cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\to-spec                   %CD%\ai\skills\to-spec"
 cmd /c "mklink /D %USERPROFILE%\.pi\agent\skills\review                   %CD%\ai\skills\review"
 ```
 

@@ -1,11 +1,11 @@
 ---
-name: to-issues
-description: Break a plan, spec, or PRD into independently-grabbable issues using tracer-bullet vertical slices. Use when user wants to convert a plan into issues, or break down work into issues.
+name: to-tasks
+description: Break a plan, spec, or PRD into independently-grabbable tasks using tracer-bullet vertical slices. Use when user wants to convert a plan into tasks, or break down work into tasks.
 ---
 
-# To Issues
+# To Tasks
 
-Break a plan into independently-grabbable issues using vertical slices (tracer bullets).
+Break a plan into independently-grabbable tasks using vertical slices (tracer bullets).
 
 ## Process
 
@@ -19,7 +19,7 @@ If the plan targets an existing codebase, explore it to understand what's alread
 
 ### 3. Draft vertical slices
 
-Break the plan into **tracer bullet** issues. Each issue is a thin vertical slice that cuts through ALL integration layers end-to-end, NOT a horizontal slice of one layer.
+Break the plan into **tracer bullet** tasks. Each task is a thin vertical slice that cuts through ALL integration layers end-to-end, NOT a horizontal slice of one layer.
 
 Slices may be 'HITL' or 'AFK'. HITL slices require human interaction, such as an architectural decision or a design review. AFK slices can be implemented and merged without human interaction. Prefer AFK over HITL where possible.
 
@@ -47,19 +47,19 @@ Ask the user:
 
 Iterate until the user approves the breakdown.
 
-### 5. Create the issues
+### 5. Create the tasks
 
-For each approved slice, write an issue and save it to `docs/<folder-contain-prd>/issues/ISSUE_<N>.md` — the same `docs/` directory that `to-prd` used for the PRD. Use the issue body template below.
+For each approved slice, write a task and save it to `docs/<feature-name>/tasks/TASK_<N>.md` — the same `docs/` directory that `to-spec` used for the spec. Use the task body template below.
 
-**Issue number format:** use sequential integers starting from 1 without zero-padding — `ISSUE_1`, `ISSUE_2`, `ISSUE_3`, etc. (not `ISSUE_001`, `ISSUE_01`).
+**Task number format:** use sequential integers starting from 1 without zero-padding — `TASK_1`, `TASK_2`, `TASK_3`, etc. (not `TASK_001`, `TASK_01`).
 
-Create issues in dependency order (blockers first) so you can reference real issue numbers in the "Blocked by" field.
+Create tasks in dependency order (blockers first) so you can reference real task numbers in the "Blocked by" field.
 
-<issue-template>
+<task-template>
 
-## Parent PRD
+## Parent Spec
 
-Link to the prd
+Link to the spec
 
 ## What to build
 
@@ -82,8 +82,8 @@ Describe the manual testing steps to verify this slice works correctly:
 
 ## Blocked by
 
-- Blocked by [ISSUE_<N>](./ISSUE_<N>.md) (if any)
+- Blocked by [TASK_<N>](./TASK_<N>.md) (if any)
 
 Or "None - can start immediately" if no blockers.
 
-</issue-template>
+</task-template>
