@@ -1,6 +1,7 @@
 ---
 name: commit
 description: Propose and create conventional commits, then optionally push with full error handling. Trigger on "commit", "push", "create a commit", or any request to save or publish changes.
+disable-model-invocation: true
 ---
 
 # Workflow

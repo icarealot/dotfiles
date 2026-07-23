@@ -1,6 +1,7 @@
 ---
 name: review
 description: Review implementation against its issue and PRD. Use when the user says "review", "check my implementation", "does this match the spec", or wants to verify changes align with requirements.
+disable-model-invocation: true
 ---
 
 # Review

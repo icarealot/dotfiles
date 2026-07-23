@@ -1,6 +1,7 @@
 ---
 name: implement
 description: Implement vertical slice tasks, guiding end-to-end development of tracer bullet slices. Use when user mentions implementing a task, working on a task, or wants to start development on a specific task.
+disable-model-invocation: true
 ---
 
 # Implement

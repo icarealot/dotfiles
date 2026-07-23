@@ -1,6 +1,7 @@
 ---
 name: discuss
 description: Exhaustively drills into plans one question at a time, resolving every decision before moving on. Use when the user wants to stress-test an idea, think through tradeoffs, or challenge assumptions; or says "discuss", "walk me through", "what are the tradeoffs", or "help me figure out"; or presents a plan and seems uncertain.
+disable-model-invocation: true
 ---
 
 Discuss every branch of this decision tree until every question is resolved. Walk down each branch, resolving dependencies between decisions one-by-one. For each question, provide your recommended answer with brief reasoning.

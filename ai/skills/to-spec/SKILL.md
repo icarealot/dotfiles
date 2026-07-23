@@ -1,6 +1,7 @@
 ---
 name: to-spec
 description: Turn the current conversation into a spec. Use when the user wants to formalize a feature discussion — even if they say "PRD", "document this", or "capture requirements" instead of "spec".
+disable-model-invocation: true
 ---
 
 This skill synthesizes the current conversation into a spec. Do NOT interview the user — extract everything you need from what's already been discussed. A spec captures *what* the product should do and *why*; implementation detail belongs in the Implementation Decisions section, not scattered throughout.
