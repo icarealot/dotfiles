@@ -1,7 +1,6 @@
 ---
 name: create-unity-build-note
 description: Generates a formatted build note entry and prepends it to a platform-specific file in a Unity project. Use when documenting a new build, creating release notes, updating build notes, or generating a Unity build changelog.
-disable-model-invocation: true
 ---
 
 # Create Unity Build Note

@@ -1,66 +1,86 @@
 ---
 name: to-spec
-description: Turn the current conversation into a spec. Use when the user wants to formalize a feature discussion — even if they say "PRD", "document this", or "capture requirements" instead of "spec".
-disable-model-invocation: true
+description: Turn a Unity game feature discussion into a human-approved spec covering player behavior, Unity architecture, protected assets, and EditMode, PlayMode, build, and playtest validation.
 ---
 
-This skill synthesizes the current conversation into a spec. Do NOT interview the user — extract everything you need from what's already been discussed. A spec captures *what* the product should do and *why*; implementation detail belongs in the Implementation Decisions section, not scattered throughout.
+Synthesize the current Unity game feature discussion and codebase understanding into a spec (also known as a PRD). Do not restart discovery or conduct an open-ended interview; use what is already known and ask only for approval or correction at the checkpoint below.
+
 
 ## Process
 
-### Step 1: Gather context
+1. Confirm the repository is a Unity project with `Assets/` and `ProjectSettings/ProjectVersion.txt`. If it is not, stop and report that this skill is Unity-specific.
 
-If the feature involves an existing codebase, explore it to understand what's already there and what needs to change. If it's a greenfield project with no existing code, skip this.
+Explore the project to understand its Unity version, packages, assembly boundaries, scenes, prefabs, ScriptableObjects, tests, build targets, domain glossary, and relevant ADRs.
 
-### Step 2: Confirm scope
+2. Sketch the EditMode, PlayMode, player-build, and human-playtest seams that apply. Prefer existing seams and avoid duplicate coverage.
 
-Synthesize what you know into a brief outline:
-- The core problem being solved (1-2 sentences)
-- The proposed solution (1-2 sentences)
-- Initial thoughts on what's out of scope
+Use EditMode for deterministic code that does not require a running scene, PlayMode for Unity lifecycle or engine integration, player-build smoke tests for platform-sensitive behavior, and human playtests for feel, visuals, audio, and usability.
 
-Present this to the user and ask: "Does this capture what you're after? Anything missing or off?" Then wait for confirmation before writing the full spec.
+Present the synthesized behavior, scope, test seams, and any protected Unity changes to the user. Wait for approval or correction before writing the spec.
 
-### Step 3: Write the spec
-
-Write the spec using the template below and save it to `docs/<feature-name>/SPEC.md`.
+3. Write the spec using the template below and save it to `docs/<feature-name>/SPEC.md`.
 
 <spec-template>
 
 ## Problem Statement
 
-The problem the user is facing, from the user's perspective.
+The problem that the user is facing, from the user's perspective.
 
 ## Solution
 
 The solution to the problem, from the user's perspective.
 
+## User Stories
+
+A numbered list containing the smallest complete set of user stories. Each user story should be in the format:
+
+1. As an <actor>, I want a <feature>, so that <benefit>
+
+<user-story-example>
+1. As a player, I want an aiming indicator before releasing an ability, so that I can judge its direction and range
+</user-story-example>
+
+Cover meaningful behavior and edge cases without creating repetitive stories for their own sake.
+
+## Unity Context
+
+- Unity Editor version and relevant packages with their versions
+- Target platforms and input methods
+- Player-visible behavior
+- Logical scenes, prefabs, ScriptableObjects, and systems affected
+- Exact non-code files or narrowly defined file groups that would require implementation approval
+- Performance and memory constraints
+- Save-data and backward-compatibility impact
+
 ## Implementation Decisions
 
-Decisions that constrain how this will be built. Include:
+A list of implementation decisions that were made. This can include:
 
-- The modules or components that will be built or modified
-- Interface changes
-- Architectural decisions and tradeoffs
-- Schema changes
-- API contracts
-- Specific interaction patterns
+- Gameplay systems and Unity components that will change
+- Public C# interfaces and existing assembly boundaries involved
+- Scene, prefab, ScriptableObject, and serialization interactions
+- Input, lifecycle, save-data, platform-service, and build-target decisions
+- Performance or memory constraints
+- Technical clarifications and architectural decisions
 
-NEVER include specific file paths or code snippets — they go stale quickly.
+Do NOT include specific file paths or code snippets. They may end up being outdated very quickly.
 
 ## Testing Decisions
 
-- What makes a good manual test for this feature (focus on user workflows, edge cases, and real-world scenarios)
-- Which modules or features warrant dedicated manual tests
-- Critical test scenarios and edge cases to cover
-- Any existing test procedures in the project that apply
+A list of testing decisions that were made. Include:
+
+- A description of what makes a good test (only test external behavior, not implementation details)
+- Which gameplay systems and Unity boundaries will be tested
+- Which checks belong in EditMode, PlayMode, a player build, or a human playtest
+- Prior Unity Test Framework patterns already used by the project
+- Exact behavior the human must verify
 
 ## Out of Scope
 
-What this spec explicitly does not cover.
+A description of the things that are out of scope for this spec, including content and polish that are intentionally excluded.
 
 ## Further Notes
 
-Any additional context, open questions, or future considerations.
+Any further notes about the feature.
 
 </spec-template>
