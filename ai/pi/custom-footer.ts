@@ -48,7 +48,7 @@ export default function (pi: ExtensionAPI) {
 }
 
 function applyCustomFooter(ctx: ExtensionContext) {
-  ctx.ui.setFooter((tui, theme, footerData) => {
+  ctx.ui.setFooter((tui, _theme, footerData) => {
     // Register render trigger
     requestRender = () => tui.requestRender();
 
@@ -77,31 +77,21 @@ function applyCustomFooter(ctx: ExtensionContext) {
         const contextUsage = ctx.getContextUsage();
         const contextWindow = contextUsage?.contextWindow ?? ctx.model?.contextWindow ?? 0;
 
-        // Format token counts for compact display
-        const fmtTokens = (n: number) =>
-          n < 1000
-            ? `${n}`
-            : n < 10000
-              ? `${(n / 1000).toFixed(1)}k`
-              : n < 1000000
-                ? `${Math.round(n / 1000)}k`
-                : `${(n / 1000000).toFixed(n >= 10000000 ? 0 : 1)}M`;
-
-        // Show context usage (tokens/limit)
+        // Show available context percentage (remaining % free)
         const contextTokens = contextUsage?.tokens ?? null;
-        const contextDisplay = contextTokens !== null
-          ? `${fmtTokens(contextTokens)}/${fmtTokens(contextWindow)}`
-          : `?/${fmtTokens(contextWindow)}`;
-        statsParts.push(contextDisplay);
+        const availPct = contextTokens !== null && contextWindow > 0
+          ? Math.round((1 - contextTokens / contextWindow) * 100)
+          : null;
+        statsParts.push(availPct !== null ? `${availPct}%` : `?`);
 
         // Show cost (always show, even $0.000 at start)
         statsParts.push(`$${totalCost.toFixed(2)}`);
 
-        // Model name with thinking level: "big-pickle(medium)" or "big-pickle"
+        // Model name with thinking level: "big-pickle | high" or "big-pickle"
         const modelName = ctx.model?.id || "no-model";
         let displayModel = modelName;
         if (currentThinkingLevel && currentThinkingLevel !== "off") {
-          displayModel += ` (${currentThinkingLevel})`;
+          displayModel += ` | ${currentThinkingLevel}`;
         }
         // Mode suffix (default terminal color, right after model)
         const modeSuffix = currentPermissionMode ? ` | ${currentPermissionMode}` : "";
@@ -113,7 +103,7 @@ function applyCustomFooter(ctx: ExtensionContext) {
 
         let line: string;
         if (statsWidth + modelWidth <= width) {
-          line = theme.fg("accent", displayModel) + modeSuffix + " | " + statsLine;
+          line = displayModel + modeSuffix + " | " + statsLine;
         } else {
           line = statsLine;
         }
@@ -122,7 +112,7 @@ function applyCustomFooter(ctx: ExtensionContext) {
         const lines: string[] = [];
 
         // Line 1: stats + model (right-aligned)
-        lines.push(statsWidth + modelWidth <= width ? line : theme.fg("dim", line));
+        lines.push(line);
 
         // Line 2: extension statuses with | separator
         const extensionStatuses = footerData.getExtensionStatuses();
@@ -131,7 +121,7 @@ function applyCustomFooter(ctx: ExtensionContext) {
             .sort(([a], [b]) => a.localeCompare(b))
             .map(([, text]) => text.replace(/[\r\n\t]/g, " ").replace(/ +/g, " ").trim());
           const statusLine = sorted.join(" | ");
-          lines.push(truncateToWidth(theme.fg("dim", statusLine), width, "..."));
+          lines.push(truncateToWidth(statusLine, width, "..."));
         }
 
         return lines;
