@@ -28,6 +28,23 @@ cmd /c "mklink %USERPROFILE%\.claude\CLAUDE.md %CD%\ai\instructions\global.md"
 </details>
 
 <details>
+<summary>Codex</summary>
+
+```bash
+# Mac
+mkdir -p ~/.codex
+ln -sfn "$PWD/ai/instructions/global.md" ~/.codex/AGENTS.md
+```
+
+```bash
+# Windows - requires running as Admin or enabling Developer Mode
+mkdir -p %USERPROFILE%\.codex
+cmd /c "mklink %USERPROFILE%\.codex\AGENTS.md %CD%\ai\instructions\global.md"
+```
+
+</details>
+
+<details>
 <summary>pi</summary>
 
 ```bash
