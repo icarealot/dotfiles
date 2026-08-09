@@ -1,5 +1,3 @@
-# MacOS
+# OS Artifacts
 .DS_Store
-
-# Ignore Windows reserved NUL file artifact
 nul
