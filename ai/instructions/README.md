@@ -4,8 +4,8 @@ Reusable AI agent instructions.
 
 | File | Description |
 |---|---|
-| `global.md` | Global instructions applied to every agent session (tone, concision, reasoning style) |
-| `unity.md` | Project-level instructions for a Unity mobile puzzle game (C#, conventions) |
+| `global.md` | Global instructions applied to every agent session |
+| `unity.md` | Project-level instructions for a Unity project |
 
 ## Install
 
