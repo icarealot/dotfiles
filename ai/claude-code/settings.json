@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "terminal-notifier -message \"Claude is waiting for input\" -title \"Claude Code\""
+            "command": "sh \"$HOME/.claude/notify-command.sh\""
           }
         ]
       }
