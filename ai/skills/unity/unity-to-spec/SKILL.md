@@ -1,5 +1,5 @@
 ---
-name: to-spec
+name: unity-to-spec
 description: Turn a Unity game feature discussion into a human-approved spec covering player behavior, Unity architecture, protected assets, and EditMode, PlayMode, build, and playtest validation.
 ---
 

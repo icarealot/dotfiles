@@ -1,5 +1,5 @@
 ---
-name: code-review
+name: unity-code-review
 description: Review committed and uncommitted Unity project changes against repository standards, Unity safety rules, and the originating game spec. Use for Unity branch, PR, task, or work-in-progress reviews. Review only; never modify or commit.
 ---
 

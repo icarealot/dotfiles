@@ -1,5 +1,5 @@
 ---
-name: implement
+name: unity-implement
 description: Implement exactly one approved Unity game task, respecting protected assets and existing assemblies; verify it with the applicable EditMode, PlayMode, build, and human-playtest tiers; then stop for human acceptance. Never commit automatically.
 ---
 
@@ -29,7 +29,7 @@ If the task conflicts with the repository, stop and report the expected state, a
 
 ## 2. Implement one task
 
-Use `/tdd` where appropriate, at the pre-agreed seams. Implement only the selected task's acceptance criteria and avoid scope creep.
+Use `/unity-tdd` where appropriate, at the pre-agreed seams. Implement only the selected task's acceptance criteria and avoid scope creep.
 
 Run focused checks regularly and the relevant broader suite at the end.
 
@@ -56,4 +56,4 @@ After automated verification:
 
 If the user requests changes, continue only the same task and return to this checkpoint. Do not mark the task done until the user accepts the human verification.
 
-After human acceptance, use `/code-review` against the recorded baseline, including committed, staged, unstaged, and untracked task changes. Keep review read-only. Address findings only when the user requests another implementation pass.
+After human acceptance, use `/unity-code-review` against the recorded baseline, including committed, staged, unstaged, and untracked task changes. Keep review read-only. Address findings only when the user requests another implementation pass.

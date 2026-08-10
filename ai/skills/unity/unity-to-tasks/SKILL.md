@@ -1,5 +1,5 @@
 ---
-name: to-tasks
+name: unity-to-tasks
 description: Break a Unity game spec or discussion into human-approved tracer-bullet tasks with Unity scope, protected assets, blocking edges, and EditMode, PlayMode, build, and playtest validation.
 ---
 

@@ -1,5 +1,5 @@
 ---
-name: tdd
+name: unity-tdd
 description: Test-drive Unity gameplay features and fixes with NUnit and the Unity Test Framework. Use for red-green development with EditMode or PlayMode tests in a Unity project.
 ---
 
