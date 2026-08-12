@@ -7,7 +7,8 @@ Reusable AI agent instructions.
 | `global.md` | Global instructions applied to every agent session |
 | `unity.md` | Project-level instructions for a Unity project |
 
-## Install
+
+## Global
 
 cd to repo root.
 
@@ -57,6 +58,55 @@ ln -sfn "$PWD/ai/instructions/global.md" ~/.pi/agent/AGENTS.md
 # Windows - requires running as Admin or enabling Developer Mode
 mkdir -p %USERPROFILE%\.pi\agent
 cmd /c "mklink %USERPROFILE%\.pi\agent\AGENTS.md %CD%\ai\instructions\global.md"
+```
+
+</details>
+
+## Unity
+
+cd to repo root.
+
+<details>
+<summary>Claude Code</summary>
+
+```bash
+# Mac
+cp ai/instructions/unity.md /path/to/unity-project/CLAUDE.md
+```
+
+```bash
+# Windows
+copy ai\instructions\unity.md \path\to\unity-project\CLAUDE.md
+```
+
+</details>
+
+<details>
+<summary>Codex</summary>
+
+```bash
+# Mac
+cp ai/instructions/unity.md /path/to/unity-project/AGENTS.md
+```
+
+```bash
+# Windows
+copy ai\instructions\unity.md \path\to\unity-project\AGENTS.md
+```
+
+</details>
+
+<details>
+<summary>pi</summary>
+
+```bash
+# Mac
+cp ai/instructions/unity.md /path/to/unity-project/AGENTS.md
+```
+
+```bash
+# Windows
+copy ai\instructions\unity.md \path\to\unity-project\AGENTS.md
 ```
 
 </details>
