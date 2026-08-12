@@ -10,4 +10,4 @@ Personal configs, tools, and AI agent setup.
 | [`ai/skills`](ai/skills) | Reusable agent workflows |
 | [`g-helper`](g-helper) | G-Helper config for ROG Zephyrus G14 — power limits, fan curves, 80% battery cap |
 | [`git`](git) | Git config with a `dog` alias for a compact, decorated log graph |
-| [`husky.NET`](husky.NET) | Husky.Net pre-commit hook for Unity C# — runs `dotnet format` on staged `.cs` files |
+| [`husky.NET`](husky.NET) | Format files before commit |

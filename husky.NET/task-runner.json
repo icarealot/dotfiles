@@ -6,12 +6,12 @@
       "command": "dotnet",
       "args": [
         "format",
-        "Assembly-CSharp.csproj",
+        "your-project.slnx",
         "--include",
         "${staged}"
       ],
       "include": [
-        "**/*.cs"
+        "Assets/**/*.cs"
       ]
     },
     {
