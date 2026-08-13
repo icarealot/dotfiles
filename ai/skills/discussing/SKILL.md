@@ -3,7 +3,7 @@ name: discussing
 description: Discuss with the user relentlessly about a plan, decision, or idea. Use when the user wants to stress-test their thinking, or uses any 'discuss' trigger phrases.
 ---
 
-Interview me relentlessly about every aspect of this until we reach a shared understanding. Walk down each branch of the decision tree, resolving dependencies between decisions one-by-one. For each question, provide your recommended answer.
+Interview me relentlessly about every aspect of this until we reach a shared understanding. Walk down each branch of the decision tree, resolving dependencies between decisions one-by-one.
 
 Ask the questions one at a time, waiting for feedback on each question before continuing. Asking multiple questions at once is bewildering.
 
