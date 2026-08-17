@@ -30,7 +30,7 @@ If the task conflicts with the repository, stop and report the expected state, a
 
 ## 2. Implement one task
 
-Use `/unity-tdd` where appropriate, at the pre-agreed seams. Implement only the selected task's acceptance criteria and avoid scope creep.
+Ask the user whether to use `/unity-tdd` for this task before writing code; do not decide silently. If they decline, note why (e.g. visual polish, no testable seam) before proceeding. Implement only the selected task's acceptance criteria and avoid scope creep.
 
 Run focused checks regularly and the relevant broader suite at the end.
 
