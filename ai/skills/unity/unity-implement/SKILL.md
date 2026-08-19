@@ -14,7 +14,6 @@ Implement exactly one user-selected, approved Unity task. If the request names a
 - Confirm the repository contains `Assets/` and `ProjectSettings/ProjectVersion.txt`. If it does not, stop and report that this skill is Unity-specific.
 - Confirm blockers are complete.
 - Record the starting `HEAD`, staged paths, unstaged paths, untracked paths, and existing diffs. Preserve and distinguish all pre-existing user changes.
-- All Unity compilation and validation runs through `/unity-cli`, never through project-documented compile/test scripts even when `AGENTS.md` lists them. Do not invent a successful validation result when required tooling is unavailable.
 - Treat the task as `implementing`; do not edit a task status file unless the user separately authorized that non-code change.
 
 If the task conflicts with the repository, stop and report the expected state, actual state, impact, and decision needed. Do not silently work around it.
@@ -23,9 +22,7 @@ If the task conflicts with the repository, stop and report the expected state, a
 
 - By default, edit only C# scripts and tests within existing assembly boundaries.
 - Require explicit, task-specific approval before editing any non-code file or `.asmdef` file.
-- Require the approval to name the exact file or a narrow file group, and apply it only to the current task.
 - Preview the proposed non-code or `.asmdef` changes and explain why they are necessary before requesting approval.
-- Protect scenes, prefabs, packages, project settings, animation controllers, `.meta` files, ScriptableObjects, and other serialized assets with this rule.
 - Use the `/unity-cli` skill instead of direct YAML editing: run `unity status` to check for a connected Editor, then drive it via `unity command` for the approved non-code change. Do not treat approval to use the tool as permission to change files outside the approved set.
 
 ## 2. Implement one task
@@ -43,7 +40,7 @@ Use the task's declared tiers:
 - **Player build:** platform- or build-sensitive behavior.
 - **Human playtest:** player-facing behavior, feel, visuals, audio, and usability.
 
-Run EditMode and PlayMode tiers through `/unity-cli`, never through project-documented commands. Treat compile errors and warnings introduced by the task as failures. Preserve GUID relationships and distinguish pre-existing Console output from new failures.
+Run EditMode and PlayMode tiers through `/unity-cli`. Treat compile errors and warnings introduced by the task as failures. Preserve GUID relationships and distinguish pre-existing Console output from new failures.
 
 Never trigger a Player build yourself. When the task declares the Player build tier, stop and ask the user to run the build manually, then wait for them to report the pass/fail result before continuing.
 
