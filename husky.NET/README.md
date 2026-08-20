@@ -26,6 +26,7 @@ mkdir -p <unity-project>/.husky
 cp husky.NET/.editorconfig <unity-project>/.editorconfig
 cp husky.NET/pre-commit <unity-project>/.husky/pre-commit
 cp husky.NET/task-runner.json <unity-project>/.husky/task-runner.json
+cp husky.NET/CODING_STANDARDS.md <unity-project>/docs/CODING_STANDARDS.md
 ```
 
 ### 3. Set the Solution File
