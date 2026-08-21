@@ -1,6 +1,6 @@
 ---
 name: unity-implement
-description: Implement exactly one approved Unity game task, respecting protected assets and existing assemblies; verify it with the applicable EditMode, PlayMode, build, and human-playtest tiers; then stop for human acceptance. Never commit automatically.
+description: Implement exactly one approved Unity game task, editing only C# scripts and tests and never any other project file; verify it with the applicable EditMode, PlayMode, build, and human-playtest tiers; then stop for human acceptance. Never commit automatically.
 ---
 
 # Implement
@@ -20,14 +20,13 @@ If the task conflicts with the repository, stop and report the expected state, a
 
 ### Unity editing boundary
 
-- By default, edit only C# scripts and tests within existing assembly boundaries.
-- Require explicit, task-specific approval before editing any non-code file or `.asmdef` file.
-- Preview the proposed non-code or `.asmdef` changes and explain why they are necessary before requesting approval.
-- Use the `/unity-cli` skill instead of direct YAML editing: run `unity status` to check for a connected Editor, then drive it via `unity command` for the approved non-code change. Do not treat approval to use the tool as permission to change files outside the approved set.
+- Edit only C# script and test files (`.cs`) within existing assembly boundaries.
+- Never edit any non-code file (e.g. `.unity` scenes, `.prefab`, `.asset` ScriptableObjects, `.meta` files, `ProjectSettings/*`) or any `.asmdef` file.
+- If a task cannot be completed without a non-code change, stop immediately. Report exactly what change is needed and why, and wait for the human to make it themselves (in the Editor or via their own `/unity-cli` session) before resuming the task.
 
 ## 2. Implement one task
 
-Ask the user whether to use `/unity-tdd` for this task before writing code; do not decide silently. If they decline, note why (e.g. visual polish, no testable seam) before proceeding. Implement only the selected task's acceptance criteria and avoid scope creep.
+Always ask the user whether to use `/unity-tdd` for this task before writing code; do not decide silently. Implement only the selected task's acceptance criteria and avoid scope creep.
 
 Run focused checks regularly and the relevant broader suite at the end.
 
