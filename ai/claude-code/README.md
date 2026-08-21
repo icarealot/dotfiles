@@ -5,7 +5,7 @@ Config for [Claude Code](https://github.com/anthropics/claude-code).
 | File | Description |
 |---|---|
 | `statusline-command.sh` | Status line script that outputs pipe-separated stats: model name, effort level, remaining context window %, 5h rate limit %, 7d rate limit % (with reset countdowns) |
-| `notify-command.sh` | Stop hook script that sends a notification — `terminal-notifier` on Mac, a PowerShell toast on Windows |
+| `notify-command.sh` | Stop/PreToolUse hook script that sends a notification — `terminal-notifier` on Mac, a PowerShell toast on Windows. |
 
 ## Prerequisites
 
@@ -59,6 +59,14 @@ Then in your `~/.claude/settings.json`, add the `hooks` block:
       {
         "hooks": [
           { "type": "command", "command": "sh \"$HOME/.claude/notify-command.sh\"" }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          { "type": "command", "command": "sh \"$HOME/.claude/notify-command.sh\" \"Claude has a question\"" }
         ]
       }
     ]

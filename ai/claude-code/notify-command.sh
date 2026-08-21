@@ -1,6 +1,6 @@
 #!/bin/sh
 title="Claude Code"
-message="Claude is waiting for input"
+message="${1:-Claude is waiting for input}"
 
 case "$(uname)" in
   Darwin)
