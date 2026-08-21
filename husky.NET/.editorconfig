@@ -10,6 +10,12 @@ charset = utf-8
 indent_style = space
 indent_size = 4
 
+# Remove unnecessary usings
+dotnet_diagnostic.IDE0005.severity = warning
+
+# Simplify names
+dotnet_diagnostic.IDE0001.severity = warning
+
 # Naming: private fields _camelCase
 dotnet_naming_rule.private_fields_should_be_underscore_camel.severity = suggestion
 dotnet_naming_rule.private_fields_should_be_underscore_camel.symbols = private_fields
@@ -52,6 +58,11 @@ csharp_style_var_elsewhere = false:warning
 
 # Prefer target-typed new expressions
 csharp_style_implicit_object_creation_when_type_is_apparent = true:warning
+
+# Never use expression-bodied methods/constructors/operators (block bodies only)
+csharp_style_expression_bodied_methods = false:warning
+csharp_style_expression_bodied_constructors = false:warning
+csharp_style_expression_bodied_operators = false:warning
 
 # Braces on new lines (Allman style)
 csharp_new_line_before_open_brace = all
