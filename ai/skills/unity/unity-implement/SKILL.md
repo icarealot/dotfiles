@@ -20,7 +20,7 @@ If the task conflicts with the repository, stop and report the expected state, a
 
 ### Unity editing boundary
 
-- Edit only C# script and test files (`.cs`) within existing assembly boundaries.
+- Edit only C# script and test files (`.cs`) within existing assembly boundaries. Always use `/unity-cli` to recompile after edited.
 - Never edit any non-code file (e.g. `.unity` scenes, `.prefab`, `.asset` ScriptableObjects, `.meta` files, `ProjectSettings/*`) or any `.asmdef` file.
 - If a task cannot be completed without a non-code change, stop immediately. Report exactly what change is needed and why, and wait for the human to make it themselves (in the Editor or via their own `/unity-cli` session) before resuming the task.
 
