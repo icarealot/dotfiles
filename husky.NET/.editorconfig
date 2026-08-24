@@ -16,6 +16,9 @@ dotnet_diagnostic.IDE0005.severity = warning
 # Simplify names
 dotnet_diagnostic.IDE0001.severity = warning
 
+# Use string.Empty instead of ""
+dotnet_diagnostic.SA1122.severity = warning
+
 # Naming: private fields _camelCase
 dotnet_naming_rule.private_fields_should_be_underscore_camel.severity = suggestion
 dotnet_naming_rule.private_fields_should_be_underscore_camel.symbols = private_fields

@@ -4,6 +4,7 @@
 - Constants are in `SNAKE_UPPER_CASE`.
 - Private fields are in camelCase with prefix `_`, if they're meant to be editable in the editor make it a [SerializeField].
 - IEnumerator methods should be named with a `IE_` prefix.
+- Use `string.Empty` instead of `""`.
 
 ## Layout
 - Place properties at above fields.
