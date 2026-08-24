@@ -59,6 +59,9 @@ csharp_style_var_elsewhere = false:warning
 # Prefer target-typed new expressions
 csharp_style_implicit_object_creation_when_type_is_apparent = true:warning
 
+# Force explicit discard for unused return values: _ = Method(); not Method();
+csharp_style_unused_value_expression_statement_preference = discard_variable:warning
+
 # Never use expression-bodied methods/constructors/operators (block bodies only)
 csharp_style_expression_bodied_methods = false:warning
 csharp_style_expression_bodied_constructors = false:warning
