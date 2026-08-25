@@ -4,23 +4,29 @@ ADRs live in `docs/adr/` and use sequential numbering: `0001-slug.md`, `0002-slu
 
 Create the `docs/adr/` directory lazily — only when the first ADR is needed.
 
+ADRs should not be modified or edited directly. If a decision needs to be changed, create a new ADR that supersedes the old one. This preserves the history of decisions and their rationale.
+
 ## Template
 
 ```md
-# {Short title of the decision}
+# {Title}
 
-{1-3 sentences: what's the context, what did we decide, and why.}
+## Status
+
+What is the status, such as proposed, accepted, rejected, deprecated, superseded, etc.? Only one active status at any point in its lifecycle.
+
+## Context
+
+What is the issue that we're seeing that is motivating this decision or change?
+
+## Decision
+
+What is the change that we're proposing and/or doing?
+
+## Consequences
+
+What becomes easier or more difficult to do because of this change?
 ```
-
-That's it. An ADR can be a single paragraph. The value is in recording *that* a decision was made and *why* — not in filling out sections.
-
-## Optional sections
-
-Only include these when they add genuine value. Most ADRs won't need them.
-
-- **Status** frontmatter (`proposed | accepted | deprecated | superseded by ADR-NNNN`) — useful when decisions are revisited
-- **Considered Options** — only when the rejected alternatives are worth remembering
-- **Consequences** — only when non-obvious downstream effects need to be called out
 
 ## Numbering
 
@@ -38,10 +44,10 @@ If a decision is easy to reverse, skip it — you'll just reverse it. If it's no
 
 ### What qualifies
 
-- **Architectural shape.** "We're using a monorepo." "The write model is event-sourced, the read model is projected into Postgres."
-- **Integration patterns between contexts.** "Ordering and Billing communicate via domain events, not synchronous HTTP."
-- **Technology choices that carry lock-in.** Database, message bus, auth provider, deployment target. Not every library — just the ones that would take a quarter to swap out.
-- **Boundary and scope decisions.** "Customer data is owned by the Customer context; other contexts reference it by ID only." The explicit no-s are as valuable as the yes-s.
-- **Deliberate deviations from the obvious path.** "We're using manual SQL instead of an ORM because X." Anything where a reasonable reader would assume the opposite. These stop the next engineer from "fixing" something that was deliberate.
-- **Constraints not visible in the code.** "We can't use AWS because of compliance requirements." "Response times must be under 200ms because of the partner API contract."
-- **Rejected alternatives when the rejection is non-obvious.** If you considered GraphQL and picked REST for subtle reasons, record it — otherwise someone will suggest GraphQL again in six months.
+- **Architectural shape.** ECS vs. MonoBehaviours, scene layout strategy.
+- **Integration patterns.** "Systems communicate via ScriptableObject event channels, not direct references."
+- **Technology choices that carry lock-in.** Netcode solution, Addressables vs. Resources, render pipeline, key third-party SDKs.
+- **Boundary and scope decisions.** Which system owns a piece of state and how others may access it.
+- **Deliberate deviations from the obvious path.** E.g. hand-rolled object pooling instead of `Instantiate`/`Destroy` for GC reasons. Stops the next engineer from "fixing" something deliberate.
+- **Constraints not visible in the code.** Frame budget, console cert requirements, platform packet size limits.
+- **Rejected alternatives when non-obvious.** E.g. why classic MonoBehaviours over DOTS/ECS — otherwise someone proposes the rewrite again.
