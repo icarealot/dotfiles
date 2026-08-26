@@ -9,23 +9,61 @@ ADRs should not be modified or edited directly. If a decision needs to be change
 ## Template
 
 ```md
-# {Title}
+# {Short title of solved problem and solution}
 
 ## Status
 
 What is the status, such as proposed, accepted, rejected, deprecated, superseded, etc.? Only one active status at any point in its lifecycle.
 
-## Context
+## Context and Problem Statement
 
-What is the issue that we're seeing that is motivating this decision or change?
+[Describe the context and problem statement, e.g., in free form using two to three sentences. You may want to articulate the problem in form of a question.]
 
-## Decision
+## Decision Drivers
 
-What is the change that we're proposing and/or doing?
+- [driver 1, e.g., a force, facing concern, …]
+- [driver 2, e.g., a force, facing concern, …]
+- ...
 
-## Consequences
+## Considered Options
 
-What becomes easier or more difficult to do because of this change?
+- [option 1]
+- [option 2]
+- ...
+
+## Decision Outcome
+
+Chosen option: "[option 1]", because [justification. e.g., only option, which meets k.o. criterion decision driver | which resolves force force | … | comes out best (see below)].
+
+### Positive Consequences
+
+- [e.g., improvement of quality attribute satisfaction, follow-up decisions required, …]
+- ...
+
+### Negative Consequences
+
+- [e.g., compromising quality attribute, follow-up decisions required, …]
+- ...
+
+## Pros and Cons of the Options
+
+### [option 1]
+
+[example | description | pointer to more information | …]
+
+- Good, because [argument a]
+- Good, because [argument b]
+- Bad, because [argument c]
+- ...
+
+### [option 2]
+
+[example | description | pointer to more information | …]
+
+- Good, because [argument a]
+- Good, because [argument b]
+- Bad, because [argument c]
+- ...
 ```
 
 ## Numbering
