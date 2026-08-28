@@ -1,9 +1,9 @@
 ---
 name: unity-code-review
-description: Review committed and uncommitted Unity project changes against repository standards, Unity safety rules, and the originating game spec. Use for Unity branch, PR, task, or work-in-progress reviews. Review only; never modify or commit.
+description: Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes — Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/spec asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, work-in-progress changes, or asks to "review since X".
 ---
 
-Review Unity project changes along two axes:
+Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
 
 - **Standards** — does the code conform to this repo's documented coding standards?
 - **Spec** — does the code faithfully implement the originating issue / PRD / spec?
@@ -16,19 +16,11 @@ Both axes run as **parallel sub-agents** so they don't pollute each other's cont
 
 Confirm the repository contains `Assets/` and `ProjectSettings/ProjectVersion.txt`. If it does not, stop and report that this skill is Unity-specific.
 
-Use the implementation skill's recorded starting revision when available. Otherwise, use the fixed point the user supplied — a commit SHA, branch name, tag, `main`, `HEAD~5`, etc. If neither exists, ask for it.
+Whatever the user said is the fixed point — a commit SHA, branch name, tag, `main`, `HEAD~5`, etc. If they didn't specify one, ask for it.
 
-Capture:
+Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so the comparison is against the merge-base). Also note the list of commits via `git log <fixed-point>..HEAD --oneline`.
 
-- committed changes: `git diff <fixed-point>...HEAD`
-- commit list: `git log <fixed-point>..HEAD --oneline`
-- staged changes: `git diff --cached`
-- unstaged changes: `git diff`
-- untracked paths: `git status --short`, followed by reading relevant untracked files
-
-If implementation recorded pre-existing working-tree changes, use that snapshot to exclude or label them. Never attribute pre-existing user work to the task. If hunk ownership is ambiguous, report the ambiguity rather than guessing.
-
-Before going further, confirm the fixed point resolves and that at least one relevant committed, staged, unstaged, or untracked task change exists. A bad ref or empty task diff should fail here — not inside sub-agents.
+Before going further, confirm the fixed point resolves (`git rev-parse <fixed-point>`) and the diff is non-empty. A bad ref or empty diff should fail here — not inside two parallel sub-agents.
 
 ### 2. Identify the spec source
 
@@ -41,18 +33,6 @@ Look for the originating spec, in this order:
 ### 3. Identify the standards sources
 
 Read anything in the project that documents how Unity code and assets should be changed, such as `AGENTS.md`, `CODING_STANDARDS.md`, or `CONTRIBUTING.md`.
-
-Add these Unity checks when relevant to the diff:
-
-- unsafe scene, prefab, serialized asset, `.meta`, or GUID changes
-- serialized-field compatibility regressions
-- incorrect `MonoBehaviour` lifecycle or event cleanup
-- avoidable per-frame allocations or expensive repeated engine work
-- domain-reload, disabled-object, or destroyed-object hazards
-- missing assembly or platform guards
-- Unity API calls from inappropriate threads
-- task-required validation that was skipped or misreported
-- `.asmdef` or non-code changes made without exact task-specific approval
 
 On top of whatever the repo documents, the Standards axis always carries the **smell baseline** below — a fixed set of Fowler code smells (_Refactoring_, ch.3) that applies even when a repo documents nothing. Two rules bind it:
 
@@ -76,17 +56,15 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 
 ### 4. Spawn both sub-agents in parallel
 
-Send a single message with two `Agent` tool calls. Use the `general-purpose` subagent for both.
-
 **Standards sub-agent prompt** — include:
 
-- The committed, staged, unstaged, and untracked change sources plus the commit list.
-- The list of standards-source files you found in step 3, **plus the smell baseline from step 3 and the Unity baseline** pasted in full — the sub-agent has no other access to them.
+- The full diff command and commit list.
+- The list of standards-source files you found in step 3, **plus the smell baseline from step 3** pasted in full — the sub-agent has no other access to it.
 - The brief: "Report — per file/hunk where relevant — (a) every place the diff violates a documented standard: cite the standard (file + the rule); and (b) any baseline smell you spot: name it and quote the hunk. Distinguish hard violations from judgement calls — documented-standard breaches can be hard, but baseline smells are always judgement calls, and a documented repo standard overrides the baseline. Skip anything tooling enforces. Under 400 words."
 
 **Spec sub-agent prompt** — include:
 
-- The committed, staged, unstaged, and untracked change sources plus the commit list.
+- The diff command and commit list.
 - The path or fetched contents of the spec.
 - The brief: "Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong. Quote the spec line for each finding. Under 400 words."
 

@@ -22,7 +22,7 @@ public sealed class ManaPoolTests
 }
 ```
 
-Prefer known literals from the game rules. Do not reproduce the production calculation in the assertion.
+Name tests `Method_Condition_ExpectedResult`, and pass named arguments so the game rule reads out of the arrange step.
 
 ## PlayMode
 
@@ -40,7 +40,7 @@ public sealed class LifecycleTests
     public IEnumerator DestroyOnStart_RemovesGameObjectAfterLifecycleRuns()
     {
         var gameObject = new GameObject("Temporary object");
-        gameObject.AddComponent<DestroyOnStart>();
+        _ = gameObject.AddComponent<DestroyOnStart>();
 
         yield return null;
 
@@ -54,6 +54,43 @@ public sealed class LifecycleTests
 ```
 
 Prefer the narrowest public Unity boundary that proves the behavior. Clean up created objects when the behavior under test does not destroy them.
+
+## Verify through the seam
+
+Observe the result through the same public boundary a caller would use, not through a side channel into the object's internals or its serialized form.
+
+```csharp
+// Avoid: reaches past the seam into a private serialized field.
+var field = typeof(SaveService).GetField("cachedJson", BindingFlags.NonPublic | BindingFlags.Instance);
+Assert.That(field.GetValue(saveService), Does.Contain("Alice"));
+
+// Prefer: round-trip through the public API.
+saveService.Save(new PlayerProfile(name: "Alice", level: 7));
+
+var loaded = saveService.Load();
+
+Assert.That(loaded.Name, Is.EqualTo("Alice"));
+Assert.That(loaded.Level, Is.EqualTo(7));
+```
+
+## Assert independent values
+
+The expected value comes from the game rules, not from the production calculation re-run in the test.
+
+```csharp
+var attack = new Attack(power: 40f);
+var target = new Combatant(armor: 0.25f);
+
+// Avoid: recomputes the formula, so it passes whatever the formula becomes.
+var expected = attack.Power * (1f - target.Armor);
+Assert.That(DamageCalculator.Resolve(attack, target), Is.EqualTo(expected));
+
+// Prefer: a worked example from the game rules.
+// 40 power against 25% armor deals 30.
+Assert.That(DamageCalculator.Resolve(attack, target), Is.EqualTo(30f).Within(0.01f));
+```
+
+Compare floats with a tolerance (`Is.EqualTo(x).Within(...)`), and `Vector3`/`Quaternion` component-wise with the same tolerance.
 
 ## Avoid implementation-coupled tests
 
