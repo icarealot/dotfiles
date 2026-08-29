@@ -10,7 +10,8 @@ Implement the work described by the user in the spec or tickets.
 
 - Confirm the `/unity-cli` skill is available in this session's skill listing. If it is not, stop immediately and ask the user to install it; do not proceed with the task by any other means.
 - Confirm the repository contains `Assets/` and `ProjectSettings/ProjectVersion.txt`. If it does not, stop and report that this skill is Unity-specific.
-- Always use `/unity-cli` to recompile after edited, Edit only C# script and test files (`.cs`).
+- Confirm there is an opened editor by running `unity pipeline list`. If there is no opened editor, use `unity open --args "-automated"` to open one.
+- Always use `/unity-cli` to recompile after editing C# script and test files (`.cs`).
 - Always use `/unity-cli` to edit any non-code file (e.g. `.unity` scenes, `.prefab`, `.asset` ScriptableObjects, `.meta` files, `ProjectSettings/*`) or any `.asmdef` file. DO NOT edit YAML file directly.
 
 ## 2. Implement one task

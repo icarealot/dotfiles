@@ -10,6 +10,7 @@ Implement every task in an approved task set, unattended, and report once at the
 
 - Confirm the `/unity-cli` skill is available in this session's skill listing. If it is not, stop immediately and ask the user to install it; do not proceed with the run by any other means.
 - Confirm the repository contains `Assets/` and `ProjectSettings/ProjectVersion.txt`. If it does not, stop and report that this skill is Unity-specific.
+- Confirm there is an opened editor by running `unity pipeline list`. If there is no opened editor, use `unity open --args "-automated"` to open one.
 - The user names a task directory, `docs/<feature-slug>/tasks/`, holding one `<NN>-<slug>.md` per task. Without one, stop and offer `/unity-to-tasks` to produce it.
 - The task set is the approval. Begin on invocation and run unattended until the final report.
 
@@ -22,7 +23,7 @@ Skip any task whose acceptance criteria are all ticked — that task landed in a
 Then loop, one task in flight at a time:
 
 1. Take the **frontier**: the unfinished tasks whose blockers are all done. Pick the lowest-numbered one.
-2. Spawn a subagent on the `sonnet` model to implement that task alone (§3).
+2. Spawn a subagent to implement that task alone (§3).
 3. On its report:
    - **Green** — tick that task file's acceptance criteria, record its changed files and the tiers it left **outstanding**, then print one line: `NN — <title>: green — <changed files>`.
    - **Red** — print `NN — <title>: red — <failure message>` and **halt**: go straight to the report (§5), covering what landed.
@@ -33,7 +34,6 @@ Player build and human playtest tiers stay **outstanding** for the human. They n
 
 Give the subagent the task file path and these rules, so they hold whether or not it loads any skill:
 
-- Confirm `/unity-cli` is in your skill listing. Without it, stop and report; reach for no other means.
 - Implement that one task file. Use `/unity-tdd` at the seams the task declares.
 - Edit `.cs` script and test files directly. Route every other file through `/unity-cli` — `.unity` scenes, `.prefab`, `.asset` ScriptableObjects, `.meta` files, `.asmdef` files, `ProjectSettings/*` — and leave their YAML untouched by hand.
 - Recompile and run tests through `/unity-cli`, single test files regularly and the task's EditMode and PlayMode tiers before reporting. Treat compile errors and warnings the task introduced as failures. Preserve GUID relationships, and tell pre-existing Console output apart from new failures.
@@ -49,7 +49,7 @@ When the frontier empties:
 
 1. Run the full test suite through `/unity-cli`.
 2. Review the whole batch with `/unity-code-review`.
-3. Hand the findings to one `sonnet` subagent to fix, under the same rules as §3.
+3. Hand the findings to one subagent to fix, under the same rules as §3.
 4. Re-run the full suite. If it comes back red, **halt** and report.
 
 A finding that needs fresh implementation rather than cleanup stays outstanding in the report.
