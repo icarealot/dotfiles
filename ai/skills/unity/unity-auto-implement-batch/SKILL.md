@@ -1,5 +1,5 @@
 ---
-name: unity-implement-batch
+name: unity-auto-implement-batch
 description: Implement an approved Unity task set end to end, delegating each task to a subagent and reporting once at the end.
 disable-model-invocation: true
 ---

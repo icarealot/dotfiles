@@ -1,12 +1,12 @@
 ---
-name: unity-implement
+name: unity-auto-implement
 description: Implement an approved Unity task end to end.
 disable-model-invocation: true
 ---
 
 Implement the work described by the user in the spec or tickets.
 
-## 1. Establish the boundary
+## 1. Boundary
 
 - Confirm the `/unity-cli` skill is available in this session's skill listing. If it is not, stop immediately and ask the user to install it; do not proceed with the task by any other means.
 - Confirm the repository contains `Assets/` and `ProjectSettings/ProjectVersion.txt`. If it does not, stop and report that this skill is Unity-specific.
@@ -34,14 +34,13 @@ Never trigger a Player build yourself. When the task declares the Player build t
 
 If the Unity Editor, required platform module, SDK, license, scene, or device is unavailable, report the missing validation explicitly. Do not mark that tier as passed.
 
-## 3. Human checkpoint
+## 3. Review and human checkpoint
 
-After automated verification:
+Use `/unity-code-review` to review the work, then report to the user:
 
-1. Report changed files, checks run, results, and any validation that remains unavailable.
-2. Give exact Unity Editor or player steps with expected behavior.
-3. Stop at `ready-for-human-test`.
+1. Changed files, checks run, results, and any validation that remains unavailable.
+2. Review findings, addressed alongside the human checkpoint rather than before it.
+3. Exact Unity Editor or player steps with expected behavior.
+4. Stop at `ready-for-human-test`.
 
-If the user requests changes, continue only the same task and return to this checkpoint. Do not mark the task done until the user accepts the human verification.
-
-After human acceptance, use `/unity-code-review` to review the work.
+If the user requests changes, continue only the same task and return to this checkpoint. Do not mark the task done until the user accepts both the review findings and the human verification.
