@@ -1,5 +1,5 @@
 ---
-name: unity-auto-implement
+name: unity-implement
 description: Implement an approved Unity task end to end.
 disable-model-invocation: true
 ---

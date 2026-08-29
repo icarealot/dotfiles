@@ -11,12 +11,9 @@ Reusable AI agent skills.
 | `domain-modeling` | Build and sharpen a project's domain model |
 | `unity-to-spec` | Turns the current conversation into a spec |
 | `unity-to-tasks` | Break a plan, spec, or the current conversation into a set of tracer-bullet tasks |
-| `unity-manual-implement` | Navigates a Unity task red-green while the human drives, typing every line of code and test |
-| `unity-manual-code-review` | Review the changes along two axes (Standards and Spec) yourself, without subagents |
-| `unity-auto-implement` | Implement an approved Unity task end to end |
-| `unity-auto-implement-batch` | Implement an approved Unity task set end to end, delegating each task to a subagent. |
+| `unity-implement` | Implement an approved Unity task end to end |
 | `unity-tdd` | Test-drives Unity tasks with NUnit and the Unity Test Framework |
-| `unity-auto-code-review` |  Review the changes along two axes (Standards and Spec), delegating each axis to a subagent |
+| `unity-code-review` |  Review the changes along two axes (Standards and Spec), delegating each axis to a subagent |
 | `unity-create-build-note` | Prepends a formatted entry to a Unity project's platform-specific build notes |
 
 ## Install
