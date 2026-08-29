@@ -14,4 +14,4 @@
 
 ## Testing
 - Use `Assert.That` for all test assertions.
-- Name tests `MethodUnderTest_Scenario_ExpectedResult`.
+- Name tests as a plain-English sentence describing the observable behavior use underscores as spaces.

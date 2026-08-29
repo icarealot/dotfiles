@@ -10,7 +10,7 @@ using NUnit.Framework;
 public sealed class ManaPoolTests
 {
     [Test]
-    public void TrySpend_WhenCostExceedsAvailableMana_LeavesManaUnchanged()
+    public void Spending_more_mana_than_is_available_leaves_the_mana_pool_unchanged()
     {
         var mana = new ManaPool(available: 3);
 
@@ -21,8 +21,6 @@ public sealed class ManaPoolTests
     }
 }
 ```
-
-Name tests `Method_Condition_ExpectedResult`, and pass named arguments so the game rule reads out of the arrange step.
 
 ## PlayMode
 
@@ -37,7 +35,7 @@ using UnityEngine.TestTools;
 public sealed class LifecycleTests
 {
     [UnityTest]
-    public IEnumerator DestroyOnStart_RemovesGameObjectAfterLifecycleRuns()
+    public IEnumerator An_object_marked_as_temporary_on_start_is_removed_from_the_scene()
     {
         var gameObject = new GameObject("Temporary object");
         _ = gameObject.AddComponent<DestroyOnStart>();
