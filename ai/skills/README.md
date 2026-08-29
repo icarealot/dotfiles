@@ -13,6 +13,7 @@ Reusable AI agent skills.
 | `unity-code-review` | Reviews Unity changes against repository standards, Unity safety rules, and the originating game spec without modifying them |
 | `unity-create-build-note` | Prepends a formatted entry to a Unity project's platform-specific build notes |
 | `unity-implement` | Implements and validates exactly one approved Unity game task |
+| `unity-pair-programming` | Navigates a Unity task red-green while the human drives, typing every line of code and test |
 | `unity-tdd` | Test-drives Unity gameplay features and fixes with NUnit and the Unity Test Framework |
 | `unity-to-spec` | Turns a Unity game feature discussion into a human-approved implementation and validation spec |
 | `unity-to-tasks` | Breaks a Unity game spec or discussion into human-approved tracer-bullet tasks |
