@@ -1,6 +1,6 @@
 ---
 name: unity-implement
-description: Implement a piece of work based on a spec or set of tasks.
+description: Implement an approved Unity task end to end.
 disable-model-invocation: true
 ---
 
