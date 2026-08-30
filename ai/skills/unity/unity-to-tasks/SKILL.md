@@ -12,9 +12,7 @@ Break a plan, spec, or conversation into a set of **tasks**: tracer-bullet verti
 
 Work from whatever is already in the conversation context. If the user passes a spec path as an argument, fetch it and read its full body and comments.
 
-### 2. Confirm and explore the Unity project
-
-Confirm the repository is a Unity project with `Assets/` and `ProjectSettings/ProjectVersion.txt`. If it is not, stop and report that this skill is Unity-specific.
+### 2. Explore the codebase (optional)
 
 If you have not already explored the codebase, do so to understand the current state of the code. task titles and descriptions should use the project's domain glossary vocabulary, and respect ADRs in the area you're touching.
 

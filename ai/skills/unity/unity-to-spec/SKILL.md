@@ -8,9 +8,7 @@ This skill takes the current conversation context and codebase understanding and
 
 ## Process
 
-1. Confirm the repository is a Unity project with `Assets/` and `ProjectSettings/ProjectVersion.txt`. If it is not, stop and report that this skill is Unity-specific.
-
-Explore the repo to understand the current state of the codebase if you haven't already. Use the project's domain glossary vocabulary throughout the spec, and respect any ADRs in the area you're touching.
+1. Explore the repo to understand the current state of the codebase if you haven't already. Use the project's domain glossary vocabulary throughout the spec, and respect any ADRs in the area you're touching.
 
 2. Sketch out the EditMode, PlayMode, player-build, and human-playtest seams at which you're going to test the feature. Existing seams should be preferred to new ones. Use the highest seam possible. If new seams are needed, propose them at the highest point you can. The fewer seams across the codebase, the better - the ideal number is one.
 
@@ -18,6 +16,8 @@ Explore the repo to understand the current state of the codebase if you haven't 
 - PlayMode for Unity lifecycle or engine integration. 
 - Player-build smoke tests for platform-sensitive behavior
 - Human playtests for feel, visuals, audio, and usability.
+
+Check with the user that these seams match their expectations.
 
 3. Write the spec using the template below and save it to `docs/<feature-name>/SPEC.md`.
 
