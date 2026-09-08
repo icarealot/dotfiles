@@ -1,8 +1,9 @@
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { codexUsageProvider } from "./codex.js";
-import type { ProviderUsage, UsageProvider, UsageWindow } from "./types.js";
+import { deepseekUsageProvider } from "./deepseek.js";
+import type { AccountBalance, ProviderUsage, UsageProvider, UsageWindow } from "./types.js";
 
-const usageProviders: UsageProvider[] = [codexUsageProvider];
+const usageProviders: UsageProvider[] = [codexUsageProvider, deepseekUsageProvider];
 
 function formatReset(window: UsageWindow): string {
   if (window.resetsAt === undefined) {
@@ -78,6 +79,58 @@ function formatContextUsed(ctx: ExtensionContext): string {
   return `${percentage}%/${maximum}`;
 }
 
+function formatSessionSpend(ctx: ExtensionContext, provider: string): string {
+  let cost = 0;
+
+  for (const entry of ctx.sessionManager.getEntries()) {
+    if (
+      entry.type === "message" &&
+      entry.message.role === "assistant" &&
+      entry.message.provider === provider &&
+      Number.isFinite(entry.message.usage.cost.total)
+    ) {
+      cost += entry.message.usage.cost.total;
+    }
+  }
+
+  return `$${cost.toFixed(2)}`;
+}
+
+function getPreferredBalance(
+  balances: AccountBalance[] | undefined,
+): AccountBalance | undefined {
+  return balances?.find((balance) => balance.currency === "USD")
+    ?? balances?.find((balance) => balance.currency === "CNY");
+}
+
+function formatAccountBalance(balances: AccountBalance[] | undefined): string {
+  const balance = getPreferredBalance(balances);
+  if (balance === undefined) {
+    return "N/A";
+  }
+
+  const symbol = balance.currency === "USD" ? "$" : "¥";
+  return `${symbol}${balance.total.toFixed(2)}`;
+}
+
+function formatProviderDetails(
+  ctx: ExtensionContext,
+  provider: UsageProvider | undefined,
+  usage: ProviderUsage | undefined,
+): string[] {
+  if (provider?.details === "account-balance") {
+    return [
+      formatSessionSpend(ctx, provider.provider),
+      formatAccountBalance(usage?.balances),
+    ];
+  }
+
+  return [
+    formatUsageWindow(usage?.primary),
+    formatUsageWindow(usage?.secondary),
+  ];
+}
+
 export default function customFooter(pi: ExtensionAPI): void {
   let providerUsage: ProviderUsage | undefined;
   let requestRender: (() => void) | undefined;
@@ -136,15 +189,20 @@ export default function customFooter(pi: ExtensionAPI): void {
           const thinkingLevel = ctx.thinkingLevel ?? "N/A";
           const modeNameWithThinkingLevel = `${modelName} (${thinkingLevel})`;
           const contextUsed = formatContextUsed(ctx);
-          const primaryUsage = formatUsageWindow(providerUsage?.primary);
-          const secondaryUsage = formatUsageWindow(providerUsage?.secondary);
+          const usageProvider = usageProviders.find(
+            (provider) => provider.provider === providerName,
+          );
+          const providerDetails = formatProviderDetails(
+            ctx,
+            usageProvider,
+            providerUsage,
+          );
 
           const footerText = [
             providerName,
             modeNameWithThinkingLevel,
             contextUsed,
-            primaryUsage,
-            secondaryUsage,
+            ...providerDetails,
           ].join(" | ");
 
           return [footerText];

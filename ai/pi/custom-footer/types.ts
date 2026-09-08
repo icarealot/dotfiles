@@ -6,12 +6,19 @@ export interface UsageWindow {
   resetsAt?: number;
 }
 
+export interface AccountBalance {
+  currency: string;
+  total: number;
+}
+
 export interface ProviderUsage {
   primary?: UsageWindow;
   secondary?: UsageWindow;
+  balances?: AccountBalance[];
 }
 
 export interface UsageProvider {
   provider: string;
+  details: "usage-windows" | "account-balance";
   fetchUsage(ctx: ExtensionContext): Promise<ProviderUsage>;
 }

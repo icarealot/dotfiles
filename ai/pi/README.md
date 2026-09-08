@@ -4,7 +4,7 @@ Extensions for the [Pi coding agent](https://github.com/earendil-works/pi-coding
 
 | Extension | Description |
 |---|---|
-| `custom-footer` | Shows provider, model, thinking level, remaining context, max context, and subscription usage |
+| `custom-footer` | Shows provider, model, thinking level, context windows, usage |
 | `notify` | Sends a native macOS or Windows notification when the agent finishes and is waiting for input |
 
 ## Prerequisites
