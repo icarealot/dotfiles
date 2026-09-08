@@ -138,5 +138,6 @@ async function fetchUsage(ctx: ExtensionContext): Promise<ProviderUsage> {
 
 export const codexUsageProvider: UsageProvider = {
   provider: CODEX_PROVIDER,
+  details: "usage-windows",
   fetchUsage,
 };
