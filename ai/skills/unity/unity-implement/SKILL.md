@@ -30,7 +30,7 @@ For each task in numeric filename order:
 1. Spawn a worker subagent. Give it the exact spec path, exact task path, and the worker contract below.
 2. Wait for its structured result before doing anything with the next task.
 3. Accept `COMPLETE` only when the worker's completion criteria are met.
-4. On `BLOCKED` or a failed available check, stop the sequence, preserve the working tree, and report the task and blocker. Do not dispatch later tasks or the inspector.
+4. On `BLOCKED` or a failed available check, stop the sequence, preserve the working tree, and report the task and blocker. Do not dispatch later tasks or the reviewer.
 
 Never run task workers concurrently.
 
@@ -63,7 +63,7 @@ Blocker: <reason, or None>
 
 ## 4. Dispatch final review
 
-Spawn an inspector subagent and tell it to invoke `/unity-code-review` against the exact feature spec. The inspector must inspect the current staged, unstaged, and untracked files and return its complete `Standards` and `Spec` report in context. Wait for that report
+Spawn an reviewer subagent and tell it to invoke `/unity-code-review` against the exact feature spec. The reviewer must inspect the current staged, unstaged, and untracked files and return its complete `Standards` and `Spec` report in context. Wait for that report
 
 ## 5. Report
 
@@ -74,4 +74,4 @@ Report to the user:
 - Task-level and per-task full-suite checks with results
 - Unavailable validation
 - Whether `/unity-tdd` was applied, including seams or the reason it was not
-- The inspector's complete `Standards` and `Spec` sections
+- The reviewer's complete `Standards` and `Spec` sections
