@@ -49,12 +49,12 @@ export default function subagentExtension(pi: ExtensionAPI): void {
       const status = context.isPartial
         ? "working"
         : context.isError
-          ? "arbort"
+          ? "aborted"
           : "done";
-      const agentName = args.agent || "subagent";
+      const agentName = args.agent || "N/A";
 
       return new Text(
-        theme.fg("toolTitle", theme.bold(`subagent: ${agentName} (${status})`)),
+        `${theme.fg("toolTitle", theme.bold("subagent"))} ${agentName} (${status})`,
         0,
         0,
       );
