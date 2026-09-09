@@ -1,3 +1,5 @@
+/** Child Pi process execution, event parsing, cancellation, and diagnostics. */
+
 import { spawn, type ChildProcess } from "node:child_process";
 import * as fs from "node:fs";
 import { createInterface } from "node:readline";

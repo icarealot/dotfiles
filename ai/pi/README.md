@@ -6,7 +6,7 @@ Extensions for the [Pi coding agent](https://github.com/earendil-works/pi-coding
 |---|---|
 | `custom-footer` | Shows provider, model, thinking level, context windows, usage |
 | `notify` | Sends a native macOS or Windows notification when the agent finishes and is waiting for input |
-| `subagent` | Runs explicitly requested tasks in isolated context |
+| `subagent` | Runs explicitly requested tasks in isolated context; `/subagents` configures each subagent |
 
 ## Prerequisites
 

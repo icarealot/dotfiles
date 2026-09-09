@@ -1,6 +1,6 @@
 ---
 description: Run a delegated task with repository modification access.
-model: deepseek/deepseek-v4-flash
-thinking: max
+model: zai/glm-5.3-flash
+thinking: low
 tools: [read, bash, edit, write, grep, find, ls]
 ---

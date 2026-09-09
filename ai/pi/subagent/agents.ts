@@ -1,15 +1,20 @@
+/** Agent definition discovery, validation, and persisted assignment updates. */
+
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
-import { parseFrontmatter } from "@earendil-works/pi-coding-agent";
+import {
+  parseFrontmatter,
+  withFileMutationQueue,
+} from "@earendil-works/pi-coding-agent";
 
 const AGENTS_DIR = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
   "agents",
 );
 
-const THINKING_LEVELS = new Set<ThinkingLevel>([
+const THINKING_LEVELS: ThinkingLevel[] = [
   "off",
   "minimal",
   "low",
@@ -17,7 +22,7 @@ const THINKING_LEVELS = new Set<ThinkingLevel>([
   "high",
   "xhigh",
   "max",
-]);
+];
 
 const BUILTIN_TOOLS = new Set([
   "read",
@@ -46,6 +51,11 @@ export interface AgentConfig {
   filePath: string;
 }
 
+export interface AgentAssignment {
+  model: string;
+  thinking: ThinkingLevel;
+}
+
 export interface AgentConfigError {
   filePath: string;
   message: string;
@@ -57,19 +67,26 @@ export interface AgentDiscoveryResult {
   errors: AgentConfigError[];
 }
 
+function isThinkingLevel(value: unknown): value is ThinkingLevel {
+  if (typeof value !== "string") return false;
+  return THINKING_LEVELS.some((level) => level === value);
+}
+
 function parseTools(value: unknown): string[] | undefined {
-  const values = Array.isArray(value)
-    ? value
-    : typeof value === "string"
-      ? value.split(",")
-      : [];
+  let values: unknown[] = [];
+  if (Array.isArray(value)) {
+    values = value;
+  } else if (typeof value === "string") {
+    values = value.split(",");
+  }
 
   const tools = values
     .filter((tool): tool is string => typeof tool === "string")
     .map((tool) => tool.trim())
-    .filter(Boolean);
+    .filter((tool) => tool.length > 0);
 
-  return tools.length > 0 ? [...new Set(tools)] : undefined;
+  if (tools.length === 0) return undefined;
+  return [...new Set(tools)];
 }
 
 function loadAgent(filePath: string): AgentConfig {
@@ -81,18 +98,21 @@ function loadAgent(filePath: string): AgentConfig {
   const content = fs.readFileSync(filePath, "utf8");
   const { frontmatter } = parseFrontmatter<AgentFrontmatter>(content);
 
-  if (typeof frontmatter.description !== "string" || frontmatter.description.trim() === "") {
+  if (
+    typeof frontmatter.description !== "string"
+    || frontmatter.description.trim() === ""
+  ) {
     throw new Error("frontmatter.description must be a non-empty string");
   }
 
-  if (typeof frontmatter.model !== "string" || frontmatter.model.trim() === "") {
+  if (
+    typeof frontmatter.model !== "string"
+    || frontmatter.model.trim() === ""
+  ) {
     throw new Error("frontmatter.model must be a non-empty string");
   }
 
-  if (
-    typeof frontmatter.thinking !== "string"
-    || !THINKING_LEVELS.has(frontmatter.thinking as ThinkingLevel)
-  ) {
+  if (!isThinkingLevel(frontmatter.thinking)) {
     throw new Error(
       `frontmatter.thinking must be one of: ${[...THINKING_LEVELS].join(", ")}`,
     );
@@ -114,14 +134,81 @@ function loadAgent(filePath: string): AgentConfig {
     name,
     description: frontmatter.description.trim(),
     model: frontmatter.model.trim(),
-    thinking: frontmatter.thinking as ThinkingLevel,
+    thinking: frontmatter.thinking,
     tools,
     filePath,
   };
 }
 
-export function discoverAgents(): AgentDiscoveryResult {
-  const agentsDir = AGENTS_DIR;
+function findFrontmatterEnd(lines: string[]): number {
+  if (lines[0] !== "---") {
+    throw new Error("agent file must begin with YAML frontmatter");
+  }
+
+  const end = lines.indexOf("---", 1);
+  if (end === -1) {
+    throw new Error("agent file has unterminated YAML frontmatter");
+  }
+  return end;
+}
+
+function replaceFrontmatterField(
+  lines: string[],
+  frontmatterEnd: number,
+  field: string,
+  value: string,
+): void {
+  const pattern = new RegExp(`^${field}\\s*:`);
+  const matches: number[] = [];
+  for (let index = 1; index < frontmatterEnd; index++) {
+    if (pattern.test(lines[index])) matches.push(index);
+  }
+
+  if (matches.length !== 1) {
+    throw new Error(`agent frontmatter must contain exactly one ${field} field`);
+  }
+
+  lines[matches[0]] = `${field}: ${value}`;
+}
+
+export async function saveAgentAssignment(
+  filePath: string,
+  assignment: AgentAssignment,
+): Promise<void> {
+  await withFileMutationQueue(filePath, async () => {
+    const content = await fs.promises.readFile(filePath, "utf8");
+    const newline = content.includes("\r\n") ? "\r\n" : "\n";
+    const lines = content.split(/\r?\n/);
+    const frontmatterEnd = findFrontmatterEnd(lines);
+
+    replaceFrontmatterField(
+      lines,
+      frontmatterEnd,
+      "model",
+      assignment.model,
+    );
+    replaceFrontmatterField(
+      lines,
+      frontmatterEnd,
+      "thinking",
+      assignment.thinking,
+    );
+    await fs.promises.writeFile(filePath, lines.join(newline), "utf8");
+  });
+}
+
+export function formatAgentConfigErrors(
+  errors: readonly AgentConfigError[],
+): string | undefined {
+  if (errors.length === 0) return undefined;
+  return errors
+    .map((error) => `${path.basename(error.filePath)}: ${error.message}`)
+    .join("\n");
+}
+
+export function discoverAgents(
+  agentsDir: string = AGENTS_DIR,
+): AgentDiscoveryResult {
   const agents: AgentConfig[] = [];
   const errors: AgentConfigError[] = [];
 
