@@ -32,8 +32,6 @@ For each task in numeric filename order:
 3. Accept `COMPLETE` only when the worker's completion criteria are met.
 4. On `BLOCKED` or a failed available check, stop the sequence, preserve the working tree, and report the task and blocker. Do not dispatch later tasks or the reviewer.
 
-Never run task workers concurrently.
-
 ### Worker contract
 
 Implement only the assigned task:
@@ -45,9 +43,19 @@ Implement only the assigned task:
 - Use `/unity-cli` to recompile after every edit to C# script or test files (`.cs`). Run typechecking and focused tests regularly.
 - Use `/unity-cli` for every non-code Unity file (`.unity`, `.prefab`, `.asset`, `.meta`, `ProjectSettings/*`) and every `.asmdef`; edit none of their serialized text directly.
 - Implement every acceptance criterion and run every available task-level check.
-- After the task-level checks pass, use `/unity-cli` to run the full test suite. Return `BLOCKED` if compilation or any test fails.
+- After the task-level checks pass, use `/unity-cli` to run **all EditMode and all PlayMode tests**. Return `BLOCKED` if compilation, test execution, or any test fails.
 - Leave Player builds and human playtests unrun; record them as unavailable validation. They do not block `COMPLETE` when implementation and available automated checks pass.
 - Preserve all working-tree changes. Do not commit, stage, unstage, discard, or rewrite task files.
+
+### EditMode and PlayMode test protocol
+
+Apply this protocol to every focused, task-level, and complete EditMode or PlayMode test run. When `unity status` reports a connected Editor, run tests through its Pipeline commands so the project lock is not contested:
+
+1. Start the requested mode asynchronously: EditMode uses `unity command run_tests --mode editor --async_tests true --project-path . --format json`; PlayMode uses `unity command run_tests --mode playmode --async_tests true --project-path . --format json`. Add the appropriate `run_tests` filter for a focused run; omit it to run every test in that mode.
+2. Poll `unity command test_status --project-path . --format json` and decode `data.result` when it is a JSON string. Treat `data.result.status` as authoritative; do not infer completion from elapsed time, a fixed sleep, or the initial `run_tests` response.
+3. When a check requires both modes, wait for EditMode to reach a terminal state before starting PlayMode, then apply the same poll. Live PlayMode is asynchronous because entering Play Mode causes a domain reload; run the two modes separately rather than requesting async `all` mode.
+4. At each terminal state, record `summary.total`, `passed`, `failed`, `skipped`, and `inconclusive`, plus any non-passed test details. Check the nested command result as well as the outer CLI envelope; an outer `success` does not override a nested test error. Stop polling and report the summary immediately without waiting for or printing the full per-test payload.
+5. A run passes only after every requested mode reaches a terminal state with no test failure or test-run/compile error.
 
 Return exactly these fields to the orchestrator:
 
@@ -67,11 +75,4 @@ Spawn an reviewer subagent and tell it to invoke `/unity-code-review` against th
 
 ## 5. Report
 
-Report to the user:
-
-- Each task and its `COMPLETE` result
-- Changed files by task
-- Task-level and per-task full-suite checks with results
-- Unavailable validation
-- Whether `/unity-tdd` was applied, including seams or the reason it was not
-- The reviewer's complete `Standards` and `Spec` sections
+Summarize each worker's structured result, then reproduce the reviewer's complete `Standards` and `Spec` sections.
