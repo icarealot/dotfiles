@@ -187,7 +187,7 @@ export default function customFooter(pi: ExtensionAPI): void {
           const modelName = model?.id || "no-model";
           const providerName = model?.provider ?? "no-provider";
           const thinkingLevel = ctx.thinkingLevel ?? "N/A";
-          const modeNameWithThinkingLevel = `${modelName} (${thinkingLevel})`;
+          const modelIdentity = `${providerName}/${modelName} (${thinkingLevel})`;
           const contextUsed = formatContextUsed(ctx);
           const usageProvider = usageProviders.find(
             (provider) => provider.provider === providerName,
@@ -199,8 +199,7 @@ export default function customFooter(pi: ExtensionAPI): void {
           );
 
           const footerText = [
-            providerName,
-            modeNameWithThinkingLevel,
+            modelIdentity,
             contextUsed,
             ...providerDetails,
           ].join(" | ");
