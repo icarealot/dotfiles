@@ -6,6 +6,7 @@ Extensions for the [Pi coding agent](https://github.com/earendil-works/pi-coding
 |---|---|
 | `custom-footer` | Shows provider, model, thinking level, context windows, usage |
 | `notify` | Sends a native macOS or Windows notification when the agent finishes and is waiting for input |
+| `subagent` | Runs explicitly requested tasks in isolated context; `/subagents` configures each subagent |
 
 ## Prerequisites
 
@@ -24,6 +25,7 @@ cd to repo root.
 mkdir -p ~/.pi/agent/extensions
 ln -sfn "$PWD/ai/pi/custom-footer" ~/.pi/agent/extensions/custom-footer
 ln -sfn "$PWD/ai/pi/notify"          ~/.pi/agent/extensions/notify
+ln -sfn "$PWD/ai/pi/subagent"        ~/.pi/agent/extensions/subagent
 ```
 
 ```bash
@@ -31,4 +33,5 @@ ln -sfn "$PWD/ai/pi/notify"          ~/.pi/agent/extensions/notify
 mkdir -p %USERPROFILE%\.pi\agent\extensions
 cmd /c "mklink /D %USERPROFILE%\.pi\agent\extensions\custom-footer %CD%\ai\pi\custom-footer"
 cmd /c "mklink /D %USERPROFILE%\.pi\agent\extensions\notify %CD%\ai\pi\notify"
+cmd /c "mklink /D %USERPROFILE%\.pi\agent\extensions\subagent %CD%\ai\pi\subagent"
 ```
