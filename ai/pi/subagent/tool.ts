@@ -49,15 +49,17 @@ export function registerSubagentTool(pi: ExtensionAPI): void {
       "Run one explicitly requested task in an isolated child Pi process.",
       "Do not call this tool unless the user asks for a subagent or names a specialist.",
       "The task is forwarded unchanged.",
+      "Multiple subagent calls in the same turn run concurrently.",
       `Available specialists from ${initialDiscovery.agentsDir}:\n${availableAgents}`,
       "The final response is capped at 50 KB.",
     ].join("\n\n"),
     promptSnippet: "Run an explicitly requested task in a named Pi specialist",
     promptGuidelines: [
       "Call subagent only when the user explicitly requests delegation or names an available specialist; never delegate proactively.",
+      "When the user explicitly requests independent subagents in parallel, issue all subagent calls in the same response.",
     ],
     parameters: subagentParameters,
-    executionMode: "sequential",
+    executionMode: "parallel",
 
     renderCall(args, theme, context) {
       const state = context.state as SubagentRenderState;
