@@ -1,3 +1,6 @@
 # OS Artifacts
 .DS_Store
 nul
+
+# Dependencies
+node_modules/
