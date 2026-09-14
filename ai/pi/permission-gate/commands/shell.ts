@@ -1,55 +1,14 @@
-/* 
-- rm -r/-rf/--recursive
-- sudo
-- chmod/chown with 777
-- git add
-- git push
-*/
+// Parses shell command segments and detects structured Git invocations; extend wrapper handling here.
 
-const DANGEROUS_PATTERNS = [/\brm\s+(-rf?|--recursive)/i, /\bsudo\b/i, /\b(chmod|chown)\b.*777/i];
-const BLOCKED_GIT_SUBCOMMANDS = new Set(["add", "push"]);
+import {
+  BLOCKED_GIT_SUBCOMMANDS,
+  ENV_OPTIONS_WITH_ARGUMENTS,
+  GIT_OPTIONS_WITH_ARGUMENTS,
+  SUDO_OPTIONS_WITH_ARGUMENTS,
+} from "./policy.js";
+
 const COMMAND_SEPARATORS = new Set([";", "|", "&", "(", ")", "{", "}", "\n"]);
 const SHELL_PREFIXES = new Set(["!", "if", "elif", "while", "until", "then", "do", "time"]);
-const GIT_OPTIONS_WITH_ARGUMENTS = new Set([
-  "-C",
-  "-c",
-  "--git-dir",
-  "--work-tree",
-  "--namespace",
-  "--config-env",
-]);
-const SUDO_OPTIONS_WITH_ARGUMENTS = new Set([
-  "-C",
-  "-D",
-  "-g",
-  "-h",
-  "-p",
-  "-R",
-  "-r",
-  "-t",
-  "-T",
-  "-U",
-  "-u",
-  "--chdir",
-  "--close-from",
-  "--group",
-  "--host",
-  "--prompt",
-  "--role",
-  "--type",
-  "--other-user",
-  "--user",
-]);
-const ENV_OPTIONS_WITH_ARGUMENTS = new Set([
-  "-a",
-  "-C",
-  "-S",
-  "-u",
-  "--argv0",
-  "--chdir",
-  "--split-string",
-  "--unset",
-]);
 
 function tokenizeShell(command: string): string[][] {
   const commands: string[][] = [];
@@ -221,10 +180,6 @@ function commandInvokesBlockedGit(words: string[]): boolean {
   return false;
 }
 
-function invokesBlockedGitCommand(command: string): boolean {
+export function invokesBlockedGitCommand(command: string): boolean {
   return tokenizeShell(command).some(commandInvokesBlockedGit);
-}
-
-export function isDangerousCommand(command: string): boolean {
-  return DANGEROUS_PATTERNS.some((pattern) => pattern.test(command)) || invokesBlockedGitCommand(command);
 }
