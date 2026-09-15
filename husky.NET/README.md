@@ -1,4 +1,4 @@
-## Summary
+## husky.NET
 
 [Husky.Net](https://alirezanet.github.io/Husky.Net/) is a .NET tool for running tasks on git hooks. This config sets up a pre-commit hook for Unity C# projects that automatically runs `dotnet format` on staged `Assets/**/*.cs` files before each commit.
 
@@ -26,7 +26,6 @@ mkdir -p <unity-project>/.husky
 cp husky.NET/.editorconfig <unity-project>/.editorconfig
 cp husky.NET/pre-commit <unity-project>/.husky/pre-commit
 cp husky.NET/task-runner.json <unity-project>/.husky/task-runner.json
-cp husky.NET/CODING_STANDARDS.md <unity-project>/docs/CODING_STANDARDS.md
 ```
 
 ### 3. Set the Solution File
