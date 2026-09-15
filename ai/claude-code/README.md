@@ -1,4 +1,4 @@
-## Summary
+## Claude Code
 
 Config for [Claude Code](https://github.com/anthropics/claude-code).
 

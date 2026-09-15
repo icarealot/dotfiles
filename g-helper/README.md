@@ -1,4 +1,4 @@
-## Summary
+## G-Helper
 
 [G-Helper](https://github.com/seerge/g-helper) is a fast, native tool for tuning performance, fans, GPU, battery, and RGB on ASUS laptops. This config sets up power limits, custom fan curves, and a battery charge limit of 80% for a ROG Zephyrus G14 GA402RJ.
 

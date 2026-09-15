@@ -1,4 +1,4 @@
-## Summary
+## Pi Coding Agent Extensions
 
 Extensions for the [Pi coding agent](https://github.com/earendil-works/pi-coding-agent).
 

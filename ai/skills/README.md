@@ -1,4 +1,4 @@
-## Summary
+## Skills
 
 Reusable AI agent skills.
 
