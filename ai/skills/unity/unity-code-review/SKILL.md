@@ -33,7 +33,7 @@ Look for the originating spec in this order:
 
 ## 3. Identify the standards
 
-Discover the project standards if not already known.
+Discover the project standards in `docs`.
 
 ## 4. Spawn all review axes in parallel
 
