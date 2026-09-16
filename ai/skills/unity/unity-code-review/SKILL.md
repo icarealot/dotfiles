@@ -23,19 +23,16 @@ Capture these commands once:
 
 Confirm the fixed point resolves with `git rev-parse <fixed-point>` and the diff is non-empty. Stop on a bad ref or empty diff before spawning sub-agents.
 
-## 2. Identify the spec source
+## 2. Identify the sources
 
-Look for the originating spec in this order:
+Look for these sources in `docs/` when present:
 
-1. A path supplied by the user.
-2. A spec under `docs/`, `specs/`, or `.scratch/` matching the branch name or feature.
-3. Ask the user when none is found. If the user confirms there is no spec, skip the Spec axis and report that no spec was available.
+- Project standards
+- Originating spec
 
-## 3. Identify the standards
+If either is missing, skip this axis.
 
-Discover the project standards in `docs`.
-
-## 4. Spawn all review axes in parallel
+## 3. Spawn all review axes in parallel
 
 Give every sub-agent the captured diff command, commit list, and any temporary standards exception relevant to its axis.
 
@@ -65,6 +62,7 @@ Merge findings in axis order. Omit any axis without findings.
 ## Standards
 
 1. **<finding name>**
+
 - `<path/to/file>`
 - <What the issue could hide>.
 - Action: <suggested fix>.
@@ -72,6 +70,7 @@ Merge findings in axis order. Omit any axis without findings.
 ## Spec
 
 1. **<finding name>**
+
 - `<quoted spec requirement>`
 - <What the deviation could hide>.
 - Action: <suggested fix>.
@@ -79,6 +78,7 @@ Merge findings in axis order. Omit any axis without findings.
 ## Testing
 
 1. **<finding name>**
+
 - `<path/to/file>`
 - <The behavior left unprotected or the assertion problem>.
 - Action: <suggested fix>.

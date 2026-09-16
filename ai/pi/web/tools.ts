@@ -1,7 +1,6 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import type { Tool } from "@modelcontextprotocol/sdk/types.js";
 import { Type } from "typebox";
-import { callExaTool } from "./exa.js";
+import { callExaTool, type McpTool } from "./exa.js";
 import { createCallRenderer, renderCollapsedResult } from "./renderers.js";
 
 export type WebToolName = "web_search" | "web_fetch";
@@ -50,13 +49,13 @@ function makeProviderNeutralDescription(description: string): string {
 
 function findDiscoveredTool(
     definition: WebToolDefinition,
-    discoveredTools: Tool[],
-): Tool | undefined {
+    discoveredTools: McpTool[],
+): McpTool | undefined {
     return discoveredTools.find((tool) => tool.name === definition.exaName);
 }
 
 export function getMissingWebToolNames(
-    discoveredTools: Tool[],
+    discoveredTools: McpTool[],
 ): WebToolName[] {
     const missingNames: WebToolName[] = [];
 
@@ -71,7 +70,7 @@ export function getMissingWebToolNames(
 
 export function registerWebTools(
     pi: ExtensionAPI,
-    discoveredTools: Tool[],
+    discoveredTools: McpTool[],
 ): void {
     for (const definition of WEB_TOOLS) {
         const discoveredTool = findDiscoveredTool(definition, discoveredTools);

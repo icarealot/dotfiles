@@ -1,6 +1,5 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import type { Tool } from "@modelcontextprotocol/sdk/types.js";
-import { closeExaClient, discoverExaTools } from "./exa.js";
+import { discoverExaTools, type McpTool } from "./exa.js";
 import {
     EXA_TOOL_NAMES,
     getMissingWebToolNames,
@@ -30,7 +29,7 @@ function registerDiscoveryWarning(
 }
 
 export default async function webExtension(pi: ExtensionAPI): Promise<void> {
-    let discoveredTools: Tool[] = [];
+    let discoveredTools: McpTool[] = [];
     let discoveryError: unknown;
 
     try {
@@ -45,5 +44,4 @@ export default async function webExtension(pi: ExtensionAPI): Promise<void> {
     }
 
     registerWebTools(pi, discoveredTools);
-    pi.on("session_shutdown", closeExaClient);
 }
