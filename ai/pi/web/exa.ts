@@ -1,59 +1,111 @@
-import { Client } from "@modelcontextprotocol/sdk/client";
-import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
-import type { Tool } from "@modelcontextprotocol/sdk/types.js";
-
 const EXA_MCP_SERVER = "https://mcp.exa.ai/mcp";
 
-let exaClientPromise: Promise<Client> | undefined;
-
-async function createExaClient(exaToolNames: readonly string[]): Promise<Client> {
-    const url = new URL(EXA_MCP_SERVER);
-    url.searchParams.set("tools", exaToolNames.join(","));
-
-    const client = new Client(
-        { name: "pi-exa", version: "0.1.0" },
-        { capabilities: {} },
-    );
-    const transport = new StreamableHTTPClientTransport(url);
-
-    try {
-        await client.connect(transport);
-        return client;
-    } catch (error) {
-        await client.close().catch(() => undefined);
-        throw error;
-    }
+export interface McpTool {
+    name: string;
+    description?: string;
+    inputSchema: Record<string, unknown>;
 }
 
-function getExaClient(exaToolNames: readonly string[]): Promise<Client> {
-    if (exaClientPromise) {
-        return exaClientPromise;
+interface JsonRpcError {
+    code: number;
+    message: string;
+}
+
+interface JsonRpcResponse<TResult> {
+    jsonrpc: "2.0";
+    id: number;
+    result?: TResult;
+    error?: JsonRpcError;
+}
+
+interface CallToolResult {
+    content: unknown[];
+    isError?: boolean;
+}
+
+let nextRequestId = 1;
+
+function parseSseMessages(body: string): unknown[] {
+    const messages: unknown[] = [];
+
+    for (const event of body.split(/\r?\n\r?\n/)) {
+        const data = event
+            .split(/\r?\n/)
+            .filter((line) => line.startsWith("data:"))
+            .map((line) => line.slice(5).trimStart())
+            .join("\n");
+
+        if (data && data !== "[DONE]") {
+            messages.push(JSON.parse(data));
+        }
     }
 
-    const connection = createExaClient(exaToolNames);
-    exaClientPromise = connection;
+    return messages;
+}
 
-    // Allow the next request to reconnect if this connection attempt fails.
-    connection.catch(() => {
-        if (exaClientPromise === connection) {
-            exaClientPromise = undefined;
-        }
+async function requestExa<TResult>(
+    method: string,
+    params: Record<string, unknown>,
+    availableToolNames: readonly string[],
+    signal?: AbortSignal,
+): Promise<TResult> {
+    const id = nextRequestId++;
+    const url = new URL(EXA_MCP_SERVER);
+    url.searchParams.set("tools", availableToolNames.join(","));
+
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            Accept: "application/json, text/event-stream",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ jsonrpc: "2.0", id, method, params }),
+        signal,
     });
+    const body = await response.text();
 
-    return connection;
+    if (!response.ok) {
+        throw new Error(
+            `Exa MCP request failed (${response.status}): ${body || response.statusText}`,
+        );
+    }
+
+    const contentType = response.headers.get("content-type") ?? "";
+    const messages = contentType.includes("text/event-stream")
+        ? parseSseMessages(body)
+        : [JSON.parse(body)];
+    const message = messages.find(
+        (candidate): candidate is JsonRpcResponse<TResult> =>
+            typeof candidate === "object" &&
+            candidate !== null &&
+            "id" in candidate &&
+            candidate.id === id,
+    );
+
+    if (!message) {
+        throw new Error("Exa MCP returned no response for the request");
+    }
+    if (message.error) {
+        throw new Error(
+            `Exa MCP error ${message.error.code}: ${message.error.message}`,
+        );
+    }
+    if (message.result === undefined) {
+        throw new Error("Exa MCP returned an invalid response");
+    }
+
+    return message.result;
 }
 
 export async function discoverExaTools(
     exaToolNames: readonly string[],
-): Promise<Tool[]> {
-    const client = await createExaClient(exaToolNames);
-
-    try {
-        const result = await client.listTools();
-        return result.tools.filter((tool) => exaToolNames.includes(tool.name));
-    } finally {
-        await client.close();
-    }
+): Promise<McpTool[]> {
+    const result = await requestExa<{ tools: McpTool[] }>(
+        "tools/list",
+        {},
+        exaToolNames,
+    );
+    return result.tools.filter((tool) => exaToolNames.includes(tool.name));
 }
 
 export async function callExaTool(
@@ -62,14 +114,11 @@ export async function callExaTool(
     signal: AbortSignal | undefined,
     availableToolNames: readonly string[],
 ): Promise<string> {
-    const client = await getExaClient(availableToolNames);
-    const result = await client.callTool(
-        {
-            name: toolName,
-            arguments: toolArguments,
-        },
-        undefined,
-        { signal },
+    const result = await requestExa<CallToolResult>(
+        "tools/call",
+        { name: toolName, arguments: toolArguments },
+        availableToolNames,
+        signal,
     );
 
     if (!Array.isArray(result.content)) {
@@ -96,23 +145,4 @@ export async function callExaTool(
     }
 
     return text;
-}
-
-export async function closeExaClient(): Promise<void> {
-    if (!exaClientPromise) {
-        return;
-    }
-
-    const connection = exaClientPromise;
-    exaClientPromise = undefined;
-
-    let client: Client;
-    try {
-        client = await connection;
-    } catch {
-        // A failed connection has no open client to close.
-        return;
-    }
-
-    await client.close();
 }

@@ -5,10 +5,12 @@ description: Test-drive Unity features or fixes when the user requests test-firs
 
 Run a red → green loop for one behavior slice at a time.
 
-## Standards preflight
+## Identify the sources
 
-- Discover the project standards in `docs`.
-- Read `CONTEXT.md` when present so names and interfaces use the project's domain language, and respect applicable ADRs.
+Look for these sources when present:
+
+- Project standards in `docs/`
+- `CONTEXT.md` so names and interfaces use the project's domain language, and respect applicable ADRs.
 
 ## Loop
 
