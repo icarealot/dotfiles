@@ -5,59 +5,73 @@ import { isDangerousCommand } from "./commands/index.js";
 import { isProtectedPath } from "./paths/index.js";
 
 export default function permissionGateExtension(pi: ExtensionAPI): void {
-  let blockedRun = false;
-  const blockedToolCallIds = new Set<string>();
+    let blockedRun = false;
+    const blockedToolCallIds = new Set<string>();
 
-  pi.on("tool_call", async (event, ctx) => {
-    let reason: string | undefined;
-    let notification: string | undefined;
+    pi.on("tool_call", async (event, ctx) => {
+        let operation: string | undefined;
+        let reason: string | undefined;
 
-    if (event.toolName === "bash") {
-      const command = event.input.command as string;
-      if (isDangerousCommand(command)) {
-        reason = "Dangerous command blocked";
-        notification = reason;
-      }
-    } else if (event.toolName === "write" || event.toolName === "edit") {
-      const path = event.input.path as string;
-      if (isProtectedPath(path, ctx.cwd)) {
-        reason = `Path "${path}" is protected`;
-        notification = `Blocked ${event.toolName} to protected path: ${path}`;
-      }
-    }
+        if (event.toolName === "bash") {
+            const command = event.input.command as string;
+            if (isDangerousCommand(command)) {
+                operation = `bash: ${command}`;
+                reason = `Dangerous command blocked!\n(${command})`;
+            }
+        } else if (event.toolName === "write" || event.toolName === "edit") {
+            const path = event.input.path as string;
+            if (isProtectedPath(path, ctx.cwd)) {
+                operation = `${event.toolName}: ${path}`;
+                reason = `Path is protected!\n${path}`;
+            }
+        }
 
-    if (!reason) {
-      return undefined;
-    }
+        if (!operation || !reason) {
+            return undefined;
+        }
 
-    blockedRun = true;
-    blockedToolCallIds.add(event.toolCallId);
+        blockedRun = true;
+        blockedToolCallIds.add(event.toolCallId);
 
-    if (ctx.hasUI) {
-      ctx.ui.notify(notification ?? reason, "warning");
-    }
+        if (!ctx.hasUI) {
+            return { block: true, reason, terminate: true };
+        }
 
-    return { block: true, reason, terminate: true };
-  });
+        let choice: string | undefined;
+        try {
+            choice = await ctx.ui.select(`Permission required\n${operation}`, [
+                "Approve",
+                "Deny",
+            ]);
+        } catch {
+            ctx.ui.notify(reason, "warning");
+            return { block: true, reason, terminate: true };
+        }
 
-  pi.on("tool_execution_end", (event, ctx) => {
-    if (!blockedToolCallIds.delete(event.toolCallId)) {
-      return;
-    }
+        if (choice === "Approve") {
+            return undefined;
+        }
 
-    // Abort only after Pi has finalized the gate's exact denial reason.
-    ctx.abort();
-  });
+        ctx.ui.notify(reason, "warning");
+        return { block: true, reason, terminate: true };
+    });
 
-  pi.on("before_provider_request", (_event, ctx) => {
-    if (blockedRun) {
-      // Drain queued messages as aborted without allowing another model request.
-      ctx.abort();
-    }
-  });
+    pi.on("tool_execution_end", (event, ctx) => {
+        if (!blockedToolCallIds.delete(event.toolCallId)) {
+            return;
+        }
 
-  pi.on("agent_settled", () => {
-    blockedRun = false;
-    blockedToolCallIds.clear();
-  });
+        ctx.abort();
+    });
+
+    pi.on("before_provider_request", (_event, ctx) => {
+        if (blockedRun) {
+            ctx.abort();
+        }
+    });
+
+    pi.on("agent_settled", () => {
+        blockedRun = false;
+        blockedToolCallIds.clear();
+    });
 }
