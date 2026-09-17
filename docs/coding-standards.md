@@ -65,7 +65,6 @@ Design and review tests according to behavior risk, not test volume. Prefer the 
 - Derive expected values from an independent rule, worked example, or known-good literal. Do not recreate the production calculation in the assertion.
 - Exclude private sequencing, internal collaborator calls, and private-method behavior unless they are part of an agreed public contract.
 - Assert ordering only when ordering is behavior. Use one lifecycle round trip when it establishes the invariant, and parameterize equivalent cases.
-- Compare floating-point values with a tolerance. Compare `Vector3` and `Quaternion` values component by component with the same tolerance.
 - Do not use mutable copy, styling, hierarchy, unrelated control counts, or another side channel as evidence of behavior.
 - For uGUI behavior that does not involve pointer or raycast wiring, invoke the instantiated production button's `onClick` event. Use full pointer-to-EventSystem input only for a distinct integration risk.
 
