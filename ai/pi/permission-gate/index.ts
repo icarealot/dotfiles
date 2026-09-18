@@ -30,10 +30,9 @@ export default function permissionGateExtension(pi: ExtensionAPI): void {
             return undefined;
         }
 
-        blockedRun = true;
-        blockedToolCallIds.add(event.toolCallId);
-
         if (!ctx.hasUI) {
+            blockedRun = true;
+            blockedToolCallIds.add(event.toolCallId);
             return { block: true, reason, terminate: true };
         }
 
@@ -45,6 +44,8 @@ export default function permissionGateExtension(pi: ExtensionAPI): void {
             ]);
         } catch {
             ctx.ui.notify(reason, "warning");
+            blockedRun = true;
+            blockedToolCallIds.add(event.toolCallId);
             return { block: true, reason, terminate: true };
         }
 
@@ -53,6 +54,8 @@ export default function permissionGateExtension(pi: ExtensionAPI): void {
         }
 
         ctx.ui.notify(reason, "warning");
+        blockedRun = true;
+        blockedToolCallIds.add(event.toolCallId);
         return { block: true, reason, terminate: true };
     });
 
