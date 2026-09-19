@@ -17,21 +17,6 @@ import {
   type AgentDiscoveryResult,
 } from "./agents.js";
 
-interface AgentOption {
-  label: string;
-  agent: AgentConfig;
-}
-
-interface ModelOption {
-  label: string;
-  scopedModel: ScopedModel;
-}
-
-interface ThinkingOption {
-  label: string;
-  level: ModelThinkingLevel;
-}
-
 function getModelReference(scopedModel: ScopedModel): string {
   const model = scopedModel.model;
   return `${model.provider}/${model.id}`;
@@ -118,16 +103,11 @@ async function chooseAgent(
     return undefined;
   }
 
-  const options: AgentOption[] = discovery.agents.map((agent) => ({
-    label: getAgentLabel(agent),
-    agent,
-  }));
-  const selectedLabel = await ctx.ui.select(
-    "Configure subagent",
-    options.map((option) => option.label),
+  const labels = discovery.agents.map(getAgentLabel);
+  const selectedLabel = await ctx.ui.select("Configure subagent", labels);
+  return discovery.agents.find(
+    (agent) => getAgentLabel(agent) === selectedLabel,
   );
-
-  return options.find((option) => option.label === selectedLabel)?.agent;
 }
 
 async function chooseModel(
@@ -136,16 +116,17 @@ async function chooseModel(
   models: ScopedModel[],
 ): Promise<ScopedModel | undefined> {
   const orderedModels = putCurrentModelFirst(models, agent.model);
-  const options: ModelOption[] = orderedModels.map((scopedModel) => ({
-    label: getModelLabel(scopedModel, agent.model),
-    scopedModel,
-  }));
+  const labels = orderedModels.map((model) =>
+    getModelLabel(model, agent.model),
+  );
   const selectedLabel = await ctx.ui.select(
     `Model for ${agent.name}`,
-    options.map((option) => option.label),
+    labels,
   );
 
-  return options.find((option) => option.label === selectedLabel)?.scopedModel;
+  return orderedModels.find(
+    (model) => getModelLabel(model, agent.model) === selectedLabel,
+  );
 }
 
 async function chooseThinkingLevel(
@@ -153,18 +134,18 @@ async function chooseThinkingLevel(
   agent: AgentConfig,
   scopedModel: ScopedModel,
 ): Promise<ModelThinkingLevel | undefined> {
-  const options: ThinkingOption[] = getThinkingLevels(scopedModel).map(
-    (level) => ({
-      label: getThinkingLabel(level, agent, scopedModel),
-      level,
-    }),
+  const levels = getThinkingLevels(scopedModel);
+  const labels = levels.map((level) =>
+    getThinkingLabel(level, agent, scopedModel),
   );
   const selectedLabel = await ctx.ui.select(
     `Thinking for ${agent.name}`,
-    options.map((option) => option.label),
+    labels,
   );
 
-  return options.find((option) => option.label === selectedLabel)?.level;
+  return levels.find(
+    (level) => getThinkingLabel(level, agent, scopedModel) === selectedLabel,
+  );
 }
 
 async function configureAgent(

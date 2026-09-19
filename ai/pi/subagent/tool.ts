@@ -1,11 +1,12 @@
 /** Model-facing subagent tool definition and registration. */
 
 import {
+  getMarkdownTheme,
   keyHint,
   type ExtensionAPI,
   type Theme,
 } from "@earendil-works/pi-coding-agent";
-import { Container, Text } from "@earendil-works/pi-tui";
+import { Container, Markdown, Spacer, Text } from "@earendil-works/pi-tui";
 import { Type } from "typebox";
 import {
   discoverAgents,
@@ -17,6 +18,7 @@ import {
   truncateText,
   type AgentActivity,
   type AgentProgress,
+  type ToolActivity,
 } from "./runner.js";
 
 const subagentParameters = Type.Object({
@@ -27,8 +29,7 @@ const subagentParameters = Type.Object({
   }),
 });
 
-const SUBAGENT_PREVIEW_LINES = 10;
-const SUBAGENT_ACTIVITY_PREVIEW_ITEMS = 10;
+const SUBAGENT_ACTIVITY_PREVIEW_ITEMS = 5;
 
 interface SubagentRenderState {
   startedAt?: number;
@@ -61,88 +62,133 @@ function getStringArg(
 }
 
 function formatToolActivity(
-  activity: Extract<AgentActivity, { type: "tool" }>,
+  activity: ToolActivity,
   theme: Theme,
 ): string {
   const args = activity.args;
   const path = getStringArg(args, "path", "file_path") ?? "...";
-  let description: string;
+  let summary: string;
 
   switch (activity.name) {
     case "bash":
-      description = `$ ${getStringArg(args, "command") ?? "..."}`;
-      break;
     case "powershell":
-      description = `PS> ${getStringArg(args, "command") ?? "..."}`;
+      summary = getStringArg(args, "command") ?? "...";
       break;
     case "read":
-      description = `read ${path}`;
-      break;
     case "write":
-      description = `write ${path}`;
-      break;
     case "edit":
-      description = `edit ${path}`;
+    case "ls":
+      summary = path;
       break;
     case "grep": {
       const pattern = getStringArg(args, "pattern") ?? "";
-      description = `grep /${pattern}/ in ${path}`;
+      summary = `/${pattern}/ in ${path}`;
       break;
     }
     case "find": {
       const pattern = getStringArg(args, "pattern") ?? "*";
-      description = `find ${pattern} in ${path}`;
+      summary = `${pattern} in ${path}`;
       break;
     }
-    case "ls":
-      description = `ls ${path}`;
+    default:
+      summary = getStringArg(args, "preview") ?? "...";
       break;
-    default: {
-      const preview = getStringArg(args, "preview");
-      description = `${activity.name}${preview ? ` ${preview}` : ""}`;
-      break;
-    }
   }
 
-  return `${theme.fg("muted", "→ ")}${theme.fg(
-    "toolOutput",
-    truncateActivityText(description),
-  )}`;
+  return theme.fg(
+    "muted",
+    truncateActivityText(`${activity.name}: ${summary}`),
+  );
 }
 
-function formatActivity(
-  activity: AgentActivity,
+interface PromptActivity {
+  type: "prompt";
+  text: string;
+}
+
+interface FinalActivity {
+  type: "final";
+  text: string;
+  isError: boolean;
+}
+
+type RenderActivity = AgentActivity | PromptActivity | FinalActivity;
+
+function addActivity(
+  component: Container,
+  activity: RenderActivity,
   theme: Theme,
-): string {
-  if (activity.type === "tool") return formatToolActivity(activity, theme);
-  return `${theme.fg("muted", "• ")}${theme.fg("toolOutput", activity.text)}`;
+): void {
+  if (activity.type === "tool") {
+    component.addChild(
+      new Text(formatToolActivity(activity, theme), 0, 0),
+    );
+    return;
+  }
+
+  if (activity.type === "final" && activity.isError) {
+    const errorText = activity.text
+      .split("\n")
+      .map((line) => theme.fg("error", line))
+      .join("\n");
+    component.addChild(new Text(errorText, 0, 0));
+    return;
+  }
+
+  component.addChild(new Markdown(activity.text, 0, 0, getMarkdownTheme()));
 }
 
-function formatActivities(
-  progress: AgentProgress,
+function getContainer(lastComponent: unknown): Container {
+  return lastComponent instanceof Container ? lastComponent : new Container();
+}
+
+function getResultText(
+  result: { content: Array<{ type: string; text?: string }> },
+): string {
+  return result.content
+    .filter((content) => content.type === "text")
+    .map((content) => content.text?.replace(/\r/g, "") ?? "")
+    .join("\n");
+}
+
+function appendActivityTimeline(
+  component: Container,
+  activities: RenderActivity[],
+  omittedActivityCount: number,
   expanded: boolean,
   theme: Theme,
-): string {
-  const activities = expanded
-    ? progress.activities
-    : progress.activities.slice(-SUBAGENT_ACTIVITY_PREVIEW_ITEMS);
-  const hiddenRetainedCount = progress.activities.length - activities.length;
-  const hiddenCount = progress.omittedActivityCount + hiddenRetainedCount;
-  const lines: string[] = [];
+): void {
+  const visibleActivities = expanded
+    ? activities
+    : activities.slice(-SUBAGENT_ACTIVITY_PREVIEW_ITEMS);
+  const hiddenCount =
+    omittedActivityCount + activities.length - visibleActivities.length;
+  if (visibleActivities.length === 0 && hiddenCount === 0) return;
 
+  component.addChild(new Spacer(1));
   if (hiddenCount > 0) {
-    const label = expanded
+    const message = expanded
       ? `... ${hiddenCount} earlier activities omitted`
       : `... ${hiddenCount} earlier activities`;
-    let line = theme.fg("muted", label);
+    let label = theme.fg("muted", message);
     if (!expanded) {
-      line += ` ${keyHint("app.tools.expand", "to expand")}`;
+      label += ` ${keyHint("app.tools.expand", "to expand")}`;
     }
-    lines.push(line);
+    component.addChild(new Text(label, 0, 0));
   }
 
-  lines.push(...activities.map((activity) => formatActivity(activity, theme)));
-  return lines.join("\n");
+  let previousType: RenderActivity["type"] | undefined;
+  for (const activity of visibleActivities) {
+    const isTool = activity.type === "tool";
+    if (previousType !== undefined && (!isTool || previousType !== "tool")) {
+      component.addChild(new Spacer(1));
+    } else if (previousType === undefined && hiddenCount > 0) {
+      component.addChild(new Spacer(1));
+    }
+
+    addActivity(component, activity, theme);
+    previousType = activity.type;
+  }
 }
 
 function formatElapsed(startedAt: number, endedAt: number): string {
@@ -198,16 +244,17 @@ export function registerSubagentTool(pi: ExtensionAPI): void {
       );
       const modelIdentity = agent?.model ?? "N/A";
       const thinkingLevel = agent?.thinking ?? "N/A";
-      const text =
-        (context.lastComponent as Text | undefined) ?? new Text("", 0, 0);
-
-      text.setText(
+      const component = getContainer(context.lastComponent);
+      const header =
         `${theme.fg("toolTitle", theme.bold(`subagent ${agentName}`))} ${theme.fg(
           "muted",
           `| ${modelIdentity} (${thinkingLevel})`,
-        )}`,
-      );
-      return text;
+        )}`;
+
+      component.clear();
+      component.addChild(new Text(header, 0, 0));
+      component.invalidate();
+      return component;
     },
 
     renderResult(result, options, theme, context) {
@@ -216,77 +263,46 @@ export function registerSubagentTool(pi: ExtensionAPI): void {
         state.finishedAt ??= Date.now();
       }
 
-      const output = result.content
-        .filter((content) => content.type === "text")
-        .map((content) => content.text?.replace(/\r/g, "") ?? "")
-        .join("\n");
+      const output = getResultText(result);
       const details = result.details as AgentProgress | undefined;
-      const component =
-        context.lastComponent instanceof Container
-          ? context.lastComponent
-          : new Container();
+      const component = getContainer(context.lastComponent);
 
       component.clear();
-      if (options.isPartial) {
-        const activityOutput = details
-          ? formatActivities(details, context.expanded, theme)
-          : "";
-        component.addChild(
-          new Text(
-            activityOutput || theme.fg("muted", "Starting…"),
-            0,
-            0,
-          ),
-        );
-      } else {
-        if (context.expanded && details && details.activities.length > 0) {
-          component.addChild(
-            new Text(theme.fg("muted", "Activity"), 0, 0),
-          );
-          component.addChild(
-            new Text(formatActivities(details, true, theme), 0, 0),
-          );
-          if (output) {
-            const outputLabel = context.isError
-              ? "Failure reason"
-              : "Final response";
-            component.addChild(
-              new Text(`\n${theme.fg("muted", outputLabel)}`, 0, 0),
-            );
-          }
-        }
 
-        if (output) {
-          const lines = output.split("\n");
-          const displayLines = context.expanded
-            ? lines
-            : lines.slice(0, SUBAGENT_PREVIEW_LINES);
-          let display = displayLines
-            .map((line) => theme.fg("toolOutput", line))
-            .join("\n");
-          const remaining = lines.length - displayLines.length;
-          if (remaining > 0) {
-            display += `${theme.fg("muted", `\n... (${remaining} more lines,`)} ${keyHint("app.tools.expand", "to expand")}${theme.fg("muted", ")")}`;
-          } else if (
-            context.isError
-            && !context.expanded
-            && details
-            && (details.activities.length > 0 || details.omittedActivityCount > 0)
-          ) {
-            display += `\n${keyHint("app.tools.expand", "to expand")}`;
-          }
-          component.addChild(new Text(display, 0, 0));
-        }
+      const activities: RenderActivity[] = [
+        {
+          type: "prompt",
+          text: String(context.args.task || "...").replace(/\r/g, ""),
+        },
+        ...(details?.activities ?? []),
+      ];
+      if (!options.isPartial && output) {
+        activities.push({
+          type: "final",
+          text: output,
+          isError: context.isError,
+        });
       }
+      appendActivityTimeline(
+        component,
+        activities,
+        details?.omittedActivityCount ?? 0,
+        options.expanded,
+        theme,
+      );
 
       if (
         !options.isPartial
         && state.startedAt !== undefined
         && state.finishedAt !== undefined
       ) {
+        component.addChild(new Spacer(1));
         component.addChild(
           new Text(
-            `\n${theme.fg("muted", `Took ${formatElapsed(state.startedAt, state.finishedAt)}`)}`,
+            theme.fg(
+              "muted",
+              `Took ${formatElapsed(state.startedAt, state.finishedAt)}`,
+            ),
             0,
             0,
           ),
@@ -342,7 +358,7 @@ export function registerSubagentTool(pi: ExtensionAPI): void {
           details: {
             activities: runResult.activities,
             omittedActivityCount: runResult.omittedActivityCount,
-          } satisfies AgentProgress,
+          },
         };
       } catch (error) {
         if (error instanceof AgentRunError) {

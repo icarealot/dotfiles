@@ -24,7 +24,9 @@ const THINKING_LEVELS: ThinkingLevel[] = [
   "max",
 ];
 
-const BUILTIN_TOOLS = new Set([
+const AGENT_NAME_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/;
+
+const BUILTIN_TOOLS = new Set<string>([
   "read",
   "bash",
   "powershell",
@@ -89,28 +91,24 @@ function parseTools(value: unknown): string[] | undefined {
   return [...new Set(tools)];
 }
 
+function getRequiredText(value: unknown, field: "description" | "model"): string {
+  if (typeof value !== "string" || value.trim() === "") {
+    throw new Error(`frontmatter.${field} must be a non-empty string`);
+  }
+
+  return value.trim();
+}
+
 function loadAgent(filePath: string): AgentConfig {
   const name = path.basename(filePath, path.extname(filePath));
-  if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(name)) {
+  if (!AGENT_NAME_PATTERN.test(name)) {
     throw new Error("filename must contain only letters, numbers, dots, underscores, and hyphens");
   }
 
   const content = fs.readFileSync(filePath, "utf8");
   const { frontmatter } = parseFrontmatter<AgentFrontmatter>(content);
-
-  if (
-    typeof frontmatter.description !== "string"
-    || frontmatter.description.trim() === ""
-  ) {
-    throw new Error("frontmatter.description must be a non-empty string");
-  }
-
-  if (
-    typeof frontmatter.model !== "string"
-    || frontmatter.model.trim() === ""
-  ) {
-    throw new Error("frontmatter.model must be a non-empty string");
-  }
+  const description = getRequiredText(frontmatter.description, "description");
+  const model = getRequiredText(frontmatter.model, "model");
 
   if (!isThinkingLevel(frontmatter.thinking)) {
     throw new Error(
@@ -132,8 +130,8 @@ function loadAgent(filePath: string): AgentConfig {
 
   return {
     name,
-    description: frontmatter.description.trim(),
-    model: frontmatter.model.trim(),
+    description,
+    model,
     thinking: frontmatter.thinking,
     tools,
     filePath,
@@ -206,6 +204,11 @@ export function formatAgentConfigErrors(
     .join("\n");
 }
 
+function isAgentFile(entry: fs.Dirent): boolean {
+  return entry.name.endsWith(".md")
+    && (entry.isFile() || entry.isSymbolicLink());
+}
+
 export function discoverAgents(
   agentsDir: string = AGENTS_DIR,
 ): AgentDiscoveryResult {
@@ -226,8 +229,7 @@ export function discoverAgents(
   }
 
   for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
-    if (!entry.name.endsWith(".md")) continue;
-    if (!entry.isFile() && !entry.isSymbolicLink()) continue;
+    if (!isAgentFile(entry)) continue;
 
     const filePath = path.join(agentsDir, entry.name);
     try {

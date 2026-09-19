@@ -9,7 +9,6 @@ import type { AgentConfig } from "./agents.js";
 const MAX_OUTPUT_BYTES = 50 * 1024;
 const MAX_ACTIVITY_ENTRIES = 100;
 const MAX_ACTIVITY_ARGUMENT_LENGTH = 500;
-const MAX_PROGRESS_TEXT_LENGTH = 160;
 
 /**
  * Child Pi protocol:
@@ -26,9 +25,15 @@ interface MessagePart {
   arguments?: unknown;
 }
 
+export interface ToolActivity {
+  type: "tool";
+  name: string;
+  args: Record<string, unknown>;
+}
+
 export type AgentActivity =
   | { type: "text"; text: string }
-  | { type: "tool"; name: string; args: Record<string, unknown> };
+  | ToolActivity;
 
 export interface AgentProgress {
   activities: AgentActivity[];
@@ -73,6 +78,7 @@ interface ChildResult extends AgentRunResult {
   errorMessage?: string;
   spawnError?: Error;
   aborted: boolean;
+  finalResponseActivity?: AgentActivity;
 }
 
 type ProgressCallback = (progress: AgentProgress) => void;
@@ -83,21 +89,6 @@ function extractMessageText(message: ChildMessage): string {
     .map((part) => part.text)
     .join("\n")
     .trim();
-}
-
-function truncateProgressText(text: string): string {
-  const characters = Array.from(text);
-  if (characters.length <= MAX_PROGRESS_TEXT_LENGTH) return text;
-  return `${characters.slice(0, MAX_PROGRESS_TEXT_LENGTH - 1).join("")}…`;
-}
-
-function getProgressText(text: string): string | undefined {
-  const firstLine = text
-    .replace(/\r/g, "")
-    .split("\n")
-    .map((line) => line.trim())
-    .find((line) => line.length > 0);
-  return firstLine ? truncateProgressText(firstLine) : undefined;
 }
 
 function truncateActivityArgument(value: string): string {
@@ -151,24 +142,30 @@ function sanitizeToolArguments(
 }
 
 function getMessageActivities(message: ChildMessage): AgentActivity[] {
-  const parts = message.content ?? [];
-  const hasToolCall = parts.some((part) => part.type === "toolCall");
+  const responseText = extractMessageText(message).replace(/\r/g, "");
   const activities: AgentActivity[] = [];
+  let responseAdded = false;
 
-  for (const part of parts) {
-    if (part.type === "text" && part.text && hasToolCall) {
-      const text = getProgressText(part.text);
-      if (text) activities.push({ type: "text", text });
-      continue;
-    }
-
+  for (const part of message.content ?? []) {
     if (part.type === "toolCall" && part.name) {
       activities.push({
         type: "tool",
         name: part.name,
         args: sanitizeToolArguments(part.name, part.arguments),
       });
+      continue;
     }
+
+    if (part.type !== "text" || !responseText || responseAdded) continue;
+
+    activities.push({
+      type: "text",
+      text: truncateText(
+        responseText,
+        "\n\n[Agent response truncated at 50 KB.]",
+      ),
+    });
+    responseAdded = true;
   }
 
   return activities;
@@ -186,14 +183,18 @@ function appendActivities(
   }
 }
 
+function getProgress(result: ChildResult): AgentProgress {
+  return {
+    activities: [...result.activities],
+    omittedActivityCount: result.omittedActivityCount,
+  };
+}
+
 function emitProgress(
   result: ChildResult,
   onProgress: ProgressCallback | undefined,
 ): void {
-  onProgress?.({
-    activities: [...result.activities],
-    omittedActivityCount: result.omittedActivityCount,
-  });
+  onProgress?.(getProgress(result));
 }
 
 export function truncateText(text: string, suffix: string): string {
@@ -267,22 +268,24 @@ function createOutputLineReader(stdout: Readable) {
   return createInterface({ input: lineInput, crlfDelay: Infinity });
 }
 
+function parseChildEvent(line: string): ChildEvent | undefined {
+  if (!line.trim()) return undefined;
+
+  try {
+    return JSON.parse(line) as ChildEvent;
+  } catch {
+    // Ignore non-JSON lines; the child may have written incidental output.
+    return undefined;
+  }
+}
+
 function handleChildLine(
   line: string,
   result: ChildResult,
   onProgress: ProgressCallback | undefined,
 ): void {
-  if (!line.trim()) return;
-
-  let event: ChildEvent;
-  try {
-    event = JSON.parse(line) as ChildEvent;
-  } catch {
-    // Ignore non-JSON lines; the child may have written incidental output.
-    return;
-  }
-
-  if (event.type !== "message_end" || event.message?.role !== "assistant") {
+  const event = parseChildEvent(line);
+  if (!event || event.type !== "message_end" || event.message?.role !== "assistant") {
     return;
   }
 
@@ -292,10 +295,26 @@ function handleChildLine(
   result.errorMessage = event.message.errorMessage;
 
   const activities = getMessageActivities(event.message);
+  if (text) {
+    result.finalResponseActivity = activities.find(
+      (activity) => activity.type === "text",
+    );
+  }
   if (activities.length > 0) {
     appendActivities(result, activities);
     emitProgress(result, onProgress);
   }
+}
+
+function createChildResult(): ChildResult {
+  return {
+    exitCode: 0,
+    finalOutput: "",
+    activities: [],
+    omittedActivityCount: 0,
+    stderr: "",
+    aborted: false,
+  };
 }
 
 async function executeChildProcess(
@@ -306,14 +325,7 @@ async function executeChildProcess(
   onProgress: ProgressCallback | undefined,
 ): Promise<ChildResult> {
   return new Promise<ChildResult>((resolve) => {
-    const result: ChildResult = {
-      exitCode: 0,
-      finalOutput: "",
-      activities: [],
-      omittedActivityCount: 0,
-      stderr: "",
-      aborted: false,
-    };
+    const result = createChildResult();
 
     const child = spawn(command.command, command.args, {
       cwd,
@@ -366,10 +378,7 @@ function getFailureReason(result: ChildResult): string {
 }
 
 function throwIfChildFailed(agent: AgentConfig, result: ChildResult): void {
-  const progress: AgentProgress = {
-    activities: [...result.activities],
-    omittedActivityCount: result.omittedActivityCount,
-  };
+  const progress = getProgress(result);
 
   if (result.aborted) {
     throw new AgentRunError(
@@ -416,9 +425,13 @@ export async function runAgent(
   );
 
   throwIfChildFailed(agent, result);
+
+  const activities = result.activities.filter(
+    (activity) => activity !== result.finalResponseActivity,
+  );
   return {
     finalOutput: result.finalOutput,
-    activities: [...result.activities],
+    activities,
     omittedActivityCount: result.omittedActivityCount,
   };
 }
