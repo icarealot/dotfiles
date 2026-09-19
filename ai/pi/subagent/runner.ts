@@ -39,6 +39,16 @@ export interface AgentRunResult extends AgentProgress {
   finalOutput: string;
 }
 
+export class AgentRunError extends Error {
+  readonly progress: AgentProgress;
+
+  constructor(message: string, progress: AgentProgress) {
+    super(message);
+    this.name = "AgentRunError";
+    this.progress = progress;
+  }
+}
+
 interface ChildMessage {
   role: string;
   content?: MessagePart[];
@@ -356,8 +366,16 @@ function getFailureReason(result: ChildResult): string {
 }
 
 function throwIfChildFailed(agent: AgentConfig, result: ChildResult): void {
+  const progress: AgentProgress = {
+    activities: [...result.activities],
+    omittedActivityCount: result.omittedActivityCount,
+  };
+
   if (result.aborted) {
-    throw new Error(`Subagent ${agent.name} was aborted.`);
+    throw new AgentRunError(
+      `Subagent ${agent.name} was aborted.`,
+      progress,
+    );
   }
 
   if (
@@ -373,7 +391,10 @@ function throwIfChildFailed(agent: AgentConfig, result: ChildResult): void {
     getFailureReason(result),
     "\n\n[Failure diagnostic truncated.]",
   );
-  throw new Error(`Subagent ${agent.name} failed: ${diagnostic}`);
+  throw new AgentRunError(
+    `Subagent ${agent.name} failed: ${diagnostic}`,
+    progress,
+  );
 }
 
 /** Start one child Pi process and return its final response and activity history. */

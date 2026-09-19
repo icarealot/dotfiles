@@ -12,6 +12,7 @@ import {
   type AgentDiscoveryResult,
 } from "./agents.js";
 import {
+  AgentRunError,
   runAgent,
   truncateText,
   type AgentActivity,
@@ -29,16 +30,16 @@ const subagentParameters = Type.Object({
 const SUBAGENT_PREVIEW_LINES = 10;
 const SUBAGENT_ACTIVITY_PREVIEW_ITEMS = 10;
 
+interface SubagentRenderState {
+  startedAt?: number;
+  finishedAt?: number;
+}
+
 function formatAvailableAgents(discovery: AgentDiscoveryResult): string {
   if (discovery.agents.length === 0) return "- none";
   return discovery.agents
     .map((agent) => `- ${agent.name}: ${agent.description}`)
     .join("\n");
-}
-
-interface SubagentRenderState {
-  startedAt?: number;
-  finishedAt?: number;
 }
 
 function truncateActivityText(text: string, maxLength: number = 160): string {
@@ -144,9 +145,7 @@ function formatActivities(
   return lines.join("\n");
 }
 
-function formatElapsed(startedAt: number | undefined, endedAt: number): string {
-  if (startedAt === undefined) return "0.0s";
-
+function formatElapsed(startedAt: number, endedAt: number): string {
   const elapsedTenths = Math.max(0, Math.floor((endedAt - startedAt) / 100));
   return `${(elapsedTenths / 10).toFixed(1)}s`;
 }
@@ -154,6 +153,19 @@ function formatElapsed(startedAt: number | undefined, endedAt: number): string {
 export function registerSubagentTool(pi: ExtensionAPI): void {
   const initialDiscovery = discoverAgents();
   const availableAgents = formatAvailableAgents(initialDiscovery);
+  const failedProgressByToolCallId = new Map<string, AgentProgress>();
+
+  // Pi converts thrown tool errors into a new result, so reattach the progress
+  // after execution while preserving the tool's error status.
+  pi.on("tool_result", (event) => {
+    if (event.toolName !== "subagent") return;
+
+    const progress = failedProgressByToolCallId.get(event.toolCallId);
+    if (!progress) return;
+
+    failedProgressByToolCallId.delete(event.toolCallId);
+    return { details: progress };
+  });
 
   pi.registerTool({
     name: "subagent",
@@ -176,13 +188,8 @@ export function registerSubagentTool(pi: ExtensionAPI): void {
 
     renderCall(args, theme, context) {
       const state = context.state as SubagentRenderState;
-
       if (context.executionStarted && state.startedAt === undefined) {
         state.startedAt = Date.now();
-      }
-
-      if (!context.isPartial) {
-        state.finishedAt ??= Date.now();
       }
 
       const agentName = args.agent || "N/A";
@@ -205,8 +212,7 @@ export function registerSubagentTool(pi: ExtensionAPI): void {
 
     renderResult(result, options, theme, context) {
       const state = context.state as SubagentRenderState;
-
-      if (!options.isPartial || context.isError) {
+      if (!options.isPartial) {
         state.finishedAt ??= Date.now();
       }
 
@@ -241,8 +247,11 @@ export function registerSubagentTool(pi: ExtensionAPI): void {
             new Text(formatActivities(details, true, theme), 0, 0),
           );
           if (output) {
+            const outputLabel = context.isError
+              ? "Failure reason"
+              : "Final response";
             component.addChild(
-              new Text(`\n${theme.fg("muted", "Final response")}`, 0, 0),
+              new Text(`\n${theme.fg("muted", outputLabel)}`, 0, 0),
             );
           }
         }
@@ -258,19 +267,29 @@ export function registerSubagentTool(pi: ExtensionAPI): void {
           const remaining = lines.length - displayLines.length;
           if (remaining > 0) {
             display += `${theme.fg("muted", `\n... (${remaining} more lines,`)} ${keyHint("app.tools.expand", "to expand")}${theme.fg("muted", ")")}`;
+          } else if (
+            context.isError
+            && !context.expanded
+            && details
+            && (details.activities.length > 0 || details.omittedActivityCount > 0)
+          ) {
+            display += `\n${keyHint("app.tools.expand", "to expand")}`;
           }
           component.addChild(new Text(display, 0, 0));
         }
       }
 
-      if (state.startedAt !== undefined) {
-        const label = options.isPartial ? "Elapsed" : "Took";
-        const elapsed = formatElapsed(
-          state.startedAt,
-          state.finishedAt ?? Date.now(),
-        );
+      if (
+        !options.isPartial
+        && state.startedAt !== undefined
+        && state.finishedAt !== undefined
+      ) {
         component.addChild(
-          new Text(`\n${theme.fg("muted", `${label} ${elapsed}`)}`, 0, 0),
+          new Text(
+            `\n${theme.fg("muted", `Took ${formatElapsed(state.startedAt, state.finishedAt)}`)}`,
+            0,
+            0,
+          ),
         );
       }
 
@@ -278,7 +297,7 @@ export function registerSubagentTool(pi: ExtensionAPI): void {
       return component;
     },
 
-    async execute(_toolCallId, params, signal, onUpdate, ctx) {
+    async execute(toolCallId, params, signal, onUpdate, ctx) {
       const discovery = discoverAgents();
       const agent = discovery.agents.find(
         (candidate) => candidate.name === params.agent,
@@ -299,31 +318,38 @@ export function registerSubagentTool(pi: ExtensionAPI): void {
         details: initialProgress,
       });
 
-      const runResult = await runAgent(
-        agent,
-        params.task,
-        ctx.cwd,
-        ctx.isProjectTrusted(),
-        signal,
-        (progress) => {
-          onUpdate?.({
-            content: [{ type: "text", text: `${agent.name} is running…` }],
-            details: progress,
-          });
-        },
-      );
-      const output = truncateText(
-        runResult.finalOutput || "(no output)",
-        "\n\n[Output truncated at 50 KB.]",
-      );
+      try {
+        const runResult = await runAgent(
+          agent,
+          params.task,
+          ctx.cwd,
+          ctx.isProjectTrusted(),
+          signal,
+          (progress) => {
+            onUpdate?.({
+              content: [{ type: "text", text: `${agent.name} is running…` }],
+              details: progress,
+            });
+          },
+        );
+        const output = truncateText(
+          runResult.finalOutput || "(no output)",
+          "\n\n[Output truncated at 50 KB.]",
+        );
 
-      return {
-        content: [{ type: "text", text: output }],
-        details: {
-          activities: runResult.activities,
-          omittedActivityCount: runResult.omittedActivityCount,
-        } satisfies AgentProgress,
-      };
+        return {
+          content: [{ type: "text", text: output }],
+          details: {
+            activities: runResult.activities,
+            omittedActivityCount: runResult.omittedActivityCount,
+          } satisfies AgentProgress,
+        };
+      } catch (error) {
+        if (error instanceof AgentRunError) {
+          failedProgressByToolCallId.set(toolCallId, error.progress);
+        }
+        throw error;
+      }
     },
   });
 }
