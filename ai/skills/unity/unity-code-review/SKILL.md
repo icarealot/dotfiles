@@ -37,11 +37,11 @@ Give the subagent the captured diff command, commit list, any temporary standard
 
 The subagent runs three sequential passes, one per axis, each against its own source:
 
-**Standards pass** — apply every documented coding rule and heuristic to every changed code hunk. Report each hard violation with the exact rule, and label heuristic findings as judgment calls. Quote the relevant hunk, explain what it could hide, and suggest a concrete fix. Skip checks already enforced by tooling.
+**Standards pass** — apply every documented coding rule and heuristic to every changed code hunk. Inspect each full changed file and any relevant prefabs, assets, call sites, and configuration when a rule cannot be decided from the hunk alone. Report each hard violation with the exact rule, and label heuristic findings as judgment calls. Quote the relevant evidence, explain what the issue could hide, and suggest a concrete fix.
 
 **Spec pass** — report requirements that are missing or partial, behavior not requested by the spec, and requirements whose implementation appears incorrect. Quote the relevant spec line for every finding and suggest a concrete fix.
 
-**Testing pass** — apply every testing rule to changed production and test code. Report each retained test that violates one and each changed behavior that warrants validation but remains unprotected. Quote the relevant hunk, name the behavior and sufficient fixture, and suggest a concrete fix. Account for every behavior or assertion in each added or modified test retained at `HEAD`: after searching all repository test code—not only the diff—mark it unique or place it in an overlap group containing a changed test. Report groups with redundant coverage as ordinary findings, naming the shared behavior and the exact overlapping test methods, and recommending consolidation or removal.
+**Testing pass** — apply every testing rule to changed production and test code. Account for every changed caller-visible behavior: name its contract and risk, decide whether automation or human judgment can establish it, select the cheapest sufficient validation level and smallest fixture, and verify that the selected automated checks or concrete manual checks are recorded. Accept a deliberate omission only when its reason is recorded. Report each retained test that violates a rule and each changed behavior without sufficient validation. Quote the relevant evidence and suggest a concrete fix; for missing automation, name the behavior and sufficient fixture, and for human judgment, name the concrete manual checklist.
 
 **Extend, don't repeat.** If a later pass finds an issue already reported in an earlier pass, extend the existing finding with the new axis tag and any new detail. Never create a duplicate entry.
 
