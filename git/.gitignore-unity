@@ -54,6 +54,11 @@ ExportedObj/
 .DS_Store
 nul
 
+# Secrets
+.env
+*.keystore
+*.jks
+
 # Project-Specific
 /[Mm]emoryCaptures/
 /[Rr]ecordings/
