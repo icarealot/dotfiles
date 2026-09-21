@@ -32,6 +32,11 @@ Look for the project standards in `docs/` when present.
 - Leave Player builds and human playtests unrun and report them as deferred validation.
 - Never run `git add`, `git commit`, or `git stash` unless the user explicitly asks for that exact operation.
 
+### Scratch space
+
+- Use the repository-root `.scratch/` directory for every temporary artifact, including scripts, files, logs, exports, screenshots, and command output.
+- Track artifacts created for the task and remove them before reporting completion.
+
 ## 3. Report
 
 Report:
