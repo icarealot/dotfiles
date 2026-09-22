@@ -1,82 +1,74 @@
 ---
 name: unity-code-review
-description: Review changes since a fixed point along independent coding, specification, and testing axes using sequential passes, severity scores, and axis tags, then save actionable findings to Markdown.
-disable-model-invocation: true
+description: Review Unity changes against coding, specification, and testing requirements.
 ---
 
-Review changes since a fixed point—a commit, branch, tag, or merge-base—through three sequential passes:
+Review changes since a supplied fixed point through independent **Standards**, **Spec**, and **Testing** evaluations. Score, merge, tag, and sort the findings.
 
-- **Standards** — conformance to the discovered coding standard.
-- **Spec** — fidelity to the originating task or spec.
-- **Testing** — conformance to the discovered testing standard.
+## 1. Capture the change set
 
-Run each applicable pass against its own source. Score every finding 0–5, merge duplicates, and save the final sorted report.
+- Ask for a fixed point when absent, then confirm it with `git rev-parse <fixed-point>`.
+- Capture once: `git diff <fixed-point>`, `git diff --numstat <fixed-point>`, `git status --short`, `git ls-files --others --exclude-standard`, and `git log <fixed-point>..HEAD --oneline`.
+- Treat tracked worktree changes, staged changes, later commits, and untracked files as one change set.
+- Read every reviewable untracked text file completely. For changed binary files, inspect identities plus applicable Unity metadata or repository tooling; do not load binary patch payloads.
+- Stop on an invalid ref or when no tracked or untracked change exists.
 
-## 1. Pin the fixed point
+## 2. Establish sources and evidence
 
-- Use the fixed point supplied by the user; ask for it if none was supplied.
-- Capture once: `git diff <fixed-point>...HEAD` and `git log <fixed-point>..HEAD --oneline`.
-- Confirm the ref with `git rev-parse <fixed-point>` and confirm the diff is non-empty. Stop on a bad ref or empty diff.
+Classify the supplied scope:
 
-## 2. Identify the scope, sources, and report path
+- **Task** — read the task and referenced spec completely.
+- **Feature** — read every file in the supplied feature directory completely.
+- **Project** — with no task or feature source, review the whole change set and omit the Spec evaluation.
 
-Classify the review from the source supplied by the user:
+Find project coding and testing standards under `docs/`; omit an evaluation whose source is absent. Inspect every full changed file and, where relevant, its assets, configuration, prefabs, callers, and tests.
 
-- **Task scope** — read the supplied `docs/<feature>/tasks/<task-name>.md` and its referenced spec completely. Write findings to `docs/<feature>/review-<task-name>.md`, where `<task-name>` is the task filename without its extension.
-- **Spec scope** — read the supplied spec completely. Write findings to `docs/<feature>/review-<feature-name>.md`, where `<feature-name>` is the feature directory containing the spec.
-- **Project scope** — when no task or spec is supplied, review the whole diff, write findings to `docs/review.md`, and skip the Spec pass.
+Gather this evidence once. Then evaluate every changed hunk and caller-visible behavior independently against each applicable axis below; do not recapture or reread the complete change set between axes.
 
-Look in `docs/` for project coding and testing standards. Skip an axis when its source is absent.
+## 3. Evaluate
 
-## 3. Review sequentially
+### Standards
 
-Run the applicable passes in order and re-read the diff against each pass's source.
+Apply every documented coding rule. For each violation, record the rule and evidence, the risk it hides, and a concrete fix.
 
-### Standards pass
+### Spec
 
-- Apply every documented coding rule to every changed code hunk.
-- Inspect each full changed file and any relevant prefabs, assets, call sites, or configuration when the hunk is insufficient.
-- For each violation, record the exact rule, quote the evidence, explain what the issue could hide, and suggest a concrete fix.
+Report missing, partial, extra, or incorrect behavior. Quote the controlling task or spec requirement and give a concrete fix.
 
-### Spec pass
+### Testing
 
-- Report missing or partial requirements, unrequested behavior, and apparently incorrect implementations.
-- Quote the relevant task or spec line for every finding and suggest a concrete fix.
+Apply every testing rule to changed production and test code. For each changed caller-visible behavior:
 
-### Testing pass
+1. Name its risk from the diff and spec contract.
+2. Decide whether automation or human judgment can establish it.
+3. Select the cheapest sufficient validation level and smallest fixture.
+4. Verify that the selected check and evidence are recorded.
 
-- Apply every testing rule to changed production and test code.
-- For each changed caller-visible behavior, use the diff and spec-defined contract to name its risk, decide whether automation or human judgment can establish it, select the cheapest sufficient validation level and smallest fixture, and verify that the selected checks are recorded.
-- Judge validation evidence, not whether the behavior satisfies the spec. Report a spec defect only when insufficient validation reveals a new issue; accept a deliberate omission only when its reason is recorded.
-- Report each retained test that violates a rule and each changed behavior without sufficient validation. Quote relevant evidence and suggest a concrete fix; for missing automation, name the behavior and sufficient fixture, and for human judgment, name the concrete manual checklist.
+Judge validation evidence rather than spec correctness; report a spec defect only when this evaluation exposes one. Report each retained test that violates a rule and each behavior lacking sufficient validation, with evidence and a concrete fix. For missing automation, name the behavior and sufficient fixture; for human judgment, give the concrete checklist. Accept omitted validation only when its reason is recorded.
 
-**Extend, don't repeat.** If a later pass finds an existing issue, extend that finding with the new axis tag and detail instead of creating a duplicate.
+Merge an issue seen on multiple axes and add all applicable tags instead of duplicating it.
 
-### Score and tag findings
+### Score and tag
 
-Score every finding:
-
-- **5** — wrong or missing behavior, violates a spec requirement, or breaks an invariant
-- **4** — defect risk the tests do not cover; hard standards violation that can hide bugs
-- **3** — clear standards or testing-standard violation, quality risk
+- **5** — wrong or missing behavior, spec violation, or broken invariant
+- **4** — uncovered defect risk or hard standard violation that can hide bugs
+- **3** — clear standards or testing-standard violation; quality risk
 - **2** — minor convention drift
 - **1** — style nit
-- **0** — not reportable; omit it
+- **0** — omit
 
-Tag every finding with the axis that caught it: `[Standards]`, `[Spec]`, `[Testing]`, or a combination such as `[Spec + Testing]`.
+Tag findings `[Standards]`, `[Spec]`, `[Testing]`, or a combination.
 
-## 4. Write the report
+## 4. Return only findings
 
-Sort findings by score descending and replace the scope's report file with this flat list:
+Sort by score descending and return only this flat list:
 
 ```markdown
 1. **[5] [Spec + Testing] <finding name>**
 
-- `<quoted spec line>` / `<path/to/file>`
-- <What the deviation could hide>.
-- Action: <suggested fix>.
+- `<quoted requirement>` / `<path/to/file>`
+- <Risk or hidden deviation>.
+- Action: <concrete fix>.
 ```
 
-When findings exist, respond in chat with only the report path.
-
-When no findings exist, delete any existing report at the target path so stale findings cannot be mistaken for current results, then report that no findings were found.
+Return exactly `No findings.` when clean.
