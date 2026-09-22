@@ -1,46 +1,54 @@
 ---
 name: unity-orchestrate
-description: Implement and review a prepared Unity feature through isolated workers.
+description: Implement and review a Unity feature.
 disable-model-invocation: true
 ---
 
-Orchestrate one `docs/<feature>/` directory. Accept an optional contiguous resume point: `from <NN>`. Delegate all code changes and reviews to fresh subagents.
+Orchestrate one `docs/<feature>/` directory. Use fresh subagents to discover completed work, implement the remainder, and review the resulting change set. Stop at the first failed gate and report the blocker.
 
 ## 1. Preflight
 
-Before delegation:
-
-1. Confirm the input identifies one feature directory containing `spec.md` and a non-empty `tasks/` directory.
+1. Require one feature directory containing `spec.md` and at least one file under `tasks/`.
 2. Read the complete spec and every task.
-3. Require task names to match `tasks/<NN>-<slug>.md`, unique numbers, and blockers that name existing lower-numbered tasks. Numeric order must satisfy every blocking edge.
-4. When `from <NN>` is supplied, require that task number to exist. Treat lower-numbered tasks as user-confirmed complete and skip them. Without it, run every task, including previously implemented tasks.
-5. Capture the full output of `git rev-parse HEAD` as the fixed point. A dirty worktree is valid; reviews include all changes since that commit.
+3. Capture `git rev-parse HEAD` as the fixed point. A dirty worktree is valid; scouting uses the current repository state, and review covers every change since the fixed point.
 
-On any failure, stop and report the failed check.
+## 2. Discover completed tasks
 
-## 2. Implement tasks
+Call one fresh `scout` subagent with the feature directory, fixed point, and these instructions:
 
-Process non-skipped tasks sequentially by numeric prefix. For each, call one fresh subagent with exactly:
+- Read the complete spec and every task, then inspect the current implementation, tests, assets, configuration, validation records, and relevant Git history.
+- Judge every acceptance criterion and required validation from repository evidence. Names, checkboxes, commits, test source, and human claims do not prove completion or a successful validation run.
+- Use `HUMAN-PENDING` only for work that inherently requires human action or judgment. Missing evidence for an automatable check is `UNPROVEN`.
+- Mark a task `COMPLETE` only when every criterion is evidenced or `HUMAN-PENDING`, every validation is proven or `HUMAN-PENDING`, every blocker is complete, and no implementation or automatable validation remains. Mark every other task `RUN`.
+- Begin with `Status: complete` or `Status: blocked`. On success, list every task once in numeric order with its `COMPLETE` or `RUN` decision, concise acceptance and validation evidence, any `HUMAN-PENDING` items, and blocker status.
+
+Continue only when scouting returns `Status: complete`, covers every task, and supports every `COMPLETE` decision. Otherwise report the scouting blocker; do not default to running all tasks.
+
+## 3. Implement
+
+Process each `RUN` task sequentially in numeric order. Call one fresh `worker` subagent per task with:
 
 ```text
 /skill:unity-implement <task-path>
 ```
 
-Wait for its result. Continue only when its first line is `Status: complete`. Otherwise stop without spawning another subagent and report the completed, skipped, and blocked tasks plus all deferred or unavailable validation received so far.
+Continue only when the response begins `Status: complete`. Record changed files and deferred or unavailable validation. On failure, stop before starting another task and report progress and the blocker. Tasks classified `COMPLETE` need no worker and retain that status.
 
-## 3. Review
+## 4. Review
 
-After implementation, call one fresh subagent with:
+Inspect tracked, staged, committed, and untracked changes against the fixed point. If none exist, record `not run (no changes)` and finish.
+
+Otherwise call one fresh `reviewer` subagent with:
 
 ```text
 /skill:unity-code-review <fixed-point> <feature-directory>
 ```
 
-`No findings.` is a clean review. A failed or incomplete review is a blocker. On a clean first review, skip remediation and finish.
+A response of `No findings.` is clean. Treat a failed or incomplete review as a blocker.
 
-## 4. Remediate and review again
+## 5. Remediate once
 
-When findings exist, pass them unchanged to one fresh subagent:
+When the first review has findings, pass them unchanged to one fresh `worker` subagent:
 
 ```text
 /skill:unity-implement Review remediation for <feature-directory>.
@@ -49,18 +57,19 @@ Review findings:
 <verbatim findings>
 ```
 
-Continue only when its first line is `Status: complete`; otherwise report the blocker, findings, and validation status.
+Continue only when the response begins `Status: complete`; otherwise report the blocker, findings, and validation status. Record remediation changes and finding dispositions.
 
-After successful remediation, run a fresh full review with the original fixed point and feature directory. Report this final result without another remediation cycle.
+After successful remediation, run one fresh full review with the original fixed point and feature directory. Report its result without another remediation cycle.
 
-## 5. Report
+## 6. Report
 
-Return a compact report containing:
+Return a compact report with:
 
-- each task: `complete`, `skipped (user-confirmed)`, or `blocked`, with changed-file paths from its worker;
-- deferred or unavailable validation;
+- each task's `complete` or `blocked` status;
+- implementation changed files;
+- deferred or unavailable validation, including `HUMAN-PENDING` items;
 - first-review result and findings;
-- remediation file changes and finding dispositions, when applicable;
-- final-review result and remaining findings.
+- remediation changed files and finding dispositions, when applicable;
+- final-review result and remaining findings, when applicable.
 
-Create no orchestration or review report file. Leave the index and worktree state intact: do not run `git add`, `git commit`, or `git stash`.
+Do not run `git add`, `git commit`, or `git stash`.
