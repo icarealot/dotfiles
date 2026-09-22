@@ -1,15 +1,15 @@
 ## Claude Code
 
-Config for [Claude Code](https://github.com/anthropics/claude-code).
+Config for [Claude Code](https://claude.com/product/claude-code).
 
-| File | Description |
-|---|---|
+| File                    | Description                                                                                                                                                          |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `statusline-command.sh` | Status line script that outputs pipe-separated stats: model name, effort level, remaining context window %, 5h rate limit %, 7d rate limit % (with reset countdowns) |
-| `notify-command.sh` | Stop/PreToolUse hook script that sends a notification — `terminal-notifier` on Mac, a PowerShell toast on Windows. |
+| `notify-command.sh`     | Stop/PreToolUse hook script that sends a notification — `terminal-notifier` on Mac, a PowerShell toast on Windows.                                                   |
 
 ## Prerequisites
 
-- [Claude Code](https://github.com/anthropics/claude-code)
+- [Claude Code](https://claude.com/product/claude-code)
 - [Node.js](https://nodejs.org/) (used by `statusline-command.sh` to parse JSON)
 - [terminal-notifier](https://github.com/julienXX/terminal-notifier) (for Stop hook notifications — macOS only; Windows uses built-in PowerShell, no extra install needed)
 
@@ -30,10 +30,10 @@ Then in your `~/.claude/settings.json`, add the `statusLine` block, updating the
 
 ```json
 {
-  "statusLine": {
-    "type": "command",
-    "command": "sh /Users/[your-folder]/.claude/statusline-command.sh"
-  }
+    "statusLine": {
+        "type": "command",
+        "command": "sh /Users/[your-folder]/.claude/statusline-command.sh"
+    }
 }
 ```
 
@@ -54,22 +54,28 @@ Then in your `~/.claude/settings.json`, add the `hooks` block:
 
 ```json
 {
-  "hooks": {
-    "Stop": [
-      {
-        "hooks": [
-          { "type": "command", "command": "sh \"$HOME/.claude/notify-command.sh\"" }
+    "hooks": {
+        "Stop": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "sh \"$HOME/.claude/notify-command.sh\""
+                    }
+                ]
+            }
+        ],
+        "PreToolUse": [
+            {
+                "matcher": "AskUserQuestion",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "sh \"$HOME/.claude/notify-command.sh\" \"Claude has a question\""
+                    }
+                ]
+            }
         ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "AskUserQuestion",
-        "hooks": [
-          { "type": "command", "command": "sh \"$HOME/.claude/notify-command.sh\" \"Claude has a question\"" }
-        ]
-      }
-    ]
-  }
+    }
 }
 ```
