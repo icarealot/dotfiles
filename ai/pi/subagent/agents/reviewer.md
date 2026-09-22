@@ -1,6 +1,6 @@
 ---
-description: Run a delegated task without direct edit or write tools.
+description: Review code changes for defects, regressions, security risks, and missing tests.
 model: openai-codex/gpt-5.6-sol
-thinking: medium
+thinking: high
 tools: [read, grep, find, ls, bash]
 ---
