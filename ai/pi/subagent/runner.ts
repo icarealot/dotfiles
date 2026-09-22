@@ -225,9 +225,12 @@ function buildChildCommand(agent: AgentConfig, projectTrusted: boolean): PiComma
     projectTrusted ? "--approve" : "--no-approve",
     "--model", agent.model,
     "--thinking", agent.thinking,
-    "--tools", agent.tools.join(","),
-    "--",
   ];
+
+  for (const extensionPath of agent.extensionPaths) {
+    args.push("--extension", extensionPath);
+  }
+  args.push("--tools", agent.tools.join(","), "--");
 
   return resolvePiCommand(args);
 }

@@ -26,7 +26,19 @@ const THINKING_LEVELS: ThinkingLevel[] = [
 
 const AGENT_NAME_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/;
 
-const BUILTIN_TOOLS = new Set<string>([
+const WEB_EXTENSION_PATH = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+  "web",
+  "index.ts",
+);
+
+const TOOL_EXTENSION_PATHS = new Map<string, string>([
+  ["web_search", WEB_EXTENSION_PATH],
+  ["web_fetch", WEB_EXTENSION_PATH],
+]);
+
+const SUPPORTED_TOOLS = new Set<string>([
   "read",
   "bash",
   "powershell",
@@ -35,6 +47,7 @@ const BUILTIN_TOOLS = new Set<string>([
   "grep",
   "find",
   "ls",
+  ...TOOL_EXTENSION_PATHS.keys(),
 ]);
 
 type AgentFrontmatter = {
@@ -50,6 +63,7 @@ export interface AgentConfig {
   model: string;
   thinking: ThinkingLevel;
   tools: string[];
+  extensionPaths: string[];
   filePath: string;
 }
 
@@ -118,13 +132,30 @@ function loadAgent(filePath: string): AgentConfig {
 
   const tools = parseTools(frontmatter.tools);
   if (tools === undefined) {
-    throw new Error("frontmatter.tools must contain at least one built-in tool");
+    throw new Error("frontmatter.tools must contain at least one supported tool");
   }
 
-  const unsupportedTools = tools.filter((tool) => !BUILTIN_TOOLS.has(tool));
+  const unsupportedTools = tools.filter((tool) => !SUPPORTED_TOOLS.has(tool));
   if (unsupportedTools.length > 0) {
     throw new Error(
       `frontmatter.tools contains unsupported tools: ${unsupportedTools.join(", ")}`,
+    );
+  }
+
+  const extensionPaths = [
+    ...new Set(
+      tools.flatMap((tool) => {
+        const extensionPath = TOOL_EXTENSION_PATHS.get(tool);
+        return extensionPath ? [extensionPath] : [];
+      }),
+    ),
+  ];
+  const missingExtensionPaths = extensionPaths.filter(
+    (extensionPath) => !fs.existsSync(extensionPath),
+  );
+  if (missingExtensionPaths.length > 0) {
+    throw new Error(
+      `required tool extension does not exist: ${missingExtensionPaths.join(", ")}`,
     );
   }
 
@@ -134,6 +165,7 @@ function loadAgent(filePath: string): AgentConfig {
     model,
     thinking: frontmatter.thinking,
     tools,
+    extensionPaths,
     filePath,
   };
 }
