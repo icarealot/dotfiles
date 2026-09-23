@@ -1,22 +1,22 @@
 ---
 name: unity-code-review
-description: Review staged Unity changes against coding, specification, and testing requirements.
+description: Spawn a subagent to review staged Unity changes against coding, specification, and testing requirements.
 disable-model-invocation: true
 ---
 
-Review the current Git index against applicable coding, specification, and testing requirements. The staged diff is the review boundary; use other files only as evidence.
+Spawn a subagent to review the current Git index against applicable coding, specification, and testing requirements. The staged diff is the review boundary; use other files only as evidence.
 
 ## 1. Establish the review set
 
 - Inspect `git status --short` and `git diff --cached`, including staged additions, modifications, deletions, and renames.
-- If there are no staged changes, report exactly `No staged changes to review.` and stop without creating an output file.
+- If there are no staged changes, report exactly `No staged changes to review.` and stop.
 - Read every staged reviewable text file completely. For binaries, inspect their identities and applicable Unity metadata or repository tooling; never load binary payloads.
 - Do not treat a supplied task, feature directory, file list, project scope, or unstaged/untracked change as a review target. Read related assets, configuration, prefabs, callers, and tests only to understand staged behavior.
 
 ## 2. Establish sources and evidence
 
-- Find and read completely the single relevant task, specification, context, and decision sources. Each review covers one task. Use the relevant task/specification source's parent as the task folder and its basename without the extension as `<task-name>`.
-- If no task/specification source exists, use the repository root and `review.md` as the output path, and omit the Spec evaluation.
+- Find and read completely the single relevant task, specification, context, and decision sources. Each review covers one task.
+- If no task/specification source exists, omit the Spec evaluation.
 - Find project coding and testing standards under `docs/`; omit the corresponding evaluation when its source is absent.
 - Gather evidence once. Evaluate every relevant implementation detail and caller-visible behavior independently against each applicable axis without rereading the complete staged review set between axes.
 
@@ -55,16 +55,17 @@ Merge issues found on multiple axes and apply all relevant tags instead of dupli
 
 Tag findings `[Standards]`, `[Spec]`, `[Testing]`, or a combination.
 
-## 4. Write findings and report
+## 4. Report findings
 
-Sort findings by score descending and write only this flat list to `<task-folder>/review-<task-name>.md`, overwriting any existing file. If no task/specification source exists, write to `<repository-root>/review.md` instead:
+Sort findings by score descending and report only this flat list in chat:
 
 ```markdown
 1. **[5] [Spec + Testing] <finding name>**
 
-- `<quoted requirement>` / `<path/to/file>`
+- `<quoted requirement>`
+- `<path/to/file>`
 - <Risk or hidden deviation>.
 - Action: <concrete fix>.
 ```
 
-After writing findings, report only the output file path in chat. Report exactly `No findings.` when the staged changes are clean, without creating an output file.
+Report exactly `No findings.` when the staged changes are clean.
