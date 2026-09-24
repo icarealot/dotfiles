@@ -248,7 +248,7 @@ export function registerSubagentTool(pi: ExtensionAPI): void {
       const header =
         `${theme.fg("toolTitle", theme.bold(`subagent ${agentName}`))} ${theme.fg(
           "muted",
-          `| ${modelIdentity} (${thinkingLevel})`,
+          `${modelIdentity} (${thinkingLevel})`,
         )}`;
 
       component.clear();
@@ -290,6 +290,13 @@ export function registerSubagentTool(pi: ExtensionAPI): void {
         options.expanded,
         theme,
       );
+
+      if (details?.compaction) {
+        component.addChild(new Spacer(1));
+        component.addChild(
+          new Text(theme.fg("muted", "Auto-compacting..."), 0, 0),
+        );
+      }
 
       if (
         !options.isPartial
