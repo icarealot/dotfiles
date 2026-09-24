@@ -16,13 +16,16 @@ const usageProviders: UsageProvider[] = [
     deepseekUsageProvider,
 ];
 
+function getUsageProvider(provider?: string): UsageProvider | undefined {
+    return usageProviders.find((candidate) => candidate.provider === provider);
+}
+
 function formatReset(window: UsageWindow): string {
     if (window.resetsAt === undefined) {
         return "";
     }
 
-    const now = Math.floor(Date.now() / 1000);
-    const secondsUntilReset = window.resetsAt - now;
+    const secondsUntilReset = window.resetsAt - Math.floor(Date.now() / 1000);
     if (secondsUntilReset <= 0) {
         return "";
     }
@@ -30,17 +33,12 @@ function formatReset(window: UsageWindow): string {
     const days = Math.floor(secondsUntilReset / 86_400);
     const hours = Math.floor((secondsUntilReset % 86_400) / 3_600);
     const minutes = Math.floor((secondsUntilReset % 3_600) / 60);
-    const windowMinutes = window.windowMinutes ?? 0;
 
-    if (windowMinutes >= 24 * 60) {
-        if (days > 0) {
-            return ` (~${days}d${hours}h)`;
-        }
-        return ` (~${hours}h)`;
+    if ((window.windowMinutes ?? 0) >= 24 * 60) {
+        return days > 0 ? ` (~${days}d${hours}h)` : ` (~${hours}h)`;
     }
 
-    const totalHours = Math.floor(secondsUntilReset / 3_600);
-    return ` (~${totalHours}h${minutes}m)`;
+    return ` (~${Math.floor(secondsUntilReset / 3_600)}h${minutes}m)`;
 }
 
 function formatUsageWindow(window: UsageWindow | undefined): string {
@@ -48,44 +46,38 @@ function formatUsageWindow(window: UsageWindow | undefined): string {
         return "N/A";
     }
 
-    const percentage = Math.round(window.usedPercent);
-    return `${percentage}%${formatReset(window)}`;
+    return `${Math.round(window.usedPercent)}%${formatReset(window)}`;
 }
 
 function formatTokenCount(tokens: number): string {
+    if (tokens < 1_000) {
+        return `${tokens}`;
+    }
+
     if (tokens < 1_000_000) {
         const thousands = tokens / 1_000;
-        if (thousands < 10) {
-            return `${Number(thousands.toFixed(1))}k`;
-        }
-        return `${Math.round(thousands)}k`;
+        return thousands < 10
+            ? `${Number(thousands.toFixed(1))}k`
+            : `${Math.round(thousands)}k`;
     }
 
     const millions = tokens / 1_000_000;
-    if (millions < 10) {
-        return `${Number(millions.toFixed(1))}M`;
-    }
-    return `${Math.round(millions)}M`;
+    return millions < 10
+        ? `${Number(millions.toFixed(1))}M`
+        : `${Math.round(millions)}M`;
 }
 
 function formatContextUsed(ctx: ExtensionContext): string {
     const usage = ctx.getContextUsage();
     const contextWindow = usage?.contextWindow ?? ctx.model?.contextWindow;
 
-    if (
-        contextWindow === undefined ||
-        contextWindow <= 0 ||
-        usage === undefined ||
-        usage.tokens === undefined ||
-        usage.tokens === null
-    ) {
+    if (contextWindow === undefined || contextWindow <= 0 || usage?.tokens == null) {
         return "N/A";
     }
 
-    const maximum = formatTokenCount(contextWindow);
     const usedPercent = (usage.tokens / contextWindow) * 100;
     const percentage = Math.round(Math.max(0, Math.min(100, usedPercent)));
-    return `${percentage}%/${maximum}`;
+    return `${percentage}%/${formatTokenCount(contextWindow)}`;
 }
 
 function formatSessionSpend(ctx: ExtensionContext, provider: string): string {
@@ -105,19 +97,9 @@ function formatSessionSpend(ctx: ExtensionContext, provider: string): string {
     return `$${cost.toFixed(2)}`;
 }
 
-function getPreferredBalance(
-    balances: AccountBalance[] | undefined,
-): AccountBalance | undefined {
-    return balances?.find((balance) => balance.currency === "USD");
-}
-
 function formatAccountBalance(balances: AccountBalance[] | undefined): string {
-    const balance = getPreferredBalance(balances);
-    if (balance === undefined) {
-        return "N/A";
-    }
-
-    return `$${balance.total.toFixed(2)}`;
+    const balance = balances?.find(({ currency }) => currency === "USD");
+    return balance === undefined ? "N/A" : `$${balance.total.toFixed(2)}`;
 }
 
 function formatProviderDetails(
@@ -142,7 +124,6 @@ export default function customFooter(pi: ExtensionAPI): void {
     let providerUsage: ProviderUsage | undefined;
     let requestRender: (() => void) | undefined;
     let refreshVersion = 0;
-    let active = true;
 
     async function refreshUsage(
         ctx: ExtensionContext,
@@ -153,31 +134,27 @@ export default function customFooter(pi: ExtensionAPI): void {
         if (clearCurrent) {
             providerUsage = undefined;
         }
+        requestRender?.();
 
-        if (requestRender !== undefined) {
-            requestRender();
-        }
-
-        const usageProvider = usageProviders.find(
-            (provider) => provider.provider === ctx.model?.provider,
-        );
+        const usageProvider = getUsageProvider(ctx.model?.provider);
         if (usageProvider === undefined) {
             providerUsage = undefined;
             return;
         }
 
+        let usage: ProviderUsage | undefined;
         try {
-            const usage = await usageProvider.fetchUsage(ctx);
-            if (!active || version !== refreshVersion) return;
-            providerUsage = usage;
+            usage = await usageProvider.fetchUsage(ctx);
         } catch {
-            if (!active || version !== refreshVersion) return;
-            providerUsage = undefined;
+            usage = undefined;
         }
 
-        if (requestRender !== undefined) {
-            requestRender();
+        if (version !== refreshVersion) {
+            return;
         }
+
+        providerUsage = usage;
+        requestRender?.();
     }
 
     pi.on("session_start", (_event, ctx) => {
@@ -191,27 +168,23 @@ export default function customFooter(pi: ExtensionAPI): void {
                 invalidate() {},
                 render(_width: number): string[] {
                     const model = ctx.model;
-                    const modelName = model?.id || "no-model";
+                    const modelName = model?.id ?? "no-model";
                     const providerName = model?.provider ?? "no-provider";
                     const thinkingLevel = ctx.thinkingLevel ?? "N/A";
                     const modelIdentity = `${providerName}/${modelName} (${thinkingLevel})`;
-                    const contextUsed = formatContextUsed(ctx);
-                    const usageProvider = usageProviders.find(
-                        (provider) => provider.provider === providerName,
-                    );
                     const providerDetails = formatProviderDetails(
                         ctx,
-                        usageProvider,
+                        getUsageProvider(providerName),
                         providerUsage,
                     );
 
-                    const footerText = [
-                        modelIdentity,
-                        contextUsed,
-                        ...providerDetails,
-                    ].join(" | ");
-
-                    return [footerText];
+                    return [
+                        [
+                            modelIdentity,
+                            formatContextUsed(ctx),
+                            ...providerDetails,
+                        ].join(" | "),
+                    ];
                 },
             };
         });
@@ -220,21 +193,18 @@ export default function customFooter(pi: ExtensionAPI): void {
     });
 
     pi.on("message_end", (event, ctx) => {
-        if (event.message.role === "assistant") void refreshUsage(ctx);
+        if (event.message.role === "assistant") {
+            void refreshUsage(ctx);
+        }
     });
 
     pi.on("model_select", (_event, ctx) => {
         void refreshUsage(ctx, true);
     });
 
-    pi.on("thinking_level_select", () => {
-        if (requestRender !== undefined) {
-            requestRender();
-        }
-    });
+    pi.on("thinking_level_select", () => requestRender?.());
 
     pi.on("session_shutdown", () => {
-        active = false;
         refreshVersion++;
         requestRender = undefined;
     });
