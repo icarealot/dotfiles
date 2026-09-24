@@ -38,6 +38,9 @@ export type AgentActivity =
 export interface AgentProgress {
   activities: AgentActivity[];
   omittedActivityCount: number;
+  compaction?: {
+    active: boolean;
+  };
 }
 
 export interface AgentRunResult extends AgentProgress {
@@ -187,6 +190,7 @@ function getProgress(result: ChildResult): AgentProgress {
   return {
     activities: [...result.activities],
     omittedActivityCount: result.omittedActivityCount,
+    compaction: result.compaction,
   };
 }
 
@@ -288,7 +292,21 @@ function handleChildLine(
   onProgress: ProgressCallback | undefined,
 ): void {
   const event = parseChildEvent(line);
-  if (!event || event.type !== "message_end" || event.message?.role !== "assistant") {
+  if (!event) return;
+
+  if (event.type === "compaction_start") {
+    result.compaction = { active: true };
+    emitProgress(result, onProgress);
+    return;
+  }
+
+  if (event.type === "compaction_end") {
+    result.compaction = { active: false };
+    emitProgress(result, onProgress);
+    return;
+  }
+
+  if (event.type !== "message_end" || event.message?.role !== "assistant") {
     return;
   }
 
@@ -436,5 +454,6 @@ export async function runAgent(
     finalOutput: result.finalOutput,
     activities,
     omittedActivityCount: result.omittedActivityCount,
+    compaction: result.compaction,
   };
 }
