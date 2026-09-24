@@ -1,6 +1,6 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { notifyMac } from "./macos.js";
-import { notifyWindows } from "./windows.js";
+import { notifyMac } from "./platforms/macos.js";
+import { notifyWindows } from "./platforms/windows.js";
 
 const NOTIFICATION_TITLE = "Pi";
 const NOTIFICATION_MESSAGE = "Ready for input";
