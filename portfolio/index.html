@@ -16,17 +16,25 @@
   <link rel="canonical" href="https://icarealot.github.io/dotfiles/">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
+  <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
   <a class="skip-link" href="#content">Skip to content</a>
 
   <header class="site-header" aria-label="Site header">
-    <nav aria-label="Portfolio navigation">
+    <div class="mobile-header-bar">
+      <a class="mobile-brand" href="#top">Portfolio</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="portfolio-navigation" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M3 6h18M3 12h18M3 18h18"></path>
+        </svg>
+      </button>
+    </div>
+    <nav id="portfolio-navigation" aria-label="Portfolio navigation">
       <a href="#work">Work</a>
       <a href="#experience">Experience</a>
       <a href="#education">Education</a>
       <a href="#certifications">Certifications</a>
-      <a href="#contact">Contact</a>
       <button class="download-button" type="button" onclick="window.print()" title="Open the print dialog to save as PDF">Download CV</button>
     </nav>
   </header>
@@ -90,7 +98,7 @@
             <h3>Athena Studio</h3>
             <p class="entry-role">Unity Developer</p>
           </div>
-          <p class="date"><time datetime="2022-03">03/2022</time> – <time datetime="2026-06">06/2026</time></p>
+          <p class="date"><time datetime="2022-03">02/2022</time> – <time datetime="2026-06">06/2026</time></p>
         </div>
         <ul>
           <li>Developed Unity game clients for iOS and Android.</li>
@@ -128,21 +136,62 @@
             <h3>Game Development Bootcamp</h3>
             <p>Athena Studio</p>
           </div>
-          <p class="date"><time datetime="2022-03">03/2022</time> – <time datetime="2022-08">08/2022</time></p>
+          <p class="date"><time datetime="2022-03">02/2022</time> – <time datetime="2022-08">08/2022</time></p>
         </article>
       </div>
     </section>
 
-    <section id="contact" aria-labelledby="contact-title">
-      <h2 id="contact-title">Contact</h2>
+    <section id="contact" aria-label="Contact">
       <address>
         <ul class="contact-list">
-          <li><span>Email</span><span>nkiet84@gmail.com</span></li>
-          <li><span>GitHub</span><a href="https://github.com/icarealot" target="_blank" rel="noopener noreferrer">github.com/icarealot</a></li>
-          <li><span>Location</span><span>Ho Chi Minh City, Vietnam</span></li>
+          <li>nkiet84@gmail.com</li>
+          <li>github.com/icarealot</li>
         </ul>
       </address>
     </section>
   </main>
+
+  <script>
+    const header = document.querySelector('.site-header');
+    const menuToggle = document.querySelector('.menu-toggle');
+
+    function setMenuOpen(open) {
+      header.classList.toggle('menu-open', open);
+      menuToggle.setAttribute('aria-expanded', String(open));
+      menuToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    }
+
+    menuToggle.addEventListener('click', () => {
+      setMenuOpen(menuToggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    header.addEventListener('click', (event) => {
+      if (event.target.closest('a, .download-button')) {
+        setMenuOpen(false);
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      const menuIsOpen = menuToggle.getAttribute('aria-expanded') === 'true';
+
+      if (menuIsOpen && !header.contains(event.target)) {
+        event.preventDefault();
+        setMenuOpen(false);
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && menuToggle.getAttribute('aria-expanded') === 'true') {
+        setMenuOpen(false);
+        menuToggle.focus();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 680) {
+        setMenuOpen(false);
+      }
+    });
+  </script>
 </body>
 </html>
