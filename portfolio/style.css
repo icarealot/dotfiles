@@ -1,0 +1,443 @@
+:root {
+  color-scheme: light;
+  --background: #fafafa;
+  --surface: #ffffff;
+  --text: #242424;
+  --muted: #666666;
+  --border: #dedede;
+  --accent: #145da0;
+  --accent-dark: #0d477c;
+  --focus: #ffbf47;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  background: var(--background);
+  color: var(--text);
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.skip-link {
+  position: absolute;
+  top: -4rem;
+  left: 1rem;
+  z-index: 10;
+  padding: 0.5rem 0.75rem;
+  background: var(--text);
+  color: var(--surface);
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  color: var(--accent-dark);
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.site-header {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  flex-wrap: wrap;
+}
+
+nav a {
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-decoration: none;
+}
+
+nav a:hover {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.download-button {
+  min-height: 2.35rem;
+  padding: 0.38rem 0.75rem;
+  border: 1px solid var(--text);
+  border-radius: 0.2rem;
+  background: var(--text);
+  color: var(--surface);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+nav .download-button {
+  margin-left: auto;
+}
+
+.download-button:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+
+main {
+  padding-bottom: 1rem;
+}
+
+section {
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--border);
+  scroll-margin-top: 1rem;
+}
+
+.intro {
+  padding: 3.25rem 0 2.75rem;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  max-width: 16ch;
+  margin-bottom: 1.25rem;
+  font-size: clamp(2.15rem, 7vw, 3.4rem);
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+}
+
+h2 {
+  margin-bottom: 1.35rem;
+  font-size: 1.35rem;
+  line-height: 1.3;
+}
+
+h3 {
+  margin-bottom: 0.35rem;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.intro > p {
+  max-width: 640px;
+  margin-bottom: 0;
+  font-size: 1.08rem;
+}
+
+.date,
+.entry-role,
+.credential p {
+  color: var(--muted);
+}
+
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 1rem;
+}
+
+.work-item {
+  display: flex;
+  min-width: 0;
+  min-height: 15rem;
+  overflow: hidden;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.work-item:hover {
+  border-color: var(--muted);
+  color: var(--text);
+  transform: translateY(-2px);
+}
+
+.work-media {
+  display: grid;
+  min-height: 7.25rem;
+  place-items: center;
+  border-bottom: 1px solid var(--border);
+  background: #f1f3f5;
+}
+
+.work-media img {
+  width: 5.5rem;
+  height: 5.5rem;
+  border-radius: 1.2rem;
+  object-fit: cover;
+}
+
+.work-body {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0.85rem 1rem 1rem;
+}
+
+.work-item h3 {
+  max-width: 100%;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+  font-size: 0.9rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.work-item p {
+  min-height: calc(1.65em * 3);
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.entry-heading,
+.credential {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.entry-heading p,
+.credential p {
+  margin-bottom: 0;
+}
+
+.entry-role {
+  font-size: 0.92rem;
+}
+
+.date {
+  flex: 0 0 auto;
+  margin-bottom: 0;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.entry ul {
+  margin: 1.25rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.entry li + li {
+  margin-top: 0.3rem;
+}
+
+.credential-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.credential h3,
+.credential p {
+  margin-bottom: 0;
+}
+
+.contact-list {
+  max-width: 600px;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.contact-list li {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.4rem 0;
+}
+
+.contact-list li > :first-child {
+  color: var(--muted);
+}
+
+address {
+  font-style: normal;
+}
+
+@media (max-width: 680px) {
+  nav .download-button {
+    width: 100%;
+    margin-top: 0.5rem;
+    margin-left: 0;
+  }
+
+  .intro {
+    padding: 2.75rem 0 2.25rem;
+  }
+
+  section {
+    padding: 2.25rem 0;
+  }
+
+  .work-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .work-item {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 440px) {
+  body {
+    padding: 0 1rem;
+  }
+
+  nav {
+    gap: 0.4rem 0.75rem;
+  }
+
+  .entry-heading,
+  .credential {
+    display: block;
+  }
+
+  .date {
+    margin-top: 0.4rem;
+  }
+
+  .contact-list li {
+    display: block;
+  }
+
+  .contact-list li > :first-child {
+    display: block;
+    margin-bottom: 0.05rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .work-item {
+    transition: none;
+  }
+
+  .work-item:hover {
+    transform: none;
+  }
+}
+
+@media print {
+  @page {
+    margin: 12mm;
+  }
+
+  :root {
+    --background: #ffffff;
+    --surface: #ffffff;
+    --text: #000000;
+    --muted: #333333;
+    --border: #cfcfcf;
+    --accent: #000000;
+  }
+
+  body {
+    max-width: none;
+    padding: 0;
+    font-size: 9.5pt;
+    line-height: 1.45;
+  }
+
+  .skip-link,
+  .site-header,
+  .download-button {
+    display: none;
+  }
+
+  .intro,
+  section {
+    padding: 13pt 0;
+  }
+
+  .intro {
+    padding-top: 0;
+  }
+
+  h1 {
+    font-size: 25pt;
+  }
+
+  h2 {
+    margin-bottom: 9pt;
+    font-size: 13pt;
+  }
+
+  .work-grid {
+    gap: 7pt;
+  }
+
+  .work-item {
+    display: grid;
+    grid-template-columns: 38pt minmax(0, 1fr);
+    min-height: 94pt;
+    padding: 8pt;
+    break-inside: avoid;
+  }
+
+  .work-media {
+    min-height: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .work-media img {
+    width: 38pt;
+    height: 38pt;
+    border-radius: 8pt;
+  }
+
+  .work-body {
+    padding: 0 0 0 8pt;
+  }
+
+  .entry,
+  .credential,
+  #education,
+  #contact {
+    break-inside: avoid;
+  }
+
+  a {
+    color: inherit;
+  }
+}

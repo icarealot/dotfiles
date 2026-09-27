@@ -2,6 +2,8 @@
 
 Personal configs, tools, and AI agent setup.
 
+[View Unity Developer portfolio](https://icarealot.github.io/dotfiles/)
+
 | Folder | Description |
 |---|---|
 | [`ai/claude-code`](ai/claude-code) | Claude Code settings |
@@ -11,3 +13,4 @@ Personal configs, tools, and AI agent setup.
 | [`g-helper`](g-helper) | G-Helper config for ROG Zephyrus G14 — power limits, fan curves, 80% battery cap |
 | [`git`](git) | Git config, .gitignore and .gitattributes for Unity projects |
 | [`husky.NET`](husky.NET) | Format files before commit |
+| [`portfolio`](portfolio) | Unity Developer portfolio |
