@@ -1,9 +1,5 @@
 # dotfiles
 
-Personal configs, tools, and AI agent setup.
-
-[View Unity Developer portfolio](https://icarealot.github.io/dotfiles/)
-
 | Folder | Description |
 |---|---|
 | [`ai/claude-code`](ai/claude-code) | Claude Code settings |
