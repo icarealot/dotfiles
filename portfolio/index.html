@@ -16,31 +16,15 @@
   <link rel="canonical" href="https://icarealot.github.io/dotfiles/">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
-  <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
-  <a class="skip-link" href="#content">Skip to content</a>
-
   <header class="site-header" aria-label="Site header">
-    <div class="mobile-header-bar">
-      <a class="mobile-brand" href="#top">Portfolio</a>
-      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="portfolio-navigation" aria-label="Open menu">
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M3 6h18M3 12h18M3 18h18"></path>
-        </svg>
-      </button>
-    </div>
-    <nav id="portfolio-navigation" aria-label="Portfolio navigation">
-      <a href="#work">Work</a>
-      <a href="#experience">Experience</a>
-      <a href="#education">Education</a>
-      <a href="#certifications">Certifications</a>
-      <button class="download-button" type="button" onclick="window.print()" title="Open the print dialog to save as PDF">Download CV</button>
-    </nav>
+    <span class="site-title">Portfolio</span>
+    <button class="download-button" type="button" onclick="window.print()" title="Open the print dialog to save as PDF">Download CV</button>
   </header>
 
-  <main id="content">
-    <section class="intro" id="top" aria-labelledby="page-title">
+  <main>
+    <section class="intro" aria-labelledby="page-title">
       <h1 id="page-title">Nguyen Do Tuan Kiet</h1>
       <p>I am a Unity developer based in Ho Chi Minh City with experience building and shipping mobile games for iOS and Android.</p>
     </section>
@@ -68,7 +52,7 @@
           </div>
         </a>
 
-        <a class="work-item" href="https://play.google.com/store/apps/details?id=com.coloring.sort.puzzle.gem.binrong.pixels&amp;hl=en" target="_blank" rel="noopener noreferrer">
+        <a class="work-item" href="https://play.google.com/store/apps/details?id=com.coloring.sort.puzzle.gem.binrong.pixels" target="_blank" rel="noopener noreferrer">
           <div class="work-media">
             <img src="assets/gem-pixels.webp" alt="" width="256" height="256">
           </div>
@@ -102,8 +86,8 @@
         </div>
         <ul>
           <li>Developed Unity game clients for iOS and Android.</li>
-          <li>Built and maintained live-ops systems.</li>
-          <li>Integrated SDKs for advertising, in-app purchases (IAP), analytics, and cloud saves.</li>
+          <li>Managed live ops and CDN delivery for game content.</li>
+          <li>Integrated SDKs for advertising, in-app purchases, analytics, and cloud saves.</li>
         </ul>
       </article>
     </section>
@@ -150,48 +134,5 @@
       </address>
     </section>
   </main>
-
-  <script>
-    const header = document.querySelector('.site-header');
-    const menuToggle = document.querySelector('.menu-toggle');
-
-    function setMenuOpen(open) {
-      header.classList.toggle('menu-open', open);
-      menuToggle.setAttribute('aria-expanded', String(open));
-      menuToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-    }
-
-    menuToggle.addEventListener('click', () => {
-      setMenuOpen(menuToggle.getAttribute('aria-expanded') !== 'true');
-    });
-
-    header.addEventListener('click', (event) => {
-      if (event.target.closest('a, .download-button')) {
-        setMenuOpen(false);
-      }
-    });
-
-    document.addEventListener('click', (event) => {
-      const menuIsOpen = menuToggle.getAttribute('aria-expanded') === 'true';
-
-      if (menuIsOpen && !header.contains(event.target)) {
-        event.preventDefault();
-        setMenuOpen(false);
-      }
-    });
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && menuToggle.getAttribute('aria-expanded') === 'true') {
-        setMenuOpen(false);
-        menuToggle.focus();
-      }
-    });
-
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 680) {
-        setMenuOpen(false);
-      }
-    });
-  </script>
 </body>
 </html>
