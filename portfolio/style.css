@@ -357,7 +357,8 @@ address {
     line-height: 1.45;
   }
 
-  .site-header {
+  .site-header,
+  #contact {
     display: none;
   }
 
