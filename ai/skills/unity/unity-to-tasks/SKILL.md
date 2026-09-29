@@ -74,18 +74,3 @@ Record the feature-specific checks and rationale derived from the project standa
 </task-template>
 
 Keep implementation file paths and code snippets out of task files because they become stale.
-
-### 4. Review created task files
-
-After all task files for the current run are created, spawn a subagent to review the complete task set. Pass the exact task paths and a concise summary of the agreed requirements and unresolved assumptions from the current conversation. Instruct the subagent to:
-
-- Read every created task completely.
-- Discover and read applicable context files, applicable decisions under `docs/adr/`, project standards under `docs/`, and relevant codebase evidence.
-- Compare every task section and validation decision with the agreed conversation, discovered context, applicable ADRs, project standards, and relevant codebase evidence.
-- Check the task slicing, ordering, blocking edges, validation, and acceptance criteria.
-- Report source coverage, including missing or unavailable sources; never treat a missing source as evidence of alignment.
-- Report each conflict, unsupported assumption, omission, or standards deviation with its severity, evidence or source reference, risk, and actionable recommendation.
-
-Keep the review read-only: do not modify the task files or any other file, and do not interview the user. Do not create a separate review artifact, revise tasks automatically, or rerun the review. Report `No findings.` when the available evidence reveals no issues.
-
-Present the subagent's result under a distinct `## Task Review` heading in the final response, preserving its source coverage and findings. If the subagent fails or cannot run, report `Review incomplete: <reason>` in that section and do not claim that the tasks are aligned.
