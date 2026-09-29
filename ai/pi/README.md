@@ -6,7 +6,7 @@ Extensions for the [Pi coding agent](https://pi.dev/).
 | --------------- | --------------------------------------------------------------------------------------------- |
 | `custom-footer` | Shows provider, model, thinking level, context windows, usage                                 |
 | `notify`        | Sends a native macOS or Windows notification when the agent finishes and is waiting for input |
-| `subagent`      | Runs substantial or context-heavy tasks in isolation to keep the main agent focused; `/subagents` configures each subagent |
+| `subagent`      | Runs explicitly requested tasks in isolated context; `/subagents` configures each subagent    |
 | `web`           | `web_search` and `web_fetch` tools                                                            |
 
 ## Prerequisites

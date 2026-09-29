@@ -18,7 +18,9 @@ Use the context already in the conversation. If the user supplies a spec path, r
 - Use the project's domain glossary vocabulary, apply the project standards and respect applicable ADRs.
 - Plan prefactoring only when the current work would otherwise create duplication, unsafe coupling, or an oversized change, and the prefactoring lowers the final system's complexity.
 
-### 3. Draft vertical slices
+### 3. Create task files
+
+Design and write the tasks directly as tracer-bullet slices. Do not add a separate user-approval or task-quiz step.
 
 Each tracer-bullet slice:
 
@@ -39,19 +41,6 @@ Give every task its blocking edges. A task with no blockers can start immediatel
 3. Contract by deleting the old form in a task blocked by every migration.
 
 When migration batches cannot remain green independently, preserve the sequence on an integration branch and make every batch block a final integrate-and-verify task.
-
-### 4. Quiz the user
-
-Present the proposed breakdown as a numbered list. For every task show:
-
-- **Title**: a short descriptive name.
-- **Blocked by**: only tasks that genuinely gate it.
-- **What it delivers**: independently verifiable end-to-end behavior.
-- **Validation**: the feature-specific test level or human-playtesting decision and rationale derived from the standards.
-
-Ask whether the granularity and blocking edges are right and whether any tasks should be merged or split. Iterate until approved.
-
-### 5. Create task files
 
 Write one file per task under `docs/<feature-slug>/tasks/<NN>-<slug>.md`, numbered from `01` in dependency order. Each file lists its blockers by number and title.
 
@@ -85,3 +74,18 @@ Record the feature-specific checks and rationale derived from the project standa
 </task-template>
 
 Keep implementation file paths and code snippets out of task files because they become stale.
+
+### 4. Review created task files
+
+After all task files for the current run are created, spawn a subagent to review the complete task set. Pass the exact task paths and a concise summary of the agreed requirements and unresolved assumptions from the current conversation. Instruct the subagent to:
+
+- Read every created task completely.
+- Discover and read applicable context files, applicable decisions under `docs/adr/`, project standards under `docs/`, and relevant codebase evidence.
+- Compare every task section and validation decision with the agreed conversation, discovered context, applicable ADRs, project standards, and relevant codebase evidence.
+- Check the task slicing, ordering, blocking edges, validation, and acceptance criteria.
+- Report source coverage, including missing or unavailable sources; never treat a missing source as evidence of alignment.
+- Report each conflict, unsupported assumption, omission, or standards deviation with its severity, evidence or source reference, risk, and actionable recommendation.
+
+Keep the review read-only: do not modify the task files or any other file, and do not interview the user. Do not create a separate review artifact, revise tasks automatically, or rerun the review. Report `No findings.` when the available evidence reveals no issues.
+
+Present the subagent's result under a distinct `## Task Review` heading in the final response, preserving its source coverage and findings. If the subagent fails or cannot run, report `Review incomplete: <reason>` in that section and do not claim that the tasks are aligned.

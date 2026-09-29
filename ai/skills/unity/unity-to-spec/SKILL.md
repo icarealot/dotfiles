@@ -55,3 +55,14 @@ Describe what this spec excludes.
 Record other relevant feature notes.
 
 </spec-template>
+
+6. Spawn a subagent to review the spec. Pass the exact spec path and a concise summary of the agreed requirements and unresolved assumptions from the current conversation. Instruct the reviewer to:
+
+   - Read the complete spec.
+   - Discover and read applicable context files, applicable decisions under `docs/adr/`, and project standards under `docs/`.
+   - Compare every spec section and validation decision with the agreed conversation, discovered context, applicable ADRs, project standards, and relevant codebase evidence.
+   - Report source coverage, including missing or unavailable sources; never treat a missing source as evidence of alignment.
+   - Report each conflict, unsupported assumption, omission, or standards deviation with its severity, evidence/source reference, risk, and actionable recommendation.
+   - Keep the review read-only: do not modify the spec or any other file, and do not interview the user. Report `No findings.` when the available evidence reveals no issues.
+
+   Present the subagent's result under a distinct `## Spec Review` heading in the final response, preserving its source coverage and findings. If the subagent fails or cannot run, report `Review incomplete: <reason>` in that section and do not claim that the spec is aligned. Do not create a separate review artifact or revise the spec automatically.

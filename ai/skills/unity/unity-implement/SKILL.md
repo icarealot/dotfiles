@@ -28,6 +28,7 @@ Find and apply project standards under `docs/` when present. Trace the existing 
 - Follow [test-protocol.md](test-protocol.md) for every test run.
 - After acceptance checks pass, apply the smallest-sufficient-change standard to the task's diff.
 - After simplification and disposable-check removal, rerun each EditMode or PlayMode suite required by the task's selected test levels.
+- Once the final validation rerun passes, call the Skill tool with `/unity-code-review`. Do not modify the implementation in response to review findings; pass the review result through to the report.
 - Report human playtesting, including any required Player Build, as deferred rather than running it.
 
 Use repository-root `.scratch/` for all temporary scripts, files, logs, exports, screenshots, and command output. Remove every artifact created for this work item before reporting.
@@ -36,10 +37,11 @@ Leave Git state intact unless the user explicitly requests that exact operation:
 
 ## 3. Report compactly
 
-Begin with exactly `Status: complete` only when every acceptance criterion is implemented and all available required validation passes; otherwise begin with `Status: blocked` and name the blocker and required action.
+Begin with exactly `Status: complete` only when every acceptance criterion is implemented, all available required validation passes, and `/unity-code-review` returns `No findings.`; otherwise begin with `Status: blocked` and name the blocker and required action. When the review returns findings, include those findings unchanged as the required action and do not fix them automatically.
 
 Then list only:
 
 - `Changed:` every changed file path;
 - `Validation:` deferred or unavailable checks;
-- `TDD:` whether `/unity-tdd` was applied and why.
+- `TDD:` whether `/unity-tdd` was applied and why;
+- `Review:` the exact `/unity-code-review` result.
