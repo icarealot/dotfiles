@@ -1,0 +1,229 @@
+:root {
+  --background: #ffffff;
+  --surface: #ffffff;
+  --text: #000000;
+  --muted: #000000;
+  --border: #000000;
+}
+
+body {
+  max-width: none;
+  padding: 0;
+  background: #ffffff;
+  color: #000000;
+  font: 10.5pt/1.35 Arial, Helvetica, sans-serif;
+}
+
+.site-header {
+  display: none;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.intro {
+  padding: 0 0 7pt;
+}
+
+#skills {
+  order: 1;
+}
+
+#experience {
+  order: 2;
+}
+
+#work {
+  order: 3;
+}
+
+#education {
+  order: 4;
+}
+
+section {
+  padding: 7pt 0;
+  border: 0;
+}
+
+h1 {
+  max-width: none;
+  margin-bottom: 6pt;
+  font-size: 25pt;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  margin-bottom: 5pt;
+  padding-bottom: 2pt;
+  border-bottom: 0.75pt solid #000000;
+  font-size: 13pt;
+  line-height: 1.2;
+}
+
+h3 {
+  margin: 0;
+  font-size: 10.5pt;
+  line-height: 1.35;
+}
+
+/* Intro */
+.intro-contact {
+  margin-bottom: 4pt;
+}
+
+.contact-list {
+  gap: 0 13pt;
+  font-size: 10pt;
+  line-height: 1.3;
+}
+
+.contact-list li {
+  padding: 0;
+}
+
+.contact-list li + li::before {
+  left: -6.5pt;
+}
+
+.print-summary-title {
+  display: block;
+  margin-top: 7pt;
+}
+
+.intro > p {
+  font-size: 10.5pt;
+}
+
+/* Skills */
+.skills-grid {
+  display: block;
+}
+
+.skill-group {
+  display: flex;
+  gap: 5pt;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.skill-group + .skill-group {
+  margin-top: 1pt;
+}
+
+.skill-group h3 {
+  flex: 0 0 67pt;
+  margin: 0;
+}
+
+.skill-group h3::after {
+  content: ":";
+}
+
+.skill-list {
+  gap: 0;
+}
+
+.skill-list li {
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 10.5pt;
+  line-height: inherit;
+}
+
+.skill-list li + li::before {
+  content: ", ";
+}
+
+/* Experience */
+.entry-heading,
+.credential {
+  gap: 12pt;
+}
+
+.date {
+  font-size: 10pt;
+}
+
+.entry ul {
+  margin: 4pt 0 0;
+  padding-left: 14pt;
+}
+
+.entry li + li {
+  margin-top: 0;
+}
+
+/* Work */
+.work-grid {
+  display: block;
+}
+
+.work-item {
+  display: block;
+  min-height: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  break-inside: avoid;
+}
+
+.work-item + .work-item {
+  margin-top: 4pt;
+}
+
+.work-media,
+.work-links {
+  display: none;
+}
+
+.work-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 0;
+}
+
+.work-item h3 {
+  margin: 0;
+  overflow: visible;
+  font-size: 10.5pt;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+.work-item p {
+  min-height: 0;
+  font-size: 10.5pt;
+}
+
+.print-platforms {
+  display: block;
+  margin-left: 12pt;
+  white-space: nowrap;
+}
+
+.work-description {
+  grid-column: 1 / -1;
+}
+
+/* Education and page breaks */
+.credential-list {
+  gap: 5pt;
+}
+
+.entry,
+.credential,
+.skill-group,
+#education {
+  break-inside: avoid;
+}

@@ -16,61 +16,97 @@
   <link rel="canonical" href="https://icarealot.github.io/dotfiles/">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="print.css" media="print">
 </head>
 <body>
   <header class="site-header" aria-label="Site header">
     <span class="site-title">Portfolio</span>
-    <button class="download-button" type="button" onclick="window.print()" title="Open the print dialog to save as PDF">Download</button>
+    <button class="download-button" type="button" onclick="window.print()" title="Open the print dialog to save your CV as a PDF">Download CV</button>
   </header>
 
   <main>
     <section class="intro" aria-labelledby="page-title">
       <h1 id="page-title">Nguyen Do Tuan Kiet</h1>
-      <p>I am a Unity developer based in Ho Chi Minh City with experience building and shipping mobile games for iOS and Android.</p>
+      <address class="intro-contact" aria-label="Contact">
+        <ul class="contact-list">
+          <li>Ho Chi Minh City, Vietnam</li>
+          <li>nkiet84@gmail.com</li>
+          <li>github.com/icarealot</li>
+        </ul>
+      </address>
+      <h2 class="print-summary-title">Summary</h2>
+      <p>Unity Developer with 4+ years shipping and maintaining Android/iOS games, including gameplay, UI, LiveOps, SDK integration, cloud saves and remote content delivery.</p>
     </section>
 
     <section id="work" aria-labelledby="work-title">
       <h2 id="work-title">Selected work</h2>
       <div class="work-grid">
-        <a class="work-item" href="https://apps.apple.com/vn/app/pixel-isle-coloring-sandbox/id1645261504" target="_blank" rel="noopener noreferrer">
+        <article class="work-item">
           <div class="work-media">
-            <img src="assets/pixel-isle.jpg" alt="" width="256" height="256">
+            <img src="assets/projects/pixel-isle.jpg" alt="" width="256" height="256">
           </div>
           <div class="work-body">
             <h3>Pixel Isle: Coloring Sandbox</h3>
-            <p>A color-by-number game where players complete artwork and build themed pixel-art islands.</p>
+            <p class="print-platforms">iOS · Android</p>
+            <p class="work-description">A color-by-number game where players complete artwork and build themed pixel-art islands.</p>
+            <div class="work-links">
+              <a class="work-link" href="https://apps.apple.com/vn/app/pixel-isle-coloring-sandbox/id1645261504" target="_blank" rel="noopener noreferrer" aria-label="Open Pixel Isle: Coloring Sandbox on the App Store" title="Open on the App Store">
+                <img src="assets/icons/ios.svg" alt="">
+              </a>
+              <a class="work-link android-link" href="https://play.google.com/store/apps/details?id=com.pixelisle" target="_blank" rel="noopener noreferrer" aria-label="Open Pixel Isle: Coloring Sandbox on Google Play" title="Open on Google Play">
+                <img src="assets/icons/android.svg" alt="">
+              </a>
+            </div>
           </div>
-        </a>
+        </article>
 
-        <a class="work-item" href="https://apps.apple.com/us/app/color-tap-art-unblock-puzzle/id6738715647" target="_blank" rel="noopener noreferrer">
+        <article class="work-item">
           <div class="work-media">
-            <img src="assets/color-tap.jpg" alt="" width="256" height="256">
+            <img src="assets/projects/color-tap.jpg" alt="" width="256" height="256">
           </div>
           <div class="work-body">
             <h3>Color Tap: Art Unblock Puzzle</h3>
-            <p>A directional block puzzle where players clear blocks to reveal artwork.</p>
+            <p class="print-platforms">iOS</p>
+            <p class="work-description">A directional block puzzle where players clear blocks to reveal artwork.</p>
+            <div class="work-links">
+              <a class="work-link" href="https://apps.apple.com/us/app/color-tap-art-unblock-puzzle/id6738715647" target="_blank" rel="noopener noreferrer" aria-label="Open Color Tap: Art Unblock Puzzle on the App Store" title="Open on the App Store">
+                <img src="assets/icons/ios.svg" alt="">
+              </a>
+            </div>
           </div>
-        </a>
+        </article>
 
-        <a class="work-item" href="https://play.google.com/store/apps/details?id=com.coloring.sort.puzzle.gem.binrong.pixels" target="_blank" rel="noopener noreferrer">
+        <article class="work-item">
           <div class="work-media">
-            <img src="assets/gem-pixels.webp" alt="" width="256" height="256">
+            <img src="assets/projects/gem-pixels.webp" alt="" width="256" height="256">
           </div>
           <div class="work-body">
             <h3>Gem Pixels: Coloring Puzzle</h3>
-            <p>A gem-sorting puzzle where players gradually uncover pixel art.</p>
+            <p class="print-platforms">Android</p>
+            <p class="work-description">A gem-sorting puzzle where players gradually uncover pixel art.</p>
+            <div class="work-links">
+              <a class="work-link android-link" href="https://play.google.com/store/apps/details?id=com.coloring.sort.puzzle.gem.binrong.pixels" target="_blank" rel="noopener noreferrer" aria-label="Open Gem Pixels: Coloring Puzzle on Google Play" title="Open on Google Play">
+                <img src="assets/icons/android.svg" alt="">
+              </a>
+            </div>
           </div>
-        </a>
+        </article>
 
-        <a class="work-item" href="https://play.google.com/store/apps/details?id=com.match.tiles.dreamgarden" target="_blank" rel="noopener noreferrer">
+        <article class="work-item">
           <div class="work-media">
-            <img src="assets/dream-garden.webp" alt="" width="256" height="256">
+            <img src="assets/projects/dream-garden.webp" alt="" width="256" height="256">
           </div>
           <div class="work-body">
             <h3>Dream Garden: Tile Match Game</h3>
-            <p>A relaxing match-three tile game set in garden-themed scenes.</p>
+            <p class="print-platforms">Android</p>
+            <p class="work-description">A relaxing match-three tile game set in garden-themed scenes.</p>
+            <div class="work-links">
+              <a class="work-link android-link" href="https://play.google.com/store/apps/details?id=com.match.tiles.dreamgarden" target="_blank" rel="noopener noreferrer" aria-label="Open Dream Garden: Tile Match Game on Google Play" title="Open on Google Play">
+                <img src="assets/icons/android.svg" alt="">
+              </a>
+            </div>
           </div>
-        </a>
+        </article>
       </div>
     </section>
 
@@ -78,36 +114,69 @@
       <h2 id="experience-title">Experience</h2>
       <article class="entry">
         <div class="entry-heading">
-          <div>
-            <h3>Athena Studio</h3>
-            <p class="entry-role">Unity Developer</p>
-          </div>
+          <h3>Athena Studio</h3>
           <p class="date"><time datetime="2022-03">02/2022</time> – <time datetime="2026-06">06/2026</time></p>
         </div>
         <ul>
           <li>Developed Unity game clients for iOS and Android.</li>
           <li>Managed live ops and CDN delivery for game content.</li>
-          <li>Integrated SDKs for advertising, in-app purchases, analytics, and cloud saves.</li>
+          <li>Integrated SDKs for advertising, in-app purchases, analytics, cloud saves, and customer support.</li>
+          <li>Built level design tools that helped game designers create levels more easily.</li>
         </ul>
       </article>
     </section>
 
-    <section id="education" aria-labelledby="education-title">
-      <h2 id="education-title">Education</h2>
-      <article class="entry">
-        <div class="entry-heading">
-          <div>
-            <h3>B.Sc. in Computer Science</h3>
-            <p class="entry-role">Ho Chi Minh City Open University</p>
-          </div>
-          <p class="date"><time datetime="2017-09">09/2017</time> – <time datetime="2023-05">05/2023</time></p>
-        </div>
-      </article>
+    <section id="skills" aria-labelledby="skills-title">
+      <h2 id="skills-title">Skills</h2>
+      <div class="skills-grid">
+        <article class="skill-group">
+          <h3>Development</h3>
+          <ul class="skill-list">
+            <li>Unity</li>
+            <li>C#</li>
+            <li>Git</li>
+            <li>Gameplay systems</li>
+            <li>UI implementation</li>
+          </ul>
+        </article>
+        <article class="skill-group">
+          <h3>Platforms</h3>
+          <ul class="skill-list">
+            <li>Android</li>
+            <li>iOS</li>
+          </ul>
+        </article>
+        <article class="skill-group">
+          <h3>LiveOps</h3>
+          <ul class="skill-list">
+            <li>Remote content delivery</li>
+            <li>CDN delivery</li>
+            <li>Event systems</li>
+          </ul>
+        </article>
+        <article class="skill-group">
+          <h3>Services</h3>
+          <ul class="skill-list">
+            <li>Advertising SDKs</li>
+            <li>In-app purchases</li>
+            <li>Analytics</li>
+            <li>Cloud saves</li>
+            <li>Customer support</li>
+          </ul>
+        </article>
+      </div>
     </section>
 
-    <section id="certifications" aria-labelledby="certifications-title">
-      <h2 id="certifications-title">Certifications</h2>
+    <section id="education" aria-labelledby="education-title">
+      <h2 id="education-title">Education &amp; Certifications</h2>
       <div class="credential-list">
+        <article class="credential">
+          <div>
+            <h3>B.Sc. in Computer Science</h3>
+            <p>Ho Chi Minh City Open University</p>
+          </div>
+          <p class="date"><time datetime="2017-09">09/2017</time> – <time datetime="2023-05">05/2023</time></p>
+        </article>
         <article class="credential">
           <div>
             <h3>TOEIC Listening &amp; Reading</h3>
@@ -115,23 +184,7 @@
           </div>
           <p class="date"><time datetime="2025-10">10/2025</time> – <time datetime="2027-10">10/2027</time></p>
         </article>
-        <article class="credential">
-          <div>
-            <h3>Game Development Bootcamp</h3>
-            <p>Athena Studio</p>
-          </div>
-          <p class="date"><time datetime="2022-03">02/2022</time> – <time datetime="2022-08">08/2022</time></p>
-        </article>
       </div>
-    </section>
-
-    <section id="contact" aria-label="Contact">
-      <address>
-        <ul class="contact-list">
-          <li>nkiet84@gmail.com</li>
-          <li>github.com/icarealot</li>
-        </ul>
-      </address>
     </section>
   </main>
 </body>
