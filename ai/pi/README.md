@@ -17,6 +17,18 @@ Extensions for the [Pi coding agent](https://pi.dev/).
 
 ## Install
 
+### From Git
+
+After pushing this repository, install all four extensions as a Pi package:
+
+```bash
+pi install git:github.com/icarealot/dotfiles
+```
+
+For project-local settings instead of your personal Pi settings, add `--local`. Update later with `pi update git:github.com/icarealot/dotfiles`.
+
+The repository-root `package.json` declares the extension entry points and Pi-provided runtime dependencies.
+
 ### Extensions
 
 cd to repo root.
