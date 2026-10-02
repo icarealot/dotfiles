@@ -14,6 +14,7 @@ Reusable AI agent skills.
 | `unity-implement`         | Implement a Unity task end to end                                                                       |
 | `unity-tdd`               | Test-drives Unity tasks with NUnit and the Unity Test Framework                                         |
 | `unity-code-review`       | Review the changes along multiple axes (Standards, Spec and Testing)                                    |
+| `unity-audit`             | Audit a Unity project’s C# code for correctness, maintainability, performance, security, and standards |
 | `unity-create-build-note` | Prepends a formatted entry to a Unity project's platform-specific build notes                           |
 
 ## Install
