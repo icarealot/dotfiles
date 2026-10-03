@@ -64,3 +64,6 @@ nul
 /[Rr]ecordings/
 Screenshots/
 /.scratch/
+
+# Third Party
+LunaTemp/
