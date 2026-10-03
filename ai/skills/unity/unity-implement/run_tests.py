@@ -78,7 +78,9 @@ class UnityPipeline:
             document = json.loads(completed.stdout)
         except json.JSONDecodeError as error:
             detail = completed.stderr.strip() or completed.stdout.strip() or "no output"
-            raise RunnerError(f"unity command {name} returned invalid JSON: {detail}") from error
+            raise RunnerError(
+                f"unity command {name} returned invalid JSON: {detail}"
+            ) from error
 
         if completed.returncode != 0 or not document.get("success", False):
             raise RunnerError(error_text(document))
@@ -126,7 +128,9 @@ def wait_for_editor_idle(
                     ' " updating=" + UnityEditor.EditorApplication.isUpdating;',
                 )
             )
-            value = evaluation.get("result") if isinstance(evaluation, dict) else evaluation
+            value = (
+                evaluation.get("result") if isinstance(evaluation, dict) else evaluation
+            )
             if isinstance(value, str) and idle_pattern.search(value):
                 return
         except RunnerError:
@@ -173,20 +177,20 @@ def clear_console(pipeline: UnityPipeline) -> None:
 
 def console_error_messages(pipeline: UnityPipeline, limit: int = 10) -> list[str]:
     result = result_from(
-        pipeline.command("get_console_logs", "--severity", "error", "--limit", str(limit))
+        pipeline.command("console", "--level", "error", "--tail", str(limit))
     )
-    logs = result.get("logs") if isinstance(result, dict) else None
+    entries = result.get("entries") if isinstance(result, dict) else None
     return [
         str(entry.get("message"))
-        for entry in (logs or [])
+        for entry in (entries or [])
         if isinstance(entry, dict) and entry.get("message")
     ]
 
 
-_RECOMPILE_REQUEST_EVAL = (
-    "UnityEditor.Compilation.CompilationPipeline.RequestScriptCompilation(); return true;"
+_RECOMPILE_REQUEST_EVAL = "UnityEditor.Compilation.CompilationPipeline.RequestScriptCompilation(); return true;"
+_SCRIPT_COMPILATION_FAILED_EVAL = (
+    "return UnityEditor.EditorUtility.scriptCompilationFailed;"
 )
-_SCRIPT_COMPILATION_FAILED_EVAL = "return UnityEditor.EditorUtility.scriptCompilationFailed;"
 _IS_COMPILING_EVAL = "return UnityEditor.EditorApplication.isCompiling;"
 _START_GRACE_SECONDS = 15.0
 
@@ -235,7 +239,9 @@ def request_compile(
     raise RunnerError(f"recompile did not finish within {timeout}s")
 
 
-def recompile_scripts(pipeline: UnityPipeline, timeout: int, poll_interval: float) -> None:
+def recompile_scripts(
+    pipeline: UnityPipeline, timeout: int, poll_interval: float
+) -> None:
     """Make sure this run's own compile succeeded before testing.
 
     The console was cleared before the refresh, so every compiler error present now
@@ -264,18 +270,12 @@ def recompile_scripts(pipeline: UnityPipeline, timeout: int, poll_interval: floa
     print("scripts: recompile completed", file=sys.stderr)
 
 
-def raise_with_console_errors(pipeline: UnityPipeline, error: RunnerError) -> RunnerError:
+def raise_with_console_errors(
+    pipeline: UnityPipeline, error: RunnerError
+) -> RunnerError:
     """Attach recent console errors so a compile-gate failure names the actual compiler errors."""
     try:
-        result = result_from(
-            pipeline.command("get_console_logs", "--severity", "error", "--limit", "5")
-        )
-        logs = result.get("logs") if isinstance(result, dict) else None
-        messages = [
-            str(entry.get("message"))
-            for entry in (logs or [])
-            if isinstance(entry, dict) and entry.get("message")
-        ]
+        messages = console_error_messages(pipeline, 5)
         fresh = [message for message in messages if message not in str(error)]
         if fresh:
             return RunnerError(f"{error}; recent console errors: {' | '.join(fresh)}")
@@ -383,7 +383,9 @@ def run_tests(
             "status": state,
             "duration": status.get("duration", status.get("Duration")),
             "summary": summary,
-            "nonPassed": non_passed_results(status.get("results", status.get("Results"))),
+            "nonPassed": non_passed_results(
+                status.get("results", status.get("Results"))
+            ),
         }
         message = status.get("message") or status.get("error")
         if message:
@@ -432,7 +434,11 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> int:
     arguments = build_parser().parse_args()
     if arguments.test_filter is not None and not arguments.test_filter.strip():
-        print(json.dumps({"status": "error", "message": "filter cannot be empty"}, indent=2))
+        print(
+            json.dumps(
+                {"status": "error", "message": "filter cannot be empty"}, indent=2
+            )
+        )
         return 2
 
     try:
@@ -440,7 +446,9 @@ def main() -> int:
         clear_console(pipeline)
         refresh_assets(pipeline, arguments.refresh_timeout, arguments.poll_interval)
         try:
-            recompile_scripts(pipeline, arguments.refresh_timeout, arguments.poll_interval)
+            recompile_scripts(
+                pipeline, arguments.refresh_timeout, arguments.poll_interval
+            )
         except RunnerError as error:
             raise raise_with_console_errors(pipeline, error) from error
 
