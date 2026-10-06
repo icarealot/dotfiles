@@ -15,7 +15,7 @@ Spawn a subagent to review the current Git index against applicable coding, spec
 
 ## 2. Establish sources and evidence
 
-- Find and read completely the single relevant task, specification, context, and decision sources. Each review covers one task.
+- Find and read completely the single relevant task, specification, glossary, and decision sources. Each review covers one task.
 - If no task/specification source exists, omit the Spec evaluation.
 - Find project standards under `docs/`; omit the corresponding evaluation when its source is absent.
 - Gather evidence once. Evaluate every relevant implementation detail and caller-visible behavior independently against each applicable axis without rereading the complete staged review set between axes.

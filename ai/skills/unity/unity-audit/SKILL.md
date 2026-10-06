@@ -14,10 +14,10 @@ Run an audit of one Unity project.
 
 From the current working directory, find these governing-source categories and read them completely:
 
-- the root `CONTEXT.md`.
+- the root `GLOSSARY.md`.
 - ADR files,  applicable standards under `docs/`.
 
-Resolve conflicts in this order: accepted/current ADRs, context/domain invariants, project standards, then general best practices.
+Resolve conflicts in this order: accepted/current ADRs, Glossary/domain invariants, project standards, then general best practices.
 
 ## 3. Generate the Repomix file
 
@@ -39,7 +39,7 @@ Read the Repomix generated file, audit for:
 - security vulnerabilities and unsafe trust/data boundaries;
 - concrete performance or allocation risks;
 - unnecessary complexity, duplication, coupling, indirection, dead paths, refactoring, and simplification opportunities;
-- context, ADR, architecture, and standards violations;
+- Glossary, ADR, architecture, and standards violations;
 - missing or insufficient automated validation for caller-visible behavior.
 
 Report concrete issues or demonstrable risks only; include evidence, impact, and a specific action. Label uncertainty and omit speculation and subjective style preferences.

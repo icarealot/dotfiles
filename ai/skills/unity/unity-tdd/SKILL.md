@@ -5,7 +5,7 @@ description: Test-drive Unity features, fixes, or automated tests with a red-gre
 
 Test-drive one behavior slice at a time through its public seam.
 
-Use project standards under `docs/` when present. Use `CONTEXT.md` domain language and respect applicable ADRs.
+Use project standards under `docs/` when present. Use `GLOSSARY.md` domain language and respect applicable ADRs.
 
 For each behavior selected for retained automation by the testing standard:
 

@@ -8,7 +8,7 @@ Use Arrange, Act, Assert (AAA):
 
 - **Arrange:** Put the SUT and its dependencies in the required state.
 - **Act:** Make one call to the SUT and capture its result, if any.
-- **Assert:** Verify an observable outcome or meaningful interaction.
+- **Assert:** Verify an observable outcome; assert boundary interactions only when they are part of the caller-visible contract.
 
 Also:
 
@@ -28,14 +28,14 @@ Also:
 
 Use Plain EditMode for deterministic behavior that does not require a `GameObject`, scene, asset, frame, coroutine, or Unity lifecycle.
 
-- Test one unit's behavior and outcome or meaningful interaction.
+- Test one unit's caller-visible behavior, preferring outcome assertions.
 - Keep tests fast and isolated; normally avoid setup and teardown.
-- Construct owned code directly and substitute Unity or external boundaries with test doubles.
+- Construct owned code directly, use real internal collaborators, and substitute only Unity or external system boundaries with test doubles.
 - Make unit tests the majority of the suite.
 
 ### Integration tests
 
-Use PlayMode for component, lifecycle, physics, input, or other Unity-engine behavior.
+Integration-style testing means exercising real collaborators through public interfaces, not necessarily running in PlayMode. Use Plain EditMode for deterministic collaboration between plain C# modules. Use PlayMode for component, lifecycle, physics, input, or other Unity-engine behavior.
 
 - Use isolated fixtures with only the required objects.
 - Use production prefabs when testing distinct wiring risks; prove wiring through observable behavior, not exact hierarchy or serialized values.
@@ -59,14 +59,18 @@ Use human playtesting for presentation, feel, audio, controls, camera behavior, 
 - Test caller-visible behavior through the narrowest public seam.
 - Assert each rule at its owning seam; test it at another level only for a distinct risk.
 - Derive expected values independently from production calculations.
-- Prefer passing values before introducing interfaces; when substitution requires one, use a narrow project-owned interface.
+- Prefer passing values before introducing interfaces; when boundary substitution requires one, use a narrow project-owned interface.
+- Inject boundary dependencies rather than constructing them inside the behavior under test; keep concrete wiring outside that behavior.
+- Give boundary interfaces operation-specific methods with explicit inputs and outputs, rather than a generic dispatcher whose mocks must branch on operation names or payloads.
+- Prefer observable outcomes over call verification. Assert boundary calls only when the interaction itself is part of the caller-visible contract; verify the required operation and data, not incidental call counts or order.
 - Synchronize PlayMode tests on observable outcomes with bounded timeouts.
 - Keep passing runs free of deliberately generated warnings, errors, and exceptions; assert expected failures through a caller-visible synchronous seam with `Throws`.
 
 ## Don't
 
 - Don't automate presentation details, exact hierarchy, animation appearance, cadence, or feel.
-- Don't assert private methods, internal call sequences, or implementation details unless they are part of the public contract.
+- Don't mock or stub owned classes, internal collaborators, or project-owned boundary adapters; use their real implementations and substitute only the Unity or external systems they wrap.
+- Don't assert private methods, internal call sequences, or implementation details. Call counts or order are valid only at system boundaries when explicitly required by the public contract.
 - Don't use arbitrary frame counts or real-time delays to prove completion or visual timing.
 - Don't add tests solely for coverage or test-count targets, bug history, trivial construction, logic-free wrappers, or glue without meaningful behavior.
 - Don't retain duplicate tests when a cheaper owning seam provides the same evidence.

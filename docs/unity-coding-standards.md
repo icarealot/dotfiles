@@ -35,10 +35,13 @@ Order class members as follows:
 - Declare every concrete class `sealed` unless it is intentionally designed for inheritance.
 - Keep behavior near the data it uses and expose purposeful methods or read-only observations.
 - Introduce domain types or composition when they clarify real concepts and responsibilities.
+- Group recurring fields or parameters into a domain type when they represent one concept; replace primitives that obscure domain meaning or invariants.
+- Organize code by reason to change: keep behavior that changes together in one module, and separate responsibilities that change for unrelated reasons.
 
 ## Don’t
 
 - Don’t add speculative abstractions or task-created scaffolding.
 - Don’t leave duplicated logic, dead paths, long navigation chains, or layers that only delegate.
+- Don’t repeat `switch` or `if` dispatch on the same type or discriminator across callers; centralize the dispatch or use polymorphism when it simplifies the design.
 - Don’t expose mutable state when a purposeful behavior or read-only observation is sufficient.
 - Don’t use inheritance when a subtype cannot honor most inherited behavior.
