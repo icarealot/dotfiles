@@ -1,45 +1,30 @@
 ---
 name: unity-implement
-description: Implement a Unity task end to end.
+description: Implement a piece of work based on a spec or set of tasks.
+disable-model-invocation: true
 ---
 
-Implement exactly one supplied work item.
+Implement the work described by the user in the spec or tasks.
 
 ## 1. Establish the boundary
 
-Read the supplied `docs/<feature>/tasks/<NN>-<slug>.md` and its referenced spec completely.
+- `unity-cli`.
+- `ui-ugui` for Runtime/Canvas UI or `ui-imgui` for Editor IMGUI.
+- no new external package, `Packages/manifest.json` change, or editor-resource import such as TMP Essentials.
+- An open Editor.
 
-Before editing, require:
-
-- `/unity-cli`;
-- `/ui-ugui` for Runtime/Canvas UI or `/ui-imgui` for Editor IMGUI, when applicable;
-- no new external package, `.asmdef` reference, `Packages/manifest.json` change, or editor-resource import such as TMP Essentials.
-
-On a failed gate, return `Status: blocked` with the required user action. Run `unity status`; if no Editor is open, ask the user to open it and return blocked.
-
-Find and apply project standards under `docs/` when present. Trace the existing behavior before editing.
+On a failed gate, stop and report with the required user action.
 
 ## 2. Implement and validate
 
-- Apply the discovered standards to every change.
-- Use `/unity-cli` for every non-code or `.asmdef` change, including scenes, prefabs, ScriptableObjects, `.meta` files, and `ProjectSettings/*`; never edit Unity YAML directly.
-- Use `/ui-ugui` for Runtime/Canvas UI and `/ui-imgui` for Editor IMGUI.
-- Apply `/unity-tdd` to automated behavior selected by the work item and testing standard.
-- Follow [test-protocol.md](test-protocol.md) for every test run.
-- After acceptance checks pass, apply the smallest-sufficient-change standard to the task's diff.
-- After simplification and disposable-check removal, rerun each EditMode or PlayMode suite required by the task's selected test levels.
-- Report human playtesting, including any required Player Build, as deferred rather than running it.
+- Call the Skill tool with `unity-tdd` where possible, at pre-agreed seams.
+- Follow [test-protocol.md](./test-protocol.md) for every test run.
+- Run typechecking regularly, single test files regularly, and the full test suite once at the end.
+- Use `unity-cli` for every non-code edit; never edit Unity YAML directly.
+- Use `ui-ugui` for Runtime/Canvas UI and `ui-imgui` for Editor IMGUI.
+- Use repository-root `.scratch/` for all temporary scripts, files, logs, exports, screenshots, and command output.
+- Report human playtesting, Player Build, as deferred rather than running it.
 
-Use repository-root `.scratch/` for all temporary scripts, files, logs, exports, screenshots, and command output. Remove every artifact created for this work item before reporting.
+## 3. Report
 
-Leave Git state intact unless the user explicitly requests that exact operation: do not run `git add`, `git commit`, or `git stash`.
-
-## 3. Report compactly
-
-Begin with exactly `Status: complete` only when every acceptance criterion is implemented and all available required validation passes; otherwise begin with `Status: blocked` and name the blocker and required action.
-
-Then list only:
-
-- `Changed:` every changed file path;
-- `Validation:` deferred or unavailable checks;
-- `TDD:` whether `/unity-tdd` was applied and why.
+Once done, report the results or any issues encountered.

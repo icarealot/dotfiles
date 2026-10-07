@@ -1,73 +1,102 @@
 ---
 name: unity-code-review
-description: Spawn a subagent to review staged Unity changes against coding, specification, and testing requirements.
+description: "Review currently staged changes against repo standards, the originating spec, and testing guidance. Runs three independent reviews in parallel sub-agents and reports them side by side."
 disable-model-invocation: true
 ---
 
-Spawn a subagent to review the current Git index against applicable coding, specification, and testing requirements. The staged diff is the review boundary; use other files only as evidence.
+Three-axis review of the current Git index (staged changes):
 
-## 1. Establish the review set
+- **Standards**: does the code conform to this repo's documented coding standards?
+- **Spec**: does the code faithfully implement the originating task / spec?
+- **Testing**: do the tests follow `unity-tdd` guidance and sufficiently validate staged behavior at the agreed seams?
 
-- Inspect `git status --short` and `git diff --cached`, including staged additions, modifications, deletions, and renames.
-- If there are no staged changes, report exactly `No staged changes to review.` and stop.
-- Read every staged reviewable text file completely. For binaries, inspect their identities and applicable Unity metadata or repository tooling; never load binary payloads.
-- Do not treat a supplied task, feature directory, file list, project scope, or unstaged/untracked change as a review target. Read related assets, configuration, prefabs, callers, and tests only to understand staged behavior.
+The axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
 
-## 2. Establish sources and evidence
+## Process
 
-- Find and read completely the single relevant task, specification, glossary, and decision sources. Each review covers one task.
-- If no task/specification source exists, omit the Spec evaluation.
-- Find project standards under `docs/`; omit the corresponding evaluation when its source is absent.
-- Gather evidence once. Evaluate every relevant implementation detail and caller-visible behavior independently against each applicable axis without rereading the complete staged review set between axes.
+### 1. Establish the staged review set
 
-## 3. Evaluate
+Inspect `git status --short` and capture the review diff with `git diff --cached`, including staged additions, modifications, deletions, and renames. Record the staged file list with `git diff --cached --name-status`.
 
-### Standards
+If there are no staged changes, report exactly `No staged changes to review.` and stop before spawning sub-agents.
 
-Apply every documented coding rule. Limit smallest-sufficient-change findings to staged additions and old paths made obsolete by the staged change; omit unrelated legacy cleanup.
+The staged diff is the review boundary. Read staged file contents with `git show :<path>` so partially staged files are reviewed as they exist in the index, not the working tree. Read related files only as context; unstaged and untracked changes are outside the review scope.
 
-For each violation, record the rule and evidence, the risk it hides, and a concrete fix.
+### 2. Identify the spec source
 
-### Spec
+Look for the originating spec, in this order:
 
-Report missing, partial, extra, or incorrect behavior. Quote the controlling task or specification requirement and give a concrete fix.
+1. A path the user passed as an argument.
+2. A spec file under `docs/`, `specs/`, or `.scratch/` matching the branch name or feature.
+3. If nothing is found, ask the user where the spec is. If they say there isn't one, the **Spec** sub-agent will skip and report "no spec available".
 
-### Testing
+### 3. Identify the standards sources
 
-Apply every testing rule to production and test code in the staged review set. Review only behavior that automation can establish. Omit human-judgment checks, including missing, deferred, incomplete, or unsigned human checks; never request human checklists or sign-off.
+Anything in the repo that documents how code should be written, such as `CODING_STANDARDS.md` or `CONTRIBUTING.md`.
 
-For each caller-visible behavior within the automated boundary:
+On top of whatever the repo documents, the Standards axis always carries the **smell baseline** below: a fixed set of Fowler code smells (_Refactoring_, ch.3) that applies even when a repo documents nothing. Two rules bind it:
 
-1. Name its risk from the implementation and spec contract.
-2. Select the cheapest sufficient test level—unit, integration, or E2E—and smallest fixture.
-3. Verify that the tests provide sufficient evidence.
+- **The repo overrides.** A documented repo standard always wins; where it endorses something the baseline would flag, suppress the smell.
+- **Always a judgement call.** Each smell is a labelled heuristic ("possible Feature Envy"), never a hard violation. Like any standard here, skip anything tooling already enforces.
 
-Judge automated validation evidence rather than spec correctness; report a spec defect only when this evaluation exposes one. Report each retained test that violates a rule and each behavior lacking sufficient automated validation, with evidence and a concrete fix. For missing automation within the testing standard's automated boundary, name the behavior and sufficient fixture.
+Each smell reads *what it is* → *how to fix*; match it against the diff:
 
-Merge issues found on multiple axes and apply all relevant tags instead of duplicating them.
+- **Mysterious Name**: a function, variable, or type whose name doesn't reveal what it does or holds. → rename it; if no honest name comes, the design's murky.
+- **Duplicated Code**: the same logic shape appears in more than one hunk or file in the change. → extract the shared shape, call it from both.
+- **Feature Envy**: a method that reaches into another object's data more than its own. → move the method onto the data it envies.
+- **Data Clumps**: the same few fields or params keep travelling together (a type wanting to be born). → bundle them into one type, pass that.
+- **Primitive Obsession**: a primitive or string standing in for a domain concept that deserves its own type. → give the concept its own small type.
+- **Repeated Switches**: the same `switch`/`if`-cascade on the same type recurs across the change. → replace with polymorphism, or one map both sites share.
+- **Shotgun Surgery**: one logical change forces scattered edits across many files in the diff. → gather what changes together into one module.
+- **Divergent Change**: one file or module is edited for several unrelated reasons. → split so each module changes for one reason.
+- **Speculative Generality**: abstraction, parameters, or hooks added for needs the spec doesn't have. → delete it; inline back until a real need shows.
+- **Message Chains**: long `a.b().c().d()` navigation the caller shouldn't depend on. → hide the walk behind one method on the first object.
+- **Middle Man**: a class or function that mostly just delegates onward. → cut it, call the real target direct.
+- **Refused Bequest**: a subclass or implementer that ignores or overrides most of what it inherits. → drop the inheritance, use composition.
 
-### Score and tag
+### 4. Identify the testing sources
 
-- **5** — wrong or missing behavior, spec violation, or broken invariant
-- **4** — uncovered defect risk or hard standards violation, including complexity that can hide bugs
-- **3** — clear standards or testing-standard violation, including unjustified maintenance surface
-- **2** — minor convention drift or removable indirection
-- **1** — style nit
-- **0** — omit
+Read [unity-tdd/SKILL.md](../unity-tdd/SKILL.md), [tests.md](../unity-tdd/tests.md), and [mocking.md](../unity-tdd/mocking.md) completely. Use them as review references, not instructions to start an implementation loop.
 
-Tag findings `[Standards]`, `[Spec]`, `[Testing]`, or a combination.
+Find any recorded seam agreement, glossary, and ADRs. Coverage findings must stay within the agreed seams and automated-testing boundary. If the seam agreement is unavailable, report that limitation instead of assuming every public interface needs tests. Human-playtesting gaps are outside this axis.
 
-## 4. Report findings
+Evaluate test-first order and vertical slicing only when supplied evidence establishes the development sequence; the staged diff alone cannot establish it.
 
-Sort findings by score descending and report only this flat list in chat:
+### 5. Spawn the applicable sub-agents in parallel
 
-```markdown
-1. **[5] [Spec + Testing] <finding name>**
+**Standards sub-agent prompt** should include:
 
-- `<quoted requirement>`
-- `<path/to/file>`
-- <Risk or hidden deviation>.
-- Action: <concrete fix>.
-```
+- The staged diff command and file list from step 1, plus its review-boundary and index-reading instructions.
+- The list of standards-source files you found in step 3, **plus the smell baseline from step 3** pasted in full (the sub-agent has no other access to it).
+- The brief: "Report, per file/hunk where relevant, (a) every place the diff violates a documented standard: cite the standard (file + the rule); and (b) any baseline smell you spot: name it and quote the hunk. Distinguish hard violations from judgement calls: documented-standard breaches can be hard, but baseline smells are always judgement calls, and a documented repo standard overrides the baseline. Skip anything tooling enforces. Under 400 words."
 
-Report exactly `No findings.` when the staged changes are clean.
+**Spec sub-agent prompt** should include:
+
+- The staged diff command and file list from step 1, plus its review-boundary and index-reading instructions.
+- The path or fetched contents of the spec.
+- The brief: "Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong. Quote the spec line for each finding. Under 400 words."
+
+If the spec is missing, skip the Spec sub-agent and note this in the final report.
+
+**Testing sub-agent prompt** should include:
+
+- The staged diff command and file list from step 1, plus its review-boundary and index-reading instructions.
+- The resolved paths or full contents of all testing sources from step 4, including its scope and evidence limits.
+- The spec when available and any recorded seam agreement; identify missing sources explicitly.
+- The brief: "Apply every relevant rule from unity-tdd and its references to staged production and test changes. Read related existing tests as coverage evidence. Report (a) tests that violate the guidance and (b) staged behavior at agreed seams that lacks sufficient automated validation. For each finding, cite the source file and rule, quote the relevant test/hunk or name the uncovered behavior, explain the risk, and give a concrete fix using the cheapest sufficient test level and smallest fixture. Judge validation evidence independently of spec correctness. Under 400 words."
+
+### 6. Aggregate
+
+Present the reports under `## Standards`, `## Spec`, and `## Testing` headings, verbatim or lightly cleaned. Do **not** merge or rerank findings, because the axes are deliberately separate (see _Why separate axes_).
+
+End with a one-line summary: total findings per axis, and the worst issue _within each axis_ (if any). Don't pick a single winner across axes: that's the reranking the separation exists to prevent.
+
+## Why separate axes
+
+A change can pass one axis and fail another:
+
+- Code that follows every standard but implements the wrong thing → **Standards pass, Spec fail.**
+- Code that does exactly what the task asked but breaks the project's conventions → **Spec pass, Standards fail.**
+- Correct, conforming code with tautological or implementation-coupled tests → **Standards pass, Spec pass, Testing fail.**
+
+Reporting them separately stops one axis from masking another.
