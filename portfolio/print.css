@@ -8,222 +8,202 @@
 
 body {
   max-width: none;
-  padding: 0;
+  margin: 0;
+  /* Keep list markers inside the printable area, outside the text column. */
+  padding: 0 1.5mm;
   background: #ffffff;
   color: #000000;
-  font: 10.5pt/1.35 Arial, Helvetica, sans-serif;
+  font: 9.5pt/1.7 Arial, Helvetica, sans-serif;
 }
 
-.site-header {
+.site-header,
+.screen-portfolio {
   display: none;
 }
 
-main {
-  display: flex;
-  flex-direction: column;
-  padding: 0;
+.print-cv {
+  display: block;
 }
 
-.intro {
-  padding: 0 0 7pt;
+.print-cv a {
+  color: inherit;
+  text-decoration: none;
 }
 
-#skills {
-  order: 1;
+.print-cv h1,
+.print-cv h2,
+.print-cv h3,
+.print-cv h4,
+.print-cv p {
+  margin: 0;
 }
 
-#experience {
-  order: 2;
+/* Centered name and two rows of contact details. */
+.cv-header {
+  margin-bottom: 23pt;
+  text-align: center;
 }
 
-#work {
-  order: 3;
-}
-
-#education {
-  order: 4;
-}
-
-section {
-  padding: 7pt 0;
-  border: 0;
-}
-
-h1 {
+.cv-header h1 {
   max-width: none;
-  margin-bottom: 6pt;
-  font-size: 25pt;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-}
-
-h2 {
-  margin-bottom: 5pt;
-  padding-bottom: 2pt;
-  border-bottom: 0.75pt solid #000000;
-  font-size: 13pt;
+  font-size: 23pt;
   line-height: 1.2;
+  letter-spacing: 0;
 }
 
-h3 {
-  margin: 0;
-  font-size: 10.5pt;
-  line-height: 1.35;
-}
-
-/* Intro */
-.intro-contact {
-  margin-bottom: 4pt;
-}
-
-.contact-list {
-  gap: 0 13pt;
+.cv-role {
+  padding-top: 6pt;
   font-size: 10pt;
-  line-height: 1.3;
+  line-height: 1.4;
+  letter-spacing: 1.8pt;
+  text-transform: uppercase;
 }
 
-.contact-list li {
-  padding: 0;
+.cv-contact {
+  margin-top: 12pt;
+  font-style: normal;
+  font-size: 9pt;
+  line-height: 1.4;
 }
 
-.contact-list li + li::before {
-  left: -6.5pt;
-}
-
-.print-summary-title {
-  display: block;
-  margin-top: 7pt;
-}
-
-.intro > p {
-  font-size: 10.5pt;
-}
-
-/* Skills */
-.skills-grid {
-  display: block;
-}
-
-.skill-group {
+.cv-contact ul {
   display: flex;
-  gap: 5pt;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-}
-
-.skill-group + .skill-group {
-  margin-top: 1pt;
-}
-
-.skill-group h3 {
-  flex: 0 0 67pt;
+  justify-content: center;
+  gap: 14pt;
   margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.skill-group h3::after {
-  content: ":";
+.cv-contact ul + ul {
+  margin-top: 5pt;
 }
 
-.skill-list {
-  gap: 0;
+.cv-contact li {
+  display: flex;
+  align-items: center;
+  gap: 3pt;
 }
 
-.skill-list li {
-  display: block;
+.cv-contact svg {
+  width: 8pt;
+  height: 8pt;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Ruled, uppercase section headings. */
+.print-cv section {
   padding: 0;
   border: 0;
-  border-radius: 0;
-  background: transparent;
+}
+
+.print-cv section + section {
+  margin-top: 17pt;
+}
+
+.print-cv h2 {
+  margin-bottom: 10pt;
+  padding-bottom: 4pt;
+  border-bottom: 0.75pt solid #000000;
+  font-size: 11pt;
+  line-height: 1.3;
+  text-transform: uppercase;
+  break-after: avoid;
+}
+
+.cv-experience h2 {
+  margin-bottom: 15pt;
+}
+
+.cv-education h2 {
+  margin-bottom: 13pt;
+}
+
+.cv-skills h2 {
+  margin-bottom: 12pt;
+}
+
+.print-cv h3 {
   font-size: 10.5pt;
-  line-height: inherit;
+  line-height: 1.5;
 }
 
-.skill-list li + li::before {
-  content: ", ";
-}
-
-/* Experience */
-.entry-heading,
-.credential {
+.cv-entry-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
   gap: 12pt;
+  break-after: avoid;
 }
 
-.date {
-  font-size: 10pt;
-}
-
-.entry ul {
-  margin: 4pt 0 0;
-  padding-left: 14pt;
-}
-
-.entry li + li {
-  margin-top: 0;
-}
-
-/* Work */
-.work-grid {
-  display: block;
-}
-
-.work-item {
-  display: block;
-  min-height: 0;
-  overflow: visible;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  break-inside: avoid;
-}
-
-.work-item + .work-item {
+.cv-certification {
   margin-top: 4pt;
 }
 
-.work-media,
-.work-links {
-  display: none;
-}
-
-.work-body {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  padding: 0;
-}
-
-.work-item h3 {
-  margin: 0;
-  overflow: visible;
+.cv-date {
+  flex: 0 0 auto;
   font-size: 10.5pt;
-  text-overflow: clip;
-  white-space: normal;
-}
-
-.work-item p {
-  min-height: 0;
-  font-size: 10.5pt;
-}
-
-.print-platforms {
-  display: block;
-  margin-left: 12pt;
+  font-weight: 700;
   white-space: nowrap;
 }
 
-.work-description {
-  grid-column: 1 / -1;
+.cv-company {
+  font-weight: 700;
 }
 
-/* Education and page breaks */
-.credential-list {
-  gap: 5pt;
+.print-cv ul {
+  margin: 0;
+  padding-left: 9pt;
 }
 
-.entry,
-.credential,
-.skill-group,
-#education {
+.print-cv .cv-contact ul {
+  padding-left: 0;
+}
+
+.print-cv .cv-duties {
+  margin-top: 3pt;
+}
+
+/* Projects are part of the work experience, not a separate section. */
+.print-cv h4 {
+  font-size: 9.5pt;
+  line-height: inherit;
+}
+
+.print-cv .cv-project-label {
+  margin: 10pt 0 6pt;
+  text-transform: uppercase;
+  break-after: avoid;
+}
+
+.print-cv .cv-project-genre {
+  margin: 2pt 0 3pt;
+  break-after: avoid;
+}
+
+.cv-project + .cv-project {
+  margin-top: 6pt;
+}
+
+.cv-project h4 span {
+  font-weight: 400;
+}
+
+.cv-project,
+.cv-education,
+.cv-skills {
   break-inside: avoid;
+}
+
+/* Match the web skill categories using plain bullet points. */
+.cv-skill-list {
+  list-style-type: disc;
+}
+
+.cv-skill-list li + li {
+  margin-top: 3pt;
 }
