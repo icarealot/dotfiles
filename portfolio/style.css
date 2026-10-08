@@ -249,6 +249,7 @@ h3 {
   font-size: 0.9rem;
 }
 
+.print-cv,
 .print-platforms,
 .print-summary-title {
   display: none;
