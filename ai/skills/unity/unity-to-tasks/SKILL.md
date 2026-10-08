@@ -55,7 +55,7 @@ Iterate until the user approves the breakdown.
 
 ### 5. Create the tasks
 
-Write one file per task under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` in dependency order (blockers first). Each file's "Blocked by" lists the numbers/titles it depends on. Use the per-task file template below: one task per file, never a single combined file.
+Write one file per task under `docs/<feature-slug>/tasks/<NN>-<slug>.md`, numbered from `01` in dependency order (blockers first). Each file's "Blocked by" lists the numbers/titles it depends on. Use the per-task file template below: one task per file, never a single combined file.
 
 Work the **frontier**: any task whose blockers are all done. For a purely linear chain that means top to bottom.
 
@@ -66,8 +66,6 @@ Work the **frontier**: any task whose blockers are all done. For a purely linear
 **What to build:** the end-to-end behaviour this task makes work, from the user's perspective, not a layer-by-layer implementation list.
 
 **Blocked by:** the numbers/titles of the tasks that gate this one, or "None (can start immediately)".
-
-**Status:** ready-for-agent
 
 - [ ] Acceptance criterion 1
 - [ ] Acceptance criterion 2

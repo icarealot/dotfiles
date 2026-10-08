@@ -1,16 +1,15 @@
 ---
 name: unity-code-review
-description: "Review currently staged changes against repo standards, the originating spec, and testing guidance. Runs three independent reviews in parallel sub-agents and reports them side by side."
+description: "Review currently staged changes against along two axes: Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating task/spec asked for?). Runs both reviews in parallel sub-agents and reports them side by side."
 disable-model-invocation: true
 ---
 
-Three-axis review of the current Git index (staged changes):
+Two-axis review of the current Git index (staged changes):
 
 - **Standards**: does the code conform to this repo's documented coding standards?
 - **Spec**: does the code faithfully implement the originating task / spec?
-- **Testing**: do the tests follow `unity-tdd` guidance and sufficiently validate staged behavior at the agreed seams?
 
-The axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
+Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
 
 ## Process
 
@@ -54,15 +53,9 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 - **Middle Man**: a class or function that mostly just delegates onward. → cut it, call the real target direct.
 - **Refused Bequest**: a subclass or implementer that ignores or overrides most of what it inherits. → drop the inheritance, use composition.
 
-### 4. Identify the testing sources
+### 4. Spawn both sub-agents in parallel
 
-Read [unity-tdd/SKILL.md](../unity-tdd/SKILL.md), [tests.md](../unity-tdd/tests.md), and [mocking.md](../unity-tdd/mocking.md) completely. Use them as review references, not instructions to start an implementation loop.
-
-Find any recorded seam agreement, glossary, and ADRs. Coverage findings must stay within the agreed seams and automated-testing boundary. If the seam agreement is unavailable, report that limitation instead of assuming every public interface needs tests. Human-playtesting gaps are outside this axis.
-
-Evaluate test-first order and vertical slicing only when supplied evidence establishes the development sequence; the staged diff alone cannot establish it.
-
-### 5. Spawn the applicable sub-agents in parallel
+Issue both sub-agent calls together, in the foreground, and aggregate the reports they return.
 
 **Standards sub-agent prompt** should include:
 
@@ -78,25 +71,17 @@ Evaluate test-first order and vertical slicing only when supplied evidence estab
 
 If the spec is missing, skip the Spec sub-agent and note this in the final report.
 
-**Testing sub-agent prompt** should include:
+### 5. Aggregate
 
-- The staged diff command and file list from step 1, plus its review-boundary and index-reading instructions.
-- The resolved paths or full contents of all testing sources from step 4, including its scope and evidence limits.
-- The spec when available and any recorded seam agreement; identify missing sources explicitly.
-- The brief: "Apply every relevant rule from unity-tdd and its references to staged production and test changes. Read related existing tests as coverage evidence. Report (a) tests that violate the guidance and (b) staged behavior at agreed seams that lacks sufficient automated validation. For each finding, cite the source file and rule, quote the relevant test/hunk or name the uncovered behavior, explain the risk, and give a concrete fix using the cheapest sufficient test level and smallest fixture. Judge validation evidence independently of spec correctness. Under 400 words."
-
-### 6. Aggregate
-
-Present the reports under `## Standards`, `## Spec`, and `## Testing` headings, verbatim or lightly cleaned. Do **not** merge or rerank findings, because the axes are deliberately separate (see _Why separate axes_).
+Present the two reports under `## Standards` and `## Spec` headings, verbatim or lightly cleaned. Do **not** merge or rerank findings, because the two axes are deliberately separate (see _Why two axes_).
 
 End with a one-line summary: total findings per axis, and the worst issue _within each axis_ (if any). Don't pick a single winner across axes: that's the reranking the separation exists to prevent.
 
-## Why separate axes
+## Why two axes
 
-A change can pass one axis and fail another:
+A change can pass one axis and fail the other:
 
 - Code that follows every standard but implements the wrong thing → **Standards pass, Spec fail.**
 - Code that does exactly what the task asked but breaks the project's conventions → **Spec pass, Standards fail.**
-- Correct, conforming code with tautological or implementation-coupled tests → **Standards pass, Spec pass, Testing fail.**
 
-Reporting them separately stops one axis from masking another.
+Reporting them separately stops one axis from masking the other.

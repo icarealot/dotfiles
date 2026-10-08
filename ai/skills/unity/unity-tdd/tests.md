@@ -1,106 +1,147 @@
-# Unity Tests and Validation
+# Good and Bad Tests
 
-## Choose the cheapest sufficient level
+## Good Tests
 
-### Unit tests
-
-Use Plain EditMode for deterministic behavior that does not require a `GameObject`, scene, asset, frame, coroutine, or Unity lifecycle.
-
-- Test one unit's caller-visible behavior, preferring outcome assertions.
-- Keep tests fast and isolated; normally avoid setup and teardown.
-- Construct owned code directly and use real internal collaborators. See [mocking.md](./mocking.md) for boundary substitution.
-- Make unit tests the majority of the suite.
-
-### Integration tests
-
-Integration-style testing exercises real collaborators through public interfaces; it does not necessarily require PlayMode. Use Plain EditMode for deterministic collaboration between plain C# modules. Use PlayMode for component, lifecycle, physics, input, or other Unity-engine behavior.
-
-- Use isolated fixtures with only the required objects.
-- Use production prefabs for distinct wiring risks. Prove wiring through observable behavior, not exact hierarchy or serialized values.
-- Test shared dependencies, external services, or code owned by another team.
-- Setup and teardown are acceptable; integration tests form the middle layer.
-
-### End-to-end tests
-
-Use PlayMode with production scenes for critical player journeys from the user's point of view, including most external dependencies.
-
-Keep E2E tests sparse and the minority of the suite. Cover detailed rules and branches at cheaper levels.
-
-### Human playtesting
-
-Use human playtesting for presentation, feel, audio, controls, camera behavior, usability, and level design. Use a Player Build for platform-specific behavior and the shipped player experience.
-
-Presentation details, exact hierarchy, animation appearance, cadence, and feel belong here rather than in automated assertions.
-
-## NUnit test structure
-
-Use Arrange, Act, Assert (AAA):
-
-- **Arrange:** Put the SUT and its dependencies in the required state.
-- **Act:** Make one call to the SUT and capture its result, if any.
-- **Assert:** Verify an observable outcome; assert boundary interactions only under the contract rules in [mocking.md](./mocking.md).
-
-Separate AAA sections with blank lines; add comments when that is not possible.
-
-- Use `Assert.That` and public behavior rather than private methods or implementation details.
-- Keep scenarios explicit instead of branching inside tests.
-- Extract large Arrange sections into factories, helpers, or base classes.
-- Use setup and teardown only for shared lifecycle ownership and reliable cleanup.
-- Keep assertions focused on one logical outcome; split oversized tests or extract named assertion helpers.
-- Name a primary local SUT `sut` and a fixture-held SUT `_sut`. Tests without an honest subject are exempt.
-- Name tests after the scenario and expected behavior, using underscores and no method-under-test (MUT) name.
-- Parameterize only when it removes meaningful duplication without hiding behavior; otherwise use separate positive and negative tests.
-
-## Assertion examples
-
-These illustrative C# examples assume a plain `Health` type with a public `Remaining` property.
-
-### Observable outcome
+**Integration-style**: Use Unity Test Framework (NUnit) to test observable behavior through real public interfaces. Use EditMode for plain C# gameplay rules; use PlayMode when behavior depends on Unity lifecycle, physics, or coroutines.
 
 ```csharp
+// GOOD: EditMode test of a gameplay rule through its public API
 [Test]
-public void Damage_below_remaining_health_reduces_health()
+public void Available_inventory_space_item_is_accepted()
 {
-    var sut = new Health(20);
+    var sut = new Inventory(capacity: 1);
+    sut.TryAdd("health-potion");
 
-    sut.TakeDamage(5);
+    Assert.That(sut.Contains("health-potion"), Is.True);
+}
 
-    Assert.That(sut.Remaining, Is.EqualTo(15));
+// GOOD: PlayMode test of an observable Unity lifecycle outcome
+public class HealthPlayModeTests
+{
+    private GameObject _player;
+    private Health _sut;
+
+    [UnityTest]
+    public IEnumerator Health_reaches_zero_player_is_destroyed()
+    {
+        _player = new GameObject("Player");
+        _sut = _player.AddComponent<Health>();
+        _sut.Initialize(maxHealth: 10);
+
+        _sut.TakeDamage(10);
+        yield return null; // Allow deferred Destroy to complete.
+
+        Assert.That(_player == null, Is.True); // Unity's destroyed-object check.
+    }
+
+    [UnityTearDown]
+    public IEnumerator TearDown()
+    {
+        if (_player != null)
+            UnityEngine.Object.Destroy(_player);
+        yield return null;
+    }
 }
 ```
 
-This test uses the public API, describes what happens rather than how, and survives changes to internal storage or collaborators.
+Characteristics:
 
-### Independent expected values
+- Tests behavior players/callers care about
+- Uses public gameplay APIs and observable scene state
+- Survives internal refactors
+- Names tests after the scenario and expected behavior in sentence case, with underscores between words (for example, `Twenty_damage_against_twenty_five_percent_armor_deals_fifteen_damage`) and no method-under-test (MUT) name
+- Names a primary local system under test (SUT) `sut` and a fixture-held SUT `_sut`; tests without an honest subject are exempt
+- Uses `Assert.That` with NUnit constraints
+- One logical assertion per test
+- Uses `[Test]` for synchronous behavior and `[UnityTest]` when frames must advance
+- Creates `MonoBehaviour` instances with `AddComponent`, and test `ScriptableObject` instances with `CreateInstance`
+- Controls input, time, and randomness; waits for specific lifecycle/physics steps rather than arbitrary delays
+- Cleans up created objects and restores static state, `Time.timeScale`, and any other globals changed by the test
 
-Derive expected values independently from production calculations: a known-good literal, a worked example, or the specification.
+## Bad Tests
+
+**Implementation-detail tests**: Coupled to internal structure.
 
 ```csharp
-// BAD: Expected value repeats the production calculation.
+// BAD: Reaches into a component's private representation
 [Test]
-public void Damage_below_remaining_health_reduces_health()
+public void Non_lethal_damage_current_health_field_is_reduced()
 {
-    const int initialHealth = 20;
-    const int damage = 5;
-    var sut = new Health(initialHealth);
-    var expected = initialHealth - damage;
+    var player = new GameObject("Player");
+    try
+    {
+        var sut = player.AddComponent<Health>();
+        sut.Initialize(maxHealth: 10);
+        sut.TakeDamage(3);
 
-    sut.TakeDamage(damage);
-
-    Assert.That(sut.Remaining, Is.EqualTo(expected));
+        var field = typeof(Health).GetField("currentHealth",
+            System.Reflection.BindingFlags.Instance |
+            System.Reflection.BindingFlags.NonPublic);
+        Assert.That((int)field.GetValue(sut), Is.EqualTo(7));
+    }
+    finally
+    {
+        UnityEngine.Object.DestroyImmediate(player); // EditMode cleanup.
+    }
 }
 ```
 
-Use the known result `15` from the first example instead of copying the calculation.
+Red flags:
 
-### Observe through the interface
+- Mocking your own gameplay components instead of exercising them
+- Invoking private methods or inspecting serialized fields through reflection
+- Asserting internal call counts/order instead of gameplay outcomes
+- Calling `Awake`, `Start`, or `Update` manually instead of letting Unity drive lifecycle tests
+- Test breaks when refactoring without behavior change
+- Test name describes HOW not WHAT
+- Verifying through storage or scene internals instead of the public contract
 
-Verify that a created entity is retrievable through the public interface, rather than querying storage directly. Testing private methods or internal call sequences couples the test to implementation rather than behavior.
+```csharp
+// BAD: Couples a save-service test to its storage keys and format
+[Test]
+public void Persisted_progress_level_is_written_to_player_prefs()
+{
+    var sut = CreateSaveServiceWithIsolatedPlayerPrefs();
+    sut.Save(new Progress(level: 3));
 
-## PlayMode synchronization and expected failures
+    Assert.That(PlayerPrefs.GetInt("save.level"), Is.EqualTo(3));
+}
 
-Synchronize PlayMode tests on observable outcomes with bounded timeouts. Arbitrary frame counts and real-time delays do not prove completion or visual timing.
+// GOOD: Verifies persistence through the save/load interface
+[Test]
+public void Saved_progress_new_session_restores_same_level()
+{
+    var storage = new InMemorySaveStorage();
+    new SaveService(storage).Save(new Progress(level: 3));
+    var sut = new SaveService(storage);
 
-Keep passing runs free of deliberately generated warnings, errors, and exceptions. Assert expected failures through a caller-visible synchronous seam with `Throws`, for example `Assert.That(() => sut.Apply(invalidInput), Throws.ArgumentException)`.
+    var loaded = sut.Load();
 
-Do not deliberately trigger Unity lifecycle exceptions: `LogAssert.Expect` asserts them but does not suppress their Console output.
+    Assert.That(loaded.Level, Is.EqualTo(3));
+}
+```
+
+Test the real `PlayerPrefs` or file adapter separately with isolated keys/paths and teardown. Inspecting its stored representation is appropriate only when that representation is the adapter's agreed contract.
+
+**Tautological tests**: Expected value restates the implementation, so the test passes by construction.
+
+```csharp
+// BAD: Repeats the production damage formula in the assertion
+[Test]
+public void Twenty_damage_against_twenty_five_percent_armor_deals_reduced_damage()
+{
+    var sut = new Armor(reductionPercent: 25);
+    var expected = 20 * (1f - 25 / 100f);
+
+    Assert.That(sut.ReduceDamage(20), Is.EqualTo(expected));
+}
+
+// GOOD: Expected value is a known example from the gameplay specification
+[Test]
+public void Twenty_damage_against_twenty_five_percent_armor_deals_fifteen_damage()
+{
+    var sut = new Armor(reductionPercent: 25);
+
+    Assert.That(sut.ReduceDamage(20), Is.EqualTo(15f).Within(0.001f));
+}
+```

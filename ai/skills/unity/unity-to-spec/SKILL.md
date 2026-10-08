@@ -14,7 +14,7 @@ This skill takes the current conversation context and codebase understanding and
 
 Check with the user that these seams match their expectations.
 
-3. Write the spec to `.scratch/<feature-slug>/spec.md` using this template:
+3. Write the spec to `docs/<feature-slug>/spec.md` using this template:
 
 <spec-template>
 

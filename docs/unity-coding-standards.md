@@ -4,10 +4,11 @@
 
 Order class members as follows:
 
-1. Events
-2. Properties
-3. Fields
-4. Methods
+1. Constants
+2. Events
+3. Properties
+4. Fields
+5. Methods
 
 ## Do
 

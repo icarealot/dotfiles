@@ -22,7 +22,7 @@ On a failed gate, stop and report with the required user action.
 - Run typechecking regularly, single test files regularly, and the full test suite once at the end.
 - Use `unity-cli` for every non-code edit; never edit Unity YAML directly.
 - Use `ui-ugui` for Runtime/Canvas UI and `ui-imgui` for Editor IMGUI.
-- Use repository-root `.scratch/` for all temporary scripts, files, logs, exports, screenshots, and command output.
+- Use repository-root `.scratch/` for all temporary scripts, files, logs, exports, screenshots, and command output. Remove every artifact created for this work item before reporting.
 - Report human playtesting, Player Build, as deferred rather than running it.
 
 ## 3. Report
