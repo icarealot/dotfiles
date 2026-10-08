@@ -40,6 +40,15 @@ In `task-runner.json`, replace `your-project.slnx` with the path to your Unity p
 dotnet husky install
 ```
 
+## Restore
+
+If the cloned project already installed Husky.Net, run these commands from the cloned project repo root:
+
+```bash
+dotnet tool restore
+dotnet husky install
+```
+
 ## Troubleshooting
 
 ### No .sln/.slnx found
