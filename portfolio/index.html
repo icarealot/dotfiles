@@ -219,17 +219,19 @@
 
     <section class="cv-summary" aria-labelledby="cv-summary-title">
       <h2 id="cv-summary-title">Summary</h2>
-      <p>Unity Developer with 4+ years of experience building and operating live mobile games across Android and iOS</p>
+      <p>Unity Developer with 4+ years shipping and maintaining Android and iOS games, from rapid prototypes to live titles. Experience includes gameplay systems, asset optimization, cloud saves, LiveOps, and automated releases.</p>
     </section>
 
     <section class="cv-skills" aria-labelledby="cv-skills-title">
-      <h2 id="cv-skills-title">Skills</h2>
+      <h2 id="cv-skills-title">Technical Skills</h2>
       <ul class="cv-skill-list">
-        <li><strong>Development:</strong> Unity, C#, Git, DOTween, gameplay systems, UI implementation</li>
-        <li><strong>Platforms:</strong> Android, iOS</li>
-        <li><strong>LiveOps:</strong> Event systems, remote content delivery</li>
-        <li><strong>Backend &amp; analytics:</strong> Firebase, PlayFab, Adjust</li>
-        <li><strong>Monetization &amp; support:</strong> AppLovin MAX, Unity IAP, Helpshift</li>
+        <li><strong>Programming:</strong> C#</li>
+        <li><strong>Game development:</strong> Unity, DOTween, gameplay systems, UI implementation, Android/iOS</li>
+        <li><strong>Backend services:</strong> PlayFab, Firebase</li>
+        <li><strong>Analytics &amp; attribution:</strong> Adjust, AppsFlyer</li>
+        <li><strong>Monetization &amp; support:</strong> AppLovin MAX, Unity LevelPlay, Unity IAP, Helpshift</li>
+        <li><strong>Testing:</strong> Unity Test Framework, unit, integration, and end-to-end tests</li>
+        <li><strong>Tools &amp; workflow:</strong> Git, GitHub, GitLab, GitHub Actions, GitLab CI/CD, fastlane, code review</li>
       </ul>
     </section>
 
@@ -239,29 +241,47 @@
         <h3>Athena Studio — Unity Developer</h3>
         <p class="cv-date"><time datetime="2022-02">Feb 2022</time> – <time datetime="2026-06">Jun 2026</time></p>
       </div>
-      <p class="cv-duties">Developed, shipped, and maintained Unity mobile games for iOS and Android, covering gameplay systems, UI, LiveOps, content delivery, monetization, analytics, cloud saves, and third-party SDK integrations</p>
-
       <h4 class="cv-project-label">Selected Projects</h4>
       <article class="cv-project">
-        <h4>Pixel Isle: Coloring Sandbox <span>— iOS / Android</span></h4>
+        <h4>Pixel Isle: Coloring Sandbox <span>— <a href="https://apps.apple.com/vn/app/pixel-isle-coloring-sandbox/id1645261504" aria-label="Pixel Isle on the App Store">iOS</a> / <a href="https://play.google.com/store/apps/details?id=com.pixelisle" aria-label="Pixel Isle on Google Play">Android</a></span></h4>
         <p class="cv-project-genre">Color-by-number game with themed pixel-art islands</p>
         <ul>
-          <li>Implemented LiveOps events and remote artwork delivery</li>
-          <li>Integrated cloud saves, Unity IAP, AppLovin MAX, analytics, and Helpshift</li>
+          <li>Reduced level-loading time and RAM usage through texture compression, size limits, sprite atlases, and disabling unnecessary texture Read/Write access.</li>
+          <li>Implemented PlayFab cloud saves with cross-device synchronization, save-conflict resolution, account linking, and progress restoration.</li>
+          <li>Built a sandbox game mode, including coloring rewards, item inventory, isometric placement, and island-layout persistence.</li>
+          <li>Implemented and maintained LiveOps events (seasonal events, daily challenges, limited-time challenges).</li>
+          <li>Implemented remote asset delivery through Firebase Storage, reducing build size by moving game content out of the Resources folder.</li>
+          <li>Maintained GitLab CI/CD and fastlane workflows for builds on an AWS-hosted GitLab runner, automatic store uploads, and Slack/Google Chat notifications.</li>
         </ul>
       </article>
-      <article class="cv-project">
-        <h4>Color Tap: Art Unblock Puzzle <span>— iOS</span></h4>
+      <article class="cv-project cv-project-keep-together">
+        <h4>Color Tap: Art Unblock Puzzle <span>— <a href="https://apps.apple.com/us/app/color-tap-art-unblock-puzzle/id6738715647" aria-label="Color Tap on the App Store">iOS</a></span></h4>
         <p class="cv-project-genre">Directional block puzzle where players clear blocks to reveal artwork</p>
         <ul>
-          <li>Developed directional block-puzzle gameplay and level-content tools</li>
-          <li>Implemented daily challenges, seasonal events, rewards, and remote content delivery</li>
+          <li>Developed core gameplay, UI, and SDK integrations, delivering the first App Store release in three weeks as the sole Unity developer.</li>
+          <li>Built a level-authoring tool to convert artwork into in-game puzzle levels, with an algorithm to check level solvability.</li>
+          <li>Implemented a daily challenge mode, LiveOps events, and seasonal content updates.</li>
         </ul>
       </article>
       <article class="cv-project">
-        <h4>Gem Pixels / Dream Garden <span>— Android</span></h4>
+        <h4>Gem Pixels <span>— <a href="https://play.google.com/store/apps/details?id=com.coloring.sort.puzzle.gem.binrong.pixels" aria-label="Gem Pixels on Google Play">Android</a></span> / Dream Garden <span>— <a href="https://play.google.com/store/apps/details?id=com.match.tiles.dreamgarden" aria-label="Dream Garden on Google Play">Android</a></span></h4>
         <ul>
-          <li>Built gem-sorting and layered tile-matching gameplay, boosters, level-authoring tools, gameplay UI, and save systems</li>
+          <li>Implemented gem-sorting and tile-matching gameplay, UI, and SDK integrations.</li>
+          <li>Built level-authoring tools for game designers to create levels in Gem Pixels and Dream Garden.</li>
+          <li>Collaborated with artists to create particle effects and integrate Spine animations into gameplay.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="cv-side-projects" aria-labelledby="cv-side-projects-title">
+      <h2 id="cv-side-projects-title">Side Projects</h2>
+      <article class="cv-side-project">
+        <h3>Tic Tac Toe Lab — Testable Unity Architecture</h3>
+        <p class="cv-project-source"><a href="https://github.com/icarealot/tic-tac-toe-lab">github.com/icarealot/tic-tac-toe-lab</a></p>
+        <ul>
+          <li>Built a testable Unity architecture using dependency injection, engine-independent C# game logic, and thin Unity adapters.</li>
+          <li>Added EditMode unit tests and PlayMode integration and end-to-end tests covering game rules, Unity behavior, and player flows.</li>
+          <li>Used TDD to direct coding agents and validate their changes.</li>
         </ul>
       </article>
     </section>
@@ -270,12 +290,12 @@
       <h2 id="cv-education-title">Education &amp; Certifications</h2>
       <div class="cv-entry-heading">
         <h3>Ho Chi Minh City Open University</h3>
-        <p class="cv-date"><time datetime="2017-09">09/2017</time> - <time datetime="2023-05">05/2023</time></p>
+        <p class="cv-date"><time datetime="2017-09">Sep 2017</time> – <time datetime="2023-05">May 2023</time></p>
       </div>
       <p class="cv-degree">B.Sc. in Computer Science</p>
       <div class="cv-entry-heading cv-certification">
         <h3>TOEIC Listening &amp; Reading</h3>
-        <p class="cv-date"><time datetime="2025-10">10/2025</time> – <time datetime="2027-10">10/2027</time></p>
+        <p class="cv-date"><time datetime="2025-10">Oct 2025</time> – <time datetime="2027-10">Oct 2027</time></p>
       </div>
       <p>Score: 950</p>
     </section>

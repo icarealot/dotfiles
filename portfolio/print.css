@@ -1,3 +1,7 @@
+@page {
+  margin: 15mm;
+}
+
 :root {
   --background: #ffffff;
   --surface: #ffffff;
@@ -13,7 +17,9 @@ body {
   padding: 0 1.5mm;
   background: #ffffff;
   color: #000000;
-  font: 9.5pt/1.7 Arial, Helvetica, sans-serif;
+  font: 12pt/1.4 Arial, Helvetica, sans-serif;
+  orphans: 3;
+  widows: 3;
 }
 
 .site-header,
@@ -109,7 +115,7 @@ body {
   margin-bottom: 10pt;
   padding-bottom: 4pt;
   border-bottom: 0.75pt solid #000000;
-  font-size: 11pt;
+  font-size: 12pt;
   line-height: 1.3;
   text-transform: uppercase;
   break-after: avoid;
@@ -128,7 +134,7 @@ body {
 }
 
 .print-cv h3 {
-  font-size: 10.5pt;
+  font-size: 12pt;
   line-height: 1.5;
 }
 
@@ -146,7 +152,7 @@ body {
 
 .cv-date {
   flex: 0 0 auto;
-  font-size: 10.5pt;
+  font-size: 12pt;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -164,14 +170,11 @@ body {
   padding-left: 0;
 }
 
-.print-cv .cv-duties {
-  margin-top: 3pt;
-}
-
-/* Projects are part of the work experience, not a separate section. */
+/* Professional projects stay under experience; side projects have their own section. */
 .print-cv h4 {
-  font-size: 9.5pt;
+  font-size: 12pt;
   line-height: inherit;
+  break-after: avoid;
 }
 
 .print-cv .cv-project-label {
@@ -193,13 +196,35 @@ body {
   font-weight: 400;
 }
 
-.cv-project,
+.cv-header,
+.cv-project-keep-together,
+.cv-side-project,
 .cv-education,
 .cv-skills {
   break-inside: avoid;
 }
 
-/* Match the web skill categories using plain bullet points. */
+/* Let long project entries flow across pages without splitting a bullet. */
+.print-cv li {
+  break-inside: avoid;
+}
+
+.cv-side-project h3 {
+  break-after: avoid;
+}
+
+.print-cv .cv-project-source {
+  margin: 2pt 0 5pt;
+  font-size: 9.5pt;
+  break-after: avoid;
+}
+
+.cv-project h4 a,
+.cv-project-source a {
+  text-decoration: underline;
+}
+
+/* Keep skills as plain bullet points. */
 .cv-skill-list {
   list-style-type: disc;
 }
