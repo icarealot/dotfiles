@@ -8,18 +8,17 @@ Implement the work described by the user in the spec or tasks.
 
 ## 1. Establish the boundary
 
-- `unity-cli`.
+- `unity-cli` and `unity-pipeline`.
 - `ui-ugui` for Runtime/Canvas UI or `ui-imgui` for Editor IMGUI.
-- no new external package, `Packages/manifest.json` change, or editor-resource import such as TMP Essentials.
-- An open Editor.
+- No new external package, `Packages/manifest.json` change, or editor-resource import such as TMP Essentials.
+- An opened Editor.
 
 On a failed gate, stop and report with the required user action.
 
 ## 2. Implement and validate
 
 - Call the Skill tool with `unity-tdd` where possible, at pre-agreed seams.
-- Follow [test-protocol.md](./test-protocol.md) for every test run.
-- Run typechecking regularly, single test files regularly, and the full test suite once at the end.
+- Run typechecking regularly, single test files regularly, and the full test suite once at the end by using `unity-pipeline`.
 - Use `unity-cli` for every non-code edit; never edit Unity YAML directly.
 - Use `ui-ugui` for Runtime/Canvas UI and `ui-imgui` for Editor IMGUI.
 - Use repository-root `.scratch/` for all temporary scripts, files, logs, exports, screenshots, and command output. Remove every artifact created for this work item before reporting.
