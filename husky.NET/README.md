@@ -30,11 +30,12 @@ cp husky.NET/task-runner.json <unity-project>/.husky/task-runner.json
 
 ### 3. Set the Solution File
 
-In `task-runner.json`, replace `your-project.slnx` with the path to your Unity project's `.sln`/`.slnx` file.
+- In `task-runner.json`, replace `your-project.slnx` with the path to your Unity project's `.sln`/`.slnx` file.
+- In `.editorconfig`, replace `[{Unity_Assets_Path}/**.cs]` with the path to your Unity project Assets folder.
 
 ### 4. Install Git Hooks
 
-> Run from the Unity project repo (not the dotfiles repo).
+> Run from the Unity project repo.
 
 ```
 dotnet husky install

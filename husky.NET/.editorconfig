@@ -6,7 +6,7 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 charset = utf-8
 
-[*.cs]
+[{Unity_Assets_Path}/**.cs]
 indent_style = space
 indent_size = 4
 
@@ -20,7 +20,7 @@ dotnet_diagnostic.IDE0001.severity = warning
 dotnet_diagnostic.SA1122.severity = warning
 
 # Naming: private fields _camelCase
-dotnet_naming_rule.private_fields_should_be_underscore_camel.severity = suggestion
+dotnet_naming_rule.private_fields_should_be_underscore_camel.severity = warning
 dotnet_naming_rule.private_fields_should_be_underscore_camel.symbols = private_fields
 dotnet_naming_rule.private_fields_should_be_underscore_camel.style = underscore_camel_case
 
@@ -31,7 +31,7 @@ dotnet_naming_style.underscore_camel_case.capitalization = camel_case
 dotnet_naming_style.underscore_camel_case.required_prefix = _
 
 # Naming: constants UPPER_SNAKE_CASE
-dotnet_naming_rule.constants_upper_snake.severity = suggestion
+dotnet_naming_rule.constants_upper_snake.severity = warning
 dotnet_naming_rule.constants_upper_snake.symbols = constants
 dotnet_naming_rule.constants_upper_snake.style = upper_snake_case
 

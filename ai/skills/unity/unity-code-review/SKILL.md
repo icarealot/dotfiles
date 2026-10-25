@@ -31,7 +31,8 @@ Look for the originating spec, in this order:
 
 ### 3. Identify the standards sources
 
-Anything in the repo that documents how code should be written, such as `CODING_STANDARDS.md` or `CONTRIBUTING.md`.
+- `docs/coding-standards.md`, `.agents/skills/unity-tdd/tests.md`, the task/spec's agreed test seam, and the relevant ADRs for acceptance ownership. Include these paths in the Standards sub-agent's sources.
+- Judge assertions against their declared contract: intentional approved-content locks differ from generic behavior tests. Human-owned startup/visual acceptance is not a missing automated test. Mechanical rules belong to the repository checker; review test quality beyond its documented detection limits rather than duplicating those diagnostics.
 
 On top of whatever the repo documents, the Standards axis always carries the **smell baseline** below: a fixed set of Fowler code smells (_Refactoring_, ch.3) that applies even when a repo documents nothing. Two rules bind it:
 

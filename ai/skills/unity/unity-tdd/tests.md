@@ -35,7 +35,7 @@ public class HealthPlayModeTests
     }
 
     [UnityTearDown]
-    public IEnumerator TearDown()
+    public IEnumerator IE_TearDown()
     {
         if (_player != null)
             UnityEngine.Object.Destroy(_player);
