@@ -1,9 +1,9 @@
 # Unity Generated
-/[Ll]ibrary/
-/[Tt]emp/
-/[Oo]bj/
-/[Ll]ogs/
-/[Uu]ser[Ss]ettings/
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
 .utmp/
 *.pidb.meta
 *.pdb.meta
@@ -11,8 +11,8 @@
 sysinfo.txt
 
 # Build Artifacts
-/[Bb]uild/
-/[Bb]uilds/
+[Bb]uild/
+[Bb]uilds/
 *.apk
 *.aab
 *.unitypackage
@@ -42,13 +42,13 @@ ExportedObj/
 .history/
 .ionide/
 *.vsix
-/[Aa]ssets/Plugins/Editor/JetBrains*
+[Aa]ssets/Plugins/Editor/JetBrains*
 .gradle/
 
 # Unity Assets
-/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
-/[Aa]ssets/[Ss]treamingAssets/aa.meta
-/[Aa]ssets/[Ss]treamingAssets/aa/*
+[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+[Aa]ssets/[Ss]treamingAssets/aa.meta
+[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # OS Artifacts
 .DS_Store
@@ -60,8 +60,8 @@ nul
 *.jks
 
 # Project-Specific
-/[Mm]emoryCaptures/
-/[Rr]ecordings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
 Screenshots/
 /.scratch/
 
