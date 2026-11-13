@@ -1,0 +1,87 @@
+{
+  "session": {
+    "restore_unsaved_buffers": false
+  },
+  "inline_code_actions": false,
+  "languages": {
+    "Markdown": {
+      "soft_wrap": "none"
+    },
+    "CSharp": {
+      "language_servers": [
+        "roslyn"
+      ]
+    }
+  },
+  "scrollbar": {
+    "selected_symbol": false,
+    "selected_text": false,
+    "search_results": false,
+    "cursors": false,
+    "diagnostics": "none",
+    "git_diff": false
+  },
+  "status_bar": {
+    "active_file": false,
+    "cursor_position_button": false
+  },
+  "git": {
+    "inline_blame": {
+      "enabled": false
+    }
+  },
+  "git_panel": {
+    "tree_view": true
+  },
+  "outline_panel": {
+    "button": false
+  },
+  "terminal": {
+    "default_width": 760.0,
+    "font_family": "JetBrainsMono Nerd Font",
+    "dock": "right"
+  },
+  "project_panel": {
+    "hide_root": true,
+    "sticky_scroll": false,
+    "folder_icons": false,
+    "file_icons": false,
+    "default_width": 360.0
+  },
+  "tab_bar": {
+    "show_tab_bar_buttons": false,
+    "show_nav_history_buttons": false
+  },
+  "title_bar": {
+    "show_branch_icon": false
+  },
+  "debugger": {
+    "button": false
+  },
+  "search": {
+    "button": false
+  },
+  "diagnostics": {
+    "include_warnings": false,
+    "button": false
+  },
+  "show_whitespaces": "selection",
+  "toolbar": {
+    "selections_menu": false,
+    "quick_actions": false,
+    "breadcrumbs": false
+  },
+  "gutter": {
+    "folds": false,
+    "breakpoints": false,
+    "runnables": false
+  },
+  "current_line_highlight": "none",
+  "buffer_line_height": "standard",
+  "buffer_font_family": "JetBrains Mono",
+  "when_closing_with_no_tabs": "keep_window_open",
+  "icon_theme": "Gram (Default)",
+  "ui_font_size": 14,
+  "buffer_font_size": 15.0,
+  "theme": "Alabaster"
+}

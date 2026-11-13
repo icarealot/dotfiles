@@ -25,19 +25,19 @@ type: description
 
 # Types
 
-| Type | Use when |
-|------|----------|
-| `feat` | New user-facing capability |
-| `fix` | Corrects a bug |
-| `perf` | Measurably faster or lighter, with the same behavior |
-| `refactor` | Code restructure with no behavior change |
-| `style` | Whitespace, formatting, or missing semicolons |
-| `test` | Test-only changes |
-| `docs` | Documentation or comment changes |
-| `build` | Build inputs such as dependencies or packaging |
-| `ci` | CI configuration only |
-| `chore` | Repository housekeeping, such as lint config, `.gitignore`, or scripts |
-| `revert` | Reverting an earlier commit |
+| Type       | Use when                                                               |
+| ---------- | ---------------------------------------------------------------------- |
+| `feat`     | New user-facing capability                                             |
+| `fix`      | Corrects a bug                                                         |
+| `perf`     | Measurably faster or lighter, with the same behavior                   |
+| `refactor` | Code restructure with no behavior change                               |
+| `style`    | Whitespace, formatting, or missing semicolons                          |
+| `test`     | Test-only changes                                                      |
+| `docs`     | Documentation or comment changes                                       |
+| `build`    | Build inputs such as dependencies or packaging                         |
+| `ci`       | CI configuration only                                                  |
+| `chore`    | Repository housekeeping, such as lint config, `.gitignore`, or scripts |
+| `revert`   | Reverting an earlier commit                                            |
 
 # Avoid
 

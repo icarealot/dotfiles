@@ -1,60 +1,22 @@
-## Git
+# Git
 
-| File | Description |
-|------|-------------|
-| `.gitconfig` | Git aliases for everyday operations. |
-| `.gitignore-unity` | `.gitignore` template for Unity projects. |
-| `.gitattributes-unity` | `.gitattributes` template for Unity projects. |
+| File                 | Description                                 |
+|----------------------|---------------------------------------------|
+| .gitconfig           | Git aliases for everyday operations.        |
+| .gitignore-unity     | .gitignore template for Unity projects.     |
+| .gitattributes-unity | .gitattributes template for Unity projects. |
 
 ## Prerequisites
 
-- [Git](https://git-scm.com/)
+[Git](https://git-scm.com/)
 
 ## Install
 
-cd to repo root.
+### .gitconfig
 
-<details>
-<summary>.gitconfig</summary>
+Append it to `~/.gitconfig`.
 
-```bash
-# Mac
-ln -sfn "$PWD/git/.gitconfig" ~/.gitconfig
-```
+### .gitignore-unity & .gitattributes-unity
 
-```bash
-# Windows - requires running as Admin or enabling Developer Mode
-cmd /c "mklink %USERPROFILE%\.gitconfig %CD%\git\.gitconfig"
-```
-
-</details>
-
-<details>
-<summary>.gitignore-unity</summary>
-
-```bash
-# Mac
-cp "$PWD/git/.gitignore-unity" /path/to/unity-project/.gitignore
-```
-
-```bash
-# Windows
-copy git\.gitignore-unity \path\to\unity-project\.gitignore
-```
-
-</details>
-
-<details>
-<summary>.gitattributes-unity</summary>
-
-```bash
-# Mac
-cp "$PWD/git/.gitattributes-unity" /path/to/unity-project/.gitattributes
-```
-
-```bash
-# Windows
-copy git\.gitattributes-unity \path\to\unity-project\.gitattributes
-```
-
-</details>
+- Remove the suffix `-unity`.
+- Copy them to the Unity project folder.
