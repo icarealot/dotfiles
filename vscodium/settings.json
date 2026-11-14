@@ -1,15 +1,12 @@
 {
+    "workbench.activityBar.location": "top",
     "workbench.startupEditor": "none",
-    "workbench.activityBar.location": "hidden",
-    "workbench.statusBar.visible": false,
-    "workbench.editor.showTabs": "none",
     "workbench.navigationControl.enabled": false,
     "workbench.browser.showInTitleBar": false,
     "workbench.layoutControl.enabled": false,
-    "workbench.editor.editorActionsLocation": "hidden",
     "workbench.iconTheme": null,
     "workbench.tree.enableStickyScroll": false,
-    "workbench.colorTheme": "Light Modern",
+    "workbench.colorTheme": "Dark Modern",
     "workbench.tips.enabled": false,
     "editor.minimap.enabled": false,
     "editor.stickyScroll.enabled": false,
@@ -22,9 +19,6 @@
     "editor.lightbulb.enabled": "off",
     "diffEditor.wordWrap": "off",
     "window.commandCenter": false,
-    "window.menuBarVisibility": "compact",
-    "explorer.decorations.colors": false,
-    "explorer.decorations.badges": false,
     "explorer.compactFolders": false,
     "terminal.integrated.stickyScroll.enabled": false,
     "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
@@ -35,6 +29,7 @@
     "scm.diffDecorations": "gutter",
     "terminal.integrated.tabs.enabled": false,
     "git.autofetch": true,
+    "git.openRepositoryInParentFolders": "never",
     "[markdown]": {
         "editor.wordWrap": "off"
     }
