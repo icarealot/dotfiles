@@ -12,13 +12,13 @@
 
 ### 1. Install Husky.Net
 
-```
-dotnet tool install husky
+```bash
+dotnet new tool-manifest --output .config
+dotnet tool install husky --local
 ```
 
 ### 2. Copy Config Files
 
-- cd to repo root.
 - Replace `<unity-project>` with the path to your Unity project repo.
 
 ```bash
@@ -35,9 +35,9 @@ cp husky.NET/task-runner.json <unity-project>/.husky/task-runner.json
 
 ### 4. Install Git Hooks
 
-> Run from the Unity project repo.
+> Run from the Unity project repo root.
 
-```
+```bash
 dotnet husky install
 ```
 
