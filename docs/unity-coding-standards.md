@@ -10,12 +10,14 @@ Order class members as follows:
 4. Fields
 5. Methods
 
+Order constructors and operators with methods. Apply the order separately within each nested class.
+
 ## Do
 
 - Declare every concrete class `sealed` unless it is intentionally designed for inheritance.
 - Use `SNAKE_UPPER_CASE` for constants.
 - Use `_camelCase` for private fields.
-- Prefix methods returning `IEnumerator` with `IE_`.
+- Prefix methods returning `IEnumerator` with `IE_`, except `[UnityTest]` methods, which keep their sentence-style test names.
 - Use `string.Empty` instead of `""`.
 - Name test methods as readable sentences with words separated by underscores, such as `Available_inventory_space_item_is_accepted()`.
 

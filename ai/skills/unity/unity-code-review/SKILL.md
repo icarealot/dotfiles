@@ -32,7 +32,7 @@ Look for the originating spec, in this order:
 ### 3. Identify the standards sources
 
 - `docs/coding-standards.md`, `.agents/skills/unity-tdd/tests.md`, the task/spec's agreed test seam, and the relevant ADRs for acceptance ownership. Include these paths in the Standards sub-agent's sources.
-- Judge assertions against their declared contract: intentional approved-content locks differ from generic behavior tests. Human-owned startup/visual acceptance is not a missing automated test. Mechanical rules belong to the repository checker; review test quality beyond its documented detection limits rather than duplicating those diagnostics.
+- Judge assertions against their declared contract: intentional approved-content locks differ from generic behavior tests. Human-owned startup/visual acceptance is not a missing automated test. For a regression, use [Regression evidence](../unity-tdd/tests.md#regression-evidence) to check that its preconditions and assertions distinguish the named bug.
 
 On top of whatever the repo documents, the Standards axis always carries the **smell baseline** below: a fixed set of Fowler code smells (_Refactoring_, ch.3) that applies even when a repo documents nothing. Two rules bind it:
 
@@ -62,6 +62,7 @@ Issue both reviewer sub-agent calls together, in the foreground, and aggregate t
 
 - The staged diff command and file list from step 1, plus its review-boundary and index-reading instructions.
 - The list of standards-source files you found in step 3, **plus the smell baseline from step 3** pasted in full (the sub-agent has no other access to it).
+- For regression tests, include the regression-evidence check from step 3.
 - The brief: "Report, per file/hunk where relevant, (a) every place the diff violates a documented standard: cite the standard (file + the rule); and (b) any baseline smell you spot: name it and quote the hunk. Distinguish hard violations from judgement calls: documented-standard breaches can be hard, but baseline smells are always judgement calls, and a documented repo standard overrides the baseline. Skip anything tooling enforces. Under 400 words."
 
 **Spec sub-agent prompt** should include:

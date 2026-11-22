@@ -58,6 +58,12 @@ Characteristics:
 - Controls input, time, and randomness; waits for specific lifecycle/physics steps rather than arbitrary delays
 - Cleans up created objects and restores static state, `Time.timeScale`, and any other globals changed by the test
 
+## Regression evidence
+
+Establish the precondition that makes the outcome diagnostic. For example, establish that a Box is eligible and every Slot Pad is occupied before asserting that capacity rejects selection. Drive the agreed public seam through the claimed outcome; a direct reservation does not prove that selection triggers delivery.
+
+Before the fix, record the focused test name, the intended failing assertion, and the observed failure. A compiler or fixture setup error is not red evidence. For an already-fixed regression, use a controlled counterexample when practical; otherwise state that red was not observed.
+
 ## Bad Tests
 
 **Implementation-detail tests**: Coupled to internal structure.
