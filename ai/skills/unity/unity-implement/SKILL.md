@@ -9,7 +9,7 @@ Implement the work described by the user in the spec or tasks.
 ## 1. Establish the boundary
 
 - `unity-cli` and `unity-pipeline`.
-- `ui-ugui` for Runtime/Canvas UI or `ui-imgui` for Editor IMGUI.
+- `create-ui` for UI.
 - No new external package, `Packages/manifest.json` change, or editor-resource import such as TMP Essentials.
 - An opened Editor.
 
@@ -20,7 +20,7 @@ On a failed gate, stop and report with the required user action.
 - Call the Skill tool with `unity-tdd` where possible, at pre-agreed seams.
 - Run typechecking regularly with `unity-pipeline`. Run [focused tests and one final full suite](#live-unity-tests).
 - Use `unity-cli` for every non-code edit; never edit Unity YAML directly.
-- Use `ui-ugui` for Runtime/Canvas UI and `ui-imgui` for Editor IMGUI.
+- Use `create-ui` for UI.
 - Use repository-root `.scratch/` for all temporary scripts, files, logs, exports, screenshots, and command output. Remove every artifact created for this work item before reporting.
 - Report human playtesting, Player Build, as deferred rather than running it.
 
