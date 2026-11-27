@@ -28,6 +28,8 @@ Authorize task-specific subagents with these settings where supported:
 
 Use deterministic tools instead of an agent when they can reliably perform the operation.
 
+Delegate substantial routine implementation to a worker while retaining important design decisions. Do not create a worker merely to perform a trivial edit.
+
 Select actual model and reasoning settings through available controls. Prefer fresh worker context with a compact brief. Report unavailable controls once and distinguish requested settings from verified settings. Do not simulate model switching or silently substitute a substantially more expensive worker.
 
 Prefer Standard speed where supported. Avoid routinely using the highest reasoning settings.
